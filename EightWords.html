@@ -3,22 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>八字排盤與性格分析</title>
+    <title>八字排盤與十神分析 Pro+</title>
+    <!-- 引入 Lunar JS (處理八字核心) -->
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
+    <!-- 引入 Chart.js (畫五行圖表用) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* --- 配色與變數設定 --- */
         :root {
-            --bg-paper: #fdfbf7; /* 宣紙底色 */
-            --border-color: #8c7b75; /* 邊框古銅色 */
-            --primary-btn: #8B0000; /* 深紅按鈕 */
-            --text-main: #4a4a4a; /* 主要文字深灰 */
+            --bg-paper: #fdfbf7;
+            --border-color: #8c7b75;
+            --primary-btn: #5D4037; /* 改為深棕色，更穩重 */
+            --text-main: #4a4a4a;
+            --text-sub: #888;
+            
+            /* 十神小標籤顏色 */
+            --god-color: #795548; 
             
             /* 五行顏色 */
-            --wood: #2E7D32; /* 濃綠 */
-            --fire: #C62828; /* 絳紅 */
-            --earth: #795548; /* 赭土 */
-            --metal: #D4Af37; /* 鎏金 */
-            --water: #1565C0; /* 靛藍 */
+            --wood: #388E3C;
+            --fire: #D32F2F;
+            --earth: #795548;
+            --metal: #FBC02D;
+            --water: #1976D2;
         }
 
         body {
@@ -35,32 +42,36 @@
         .paper-container {
             background-color: var(--bg-paper);
             width: 100%;
-            max-width: 450px;
-            padding: 30px 20px;
-            border-radius: 4px;
+            max-width: 500px; /* 稍微加寬以容納藏干 */
+            padding: 20px;
+            border-radius: 8px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             position: relative;
-            outline: 1px solid var(--border-color);
-            outline-offset: -10px;
+            outline: 2px double var(--border-color);
+            outline-offset: -8px;
         }
 
         h2 {
             color: #333;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 26px;
-            letter-spacing: 2px;
-            border-bottom: 2px solid var(--primary-btn);
-            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 4px;
+            border-bottom: 3px double var(--primary-btn);
+            display: block;
             padding-bottom: 10px;
-            width: 100%;
         }
 
         /* --- 表單區域 --- */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         label {
             display: block;
             margin-bottom: 8px;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-main);
             font-weight: bold;
         }
@@ -68,33 +79,32 @@
         input[type="datetime-local"] {
             width: 100%;
             padding: 12px;
-            margin-bottom: 25px;
             border: 1px solid #ccc;
             background: #fff;
             border-radius: 4px;
             font-size: 16px;
             font-family: "Microsoft JhengHei", sans-serif;
             box-sizing: border-box;
+            text-align: center;
         }
 
         button {
             background-color: var(--primary-btn);
             color: #fff;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 50px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            letter-spacing: 3px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: all 0.2s;
         }
 
         button:active {
             transform: scale(0.98);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         /* --- 結果顯示區 --- */
@@ -103,6 +113,12 @@
             display: none;
             border-top: 1px dashed var(--border-color);
             padding-top: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .result-title {
@@ -111,73 +127,100 @@
             color: var(--primary-btn);
             margin-bottom: 15px;
             font-weight: bold;
+            position: relative;
         }
-
+        
         .bazi-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(4, 1fr); /* 4欄 */
             gap: 8px;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .column-header {
-            font-size: 16px;
+            font-size: 14px;
             color: #666;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
-        .char-box {
-            font-size: 28px;
-            font-weight: bold;
-            padding: 10px 0;
-            background: rgba(255, 255, 255, 0.5);
+        /* --- 八字方塊設計 (包含十神) --- */
+        .char-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.6);
             border: 1px solid #e0e0e0;
             border-radius: 6px;
+            padding: 5px 2px;
+            min-height: 80px; /* 確保高度一致 */
+            justify-content: center;
         }
 
-        /* 日主特殊標示 */
-        .day-master {
-            border: 2px solid var(--primary-btn);
-            background: #fff;
-            position: relative;
-            box-shadow: 0 0 8px rgba(139, 0, 0, 0.1);
-        }
-        
-        .day-master::after {
-            content: "日主";
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--primary-btn);
-            color: #fff;
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 10px;
+        /* 十神標籤 (天干上方) */
+        .ten-god-top {
+            font-size: 11px;
+            color: var(--god-color);
+            margin-bottom: 2px;
+            height: 14px; /* 佔位 */
             font-family: "Microsoft JhengHei", sans-serif;
         }
 
-        /* --- 新增：個性分析區塊 --- */
-        .personality-box {
-            margin-top: 25px;
-            background-color: rgba(139, 0, 0, 0.04);
-            border-left: 5px solid var(--primary-btn);
-            padding: 15px;
-            border-radius: 4px;
-            line-height: 1.6;
-            text-align: justify;
+        /* 八字大字 */
+        .char-main {
+            font-size: 26px;
+            font-weight: bold;
+            line-height: 1.2;
         }
 
-        .personality-box h3 {
-            margin: 0 0 10px 0;
+        /* 藏干與十神 (地支下方) */
+        .hidden-stems {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
+            line-height: 1.3;
+            font-family: "Microsoft JhengHei", sans-serif;
+            white-space: pre-wrap; /* 允許換行 */
+        }
+
+        /* 日主特殊標示 */
+        .day-master-box {
+            border: 2px solid var(--primary-btn);
+            background: #fff;
+            box-shadow: 0 0 8px rgba(139, 0, 0, 0.1);
+        }
+        
+        /* --- 性格與五行分析 --- */
+        .section-box {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
             color: var(--primary-btn);
-            font-size: 18px;
-            border-bottom: 1px solid rgba(139, 0, 0, 0.2);
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
 
         .personality-content {
-            font-size: 16px;
+            font-size: 15px;
             color: #333;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            width: 100%;
         }
 
         /* 五行顏色類別 */
@@ -187,43 +230,21 @@
         .w-metal { color: var(--metal); }
         .w-water { color: var(--water); }
 
-        /* --- 底部說明 --- */
-        .legend {
-            margin-top: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            font-size: 14px;
-            background: rgba(0,0,0,0.03);
-            padding: 10px;
-            border-radius: 8px;
-        }
-        
-        .legend span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .dot {
-            width: 10px; height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
     </style>
 </head>
 <body>
 
     <div class="paper-container">
-        <h2>八字排盤</h2>
+        <h2>八字命理與十神</h2>
         
-        <label for="birthDate">請輸入您的生辰：</label>
-        <input type="datetime-local" id="birthDate" required>
-        <button onclick="calculateBazi()">開始排盤</button>
+        <div class="input-group">
+            <label for="birthDate">請輸入國曆生辰：</label>
+            <input type="datetime-local" id="birthDate" required>
+        </div>
+        <button onclick="calculateBazi()">🔮 立即排盤</button>
 
         <div id="result-area">
-            <div class="result-title">【 您的命盤 】</div>
+            <div class="result-title">【 您的命造 】</div>
             
             <div class="bazi-grid">
                 <div class="column-header">年柱</div>
@@ -231,52 +252,97 @@
                 <div class="column-header">日柱</div>
                 <div class="column-header">時柱</div>
 
-                <div id="h-year" class="char-box"></div>
-                <div id="h-month" class="char-box"></div>
-                <div id="h-day" class="char-box day-master"></div>
-                <div id="h-hour" class="char-box"></div>
+                <!-- 天干 Row -->
+                <div id="box-year-gan" class="char-container"></div>
+                <div id="box-month-gan" class="char-container"></div>
+                <div id="box-day-gan" class="char-container day-master-box"></div>
+                <div id="box-time-gan" class="char-container"></div>
 
-                <div id="e-year" class="char-box"></div>
-                <div id="e-month" class="char-box"></div>
-                <div id="e-day" class="char-box"></div>
-                <div id="e-hour" class="char-box"></div>
+                <!-- 地支 Row -->
+                <div id="box-year-zhi" class="char-container"></div>
+                <div id="box-month-zhi" class="char-container"></div>
+                <div id="box-day-zhi" class="char-container"></div>
+                <div id="box-time-zhi" class="char-container"></div>
             </div>
 
-            <!-- 新增：性格分析區塊 -->
-            <div class="personality-box" id="personality-box" style="display: none;">
-                <h3><span id="dm-label"></span>命造性格分析</h3>
+            <!-- 五行統計 -->
+            <div class="section-box">
+                <div class="section-title">📊 五行能量分佈</div>
+                <div class="chart-container">
+                    <canvas id="wuxingChart"></canvas>
+                </div>
+                <div id="wuxing-text" style="text-align: center; font-size: 12px; margin-top: 5px; color: #666;"></div>
+            </div>
+
+            <!-- 性格分析 -->
+            <div class="section-box" id="personality-box" style="display: none;">
+                <div class="section-title">👤 日元性格：<span id="dm-label"></span></div>
                 <div class="personality-content" id="dm-desc"></div>
-            </div>
-
-            <div class="legend">
-                <span><i class="dot" style="background:var(--wood)"></i>木</span>
-                <span><i class="dot" style="background:var(--fire)"></i>火</span>
-                <span><i class="dot" style="background:var(--earth)"></i>土</span>
-                <span><i class="dot" style="background:var(--metal)"></i>金</span>
-                <span><i class="dot" style="background:var(--water)"></i>水</span>
             </div>
         </div>
     </div>
 
     <script>
-        // 十天干性格資料庫 (約50字)
-        const dayMasterTraits = {
-            "甲": "甲木參天，性情正直仁慈，如大樹般穩重不屈。您有很強的進取心與責任感，外表平靜但內心剛毅，有時稍顯固執，是值得信賴的領導型人物。",
-            "乙": "乙木如花草，性情柔順且適應力強。您心思細膩，善於隨機應變，外表謙虛但內心堅韌（外柔內剛），富有同情心，是善解人意的協調者。",
-            "丙": "丙火為太陽，性格熱情開朗，積極樂觀。您心胸寬大，不拘小節，喜歡照顧他人，但有時情緒來得快去得也快，是充滿活力的行動派。",
-            "丁": "丁火如燭光，性格溫和細膩，洞察力強。您思慮周全，外表沉穩但內心熱情，富有犧牲奉獻的精神，在藝術或思想領域常有獨到見解。",
-            "戊": "戊土如高山，性格敦厚穩重，講究信用。您意志堅定，沈默寡言但辦事可靠，包容力強，不喜歡冒險變動，是團體中如磐石般的存在。",
-            "己": "己土如田園，性格柔和包容，多才多藝。您做事有條理，內心通情達理，善於培養與溝通，雖然偶爾優柔寡斷，但極具親和力。",
-            "庚": "庚金如刀劍，性格剛毅果決，講義氣重原則。您是非分明，豪爽率直，不畏艱難喜歡挑戰，雖然有時說話較直，但執行力極強。",
-            "辛": "辛金如珠寶，性格溫潤秀氣，自尊心強。您心思細密，重視外表與面子，對生活有獨特的品味，外柔內剛，即使歷經磨練也能散發光芒。",
-            "壬": "壬水如大海，性格聰明機智，寬宏大量。您反應靈敏，適應力極強，喜歡自由不受拘束，雖有時任性多變，但擁有優秀的社交手腕。",
-            "癸": "癸水如雨露，性格內斂平靜，想像力豐富。您溫柔細心，善於觀察人心，外表沈靜但內心想法多變，做事勤勉，具有以柔克剛的韌性。"
+        // --- 資料庫與定義 ---
+
+        // 五行對應
+        const WUXING = {
+            "甲":"木", "乙":"木", "寅":"木", "卯":"木",
+            "丙":"火", "丁":"火", "巳":"火", "午":"火",
+            "戊":"土", "己":"土", "辰":"土", "戌":"土", "丑":"土", "未":"土",
+            "庚":"金", "辛":"金", "申":"金", "酉":"金",
+            "壬":"水", "癸":"水", "亥":"水", "子":"水"
         };
+
+        // 陰陽屬性 (+:陽, -:陰)
+        const YINYANG = {
+            "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0,
+            "子":1, "丑":0, "寅":1, "卯":0, "辰":1, "巳":0, "午":1, "未":0, "申":1, "酉":0, "戌":1, "亥":0
+        };
+
+        // 五行生剋關係 (A生B:1, A剋B:2, 同:0, B生A:-1, B剋A:-2)
+        // 簡化邏輯：
+        // 生我者為印，我生者為食傷，剋我者為官殺，我剋者為財，同我者為比劫
+        const ELEMENTS = ["木", "火", "土", "金", "水"]; // 順序相生
+
+        // 地支藏干表 (標準)
+        const ZHI_CANG_GAN = {
+            "子": ["癸"],
+            "丑": ["己", "癸", "辛"],
+            "寅": ["甲", "丙", "戊"],
+            "卯": ["乙"],
+            "辰": ["戊", "乙", "癸"],
+            "巳": ["丙", "庚", "戊"],
+            "午": ["丁", "己"],
+            "未": ["己", "丁", "乙"],
+            "申": ["庚", "壬", "戊"],
+            "酉": ["辛"],
+            "戌": ["戊", "辛", "丁"],
+            "亥": ["壬", "甲"]
+        };
+
+        // 十天干性格資料
+        const dayMasterTraits = {
+            "甲": "甲木參天，剛毅正直，有責任感與上進心，寧折不屈，具有領導風範。",
+            "乙": "乙木如藤，柔順堅韌，適應力強，心思細膩，善於隨機應變。",
+            "丙": "丙火如陽，熱情開朗，積極樂觀，不拘小節，但情緒來去較快。",
+            "丁": "丁火如燭，溫和細膩，洞察力強，思慮周全，富有奉獻精神。",
+            "戊": "戊土如山，沈穩厚重，講究信用，意志堅定，包容力強，不喜變動。",
+            "己": "己土如園，柔和多才，通情達理，善於溝通與培養，極具親和力。",
+            "庚": "庚金如鐵，剛毅果決，講義氣重原則，是非分明，執行力極強。",
+            "辛": "辛金如珠，溫潤秀氣，自尊心強，心思細密，外柔內剛，重視質感。",
+            "壬": "壬水如海，聰明機智，寬宏大量，反應靈敏，喜自由不受拘束。",
+            "癸": "癸水如露，內斂平靜，溫柔細心，想像力豐富，具有以柔克剛的韌性。"
+        };
+
+        let myChart = null;
+
+        // --- 核心計算邏輯 ---
 
         function calculateBazi() {
             try {
                 if (typeof Solar === 'undefined') {
-                    alert("系統載入中，請稍後再試或檢查網路。");
+                    alert("系統資源載入中，請稍後。");
                     return;
                 }
 
@@ -291,26 +357,36 @@
                 const lunar = solar.getLunar();
                 const bazi = lunar.getEightChar();
 
-                // 1. 填入八字
-                renderChar("h-year", bazi.getYearGan());
-                renderChar("h-month", bazi.getMonthGan());
-                renderChar("h-day", bazi.getDayGan()); // 這是日主
-                renderChar("h-hour", bazi.getTimeGan());
+                // 取得四柱 (字串)
+                const Gan = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getDayGan(), bazi.getTimeGan()];
+                const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
+                const DayMaster = Gan[2]; // 日主
 
-                renderChar("e-year", bazi.getYearZhi());
-                renderChar("e-month", bazi.getMonthZhi());
-                renderChar("e-day", bazi.getDayZhi());
-                renderChar("e-hour", bazi.getTimeZhi());
+                // 1. 渲染天干 (含十神)
+                renderStem("box-year-gan", Gan[0], DayMaster, "年干");
+                renderStem("box-month-gan", Gan[1], DayMaster, "月干");
+                renderStem("box-day-gan", Gan[2], DayMaster, "日主");
+                renderStem("box-time-gan", Gan[3], DayMaster, "時干");
 
-                // 2. 處理日主性格分析
-                const dayMaster = bazi.getDayGan();
-                const trait = dayMasterTraits[dayMaster] || "資料讀取中...";
-                
-                document.getElementById('dm-label').innerText = `【${dayMaster}】`;
+                // 2. 渲染地支 (含藏干十神)
+                renderBranch("box-year-zhi", Zhi[0], DayMaster);
+                renderBranch("box-month-zhi", Zhi[1], DayMaster);
+                renderBranch("box-day-zhi", Zhi[2], DayMaster);
+                renderBranch("box-time-zhi", Zhi[3], DayMaster);
+
+                // 3. 五行統計
+                const allChars = [...Gan, ...Zhi];
+                const wuxingCount = { "金": 0, "木": 0, "水": 0, "火": 0, "土": 0 };
+                allChars.forEach(c => wuxingCount[WUXING[c]]++);
+                renderChart(wuxingCount);
+
+                // 4. 性格分析
+                const trait = dayMasterTraits[DayMaster];
+                document.getElementById('dm-label').innerText = `【${DayMaster}】`;
                 document.getElementById('dm-desc').innerText = trait;
                 document.getElementById('personality-box').style.display = "block";
 
-                // 3. 顯示結果區
+                // 顯示結果
                 document.getElementById('result-area').style.display = "block";
                 document.getElementById('result-area').scrollIntoView({behavior: "smooth"});
 
@@ -319,32 +395,134 @@
             }
         }
 
-        function getWuXingColor(char) {
-            const wood = "甲乙寅卯";
-            const fire = "丙丁巳午";
-            const earth = "戊己辰戌丑未";
-            const metal = "庚辛申酉";
-            const water = "壬癸亥子";
+        // 計算十神 (DayMaster vs TargetStem)
+        function getTenGod(dm, target) {
+            if (dm === target) return "比肩"; // 實際上這裡不會發生，因為只有日主自己
 
-            if (wood.includes(char)) return "w-wood";
-            if (fire.includes(char)) return "w-fire";
-            if (earth.includes(char)) return "w-earth";
-            if (metal.includes(char)) return "w-metal";
-            if (water.includes(char)) return "w-water";
+            const dmEl = WUXING[dm];
+            const tEl = WUXING[target];
+            const dmYinYang = YINYANG[dm]; // 1陽 0陰
+            const tYinYang = YINYANG[target];
+            
+            const idxDm = ELEMENTS.indexOf(dmEl);
+            const idxT = ELEMENTS.indexOf(tEl);
+            
+            // 計算生剋距離 (以木火土金水循環)
+            // 0:同, 1:生, 2:剋, 3:被剋(官殺), 4:被生(印)
+            let relation = (idxT - idxDm + 5) % 5;
+            
+            const samePolarity = (dmYinYang === tYinYang); // 同性(偏/食/殺/比), 異性(正/傷/官/劫)
+
+            if (relation === 0) { // 同五行
+                return samePolarity ? "比肩" : "劫財";
+            } else if (relation === 1) { // 我生
+                return samePolarity ? "食神" : "傷官";
+            } else if (relation === 2) { // 我剋 (財)
+                return samePolarity ? "偏財" : "正財";
+            } else if (relation === 3) { // 剋我 (官殺)
+                return samePolarity ? "七殺" : "正官";
+            } else if (relation === 4) { // 生我 (印)
+                return samePolarity ? "偏印" : "正印";
+            }
             return "";
         }
 
-        function renderChar(elementId, charString) {
+        function getWuXingColorClass(char) {
+            const wx = WUXING[char];
+            if (wx === "木") return "w-wood";
+            if (wx === "火") return "w-fire";
+            if (wx === "土") return "w-earth";
+            if (wx === "金") return "w-metal";
+            if (wx === "水") return "w-water";
+            return "";
+        }
+
+        // 渲染天干方塊
+        function renderStem(elementId, char, dayMaster, type) {
             const el = document.getElementById(elementId);
-            el.innerText = charString;
-            const colorClass = getWuXingColor(charString);
+            const colorClass = getWuXingColorClass(char);
             
-            // 保持基本樣式並加入顏色
-            el.className = `char-box ${colorClass}`;
-            
-            if (elementId === "h-day") {
-                el.classList.add("day-master");
+            let tenGodHtml = "";
+            if (type === "日主") {
+                tenGodHtml = `<div class="ten-god-top"></div>`; // 日主上方留空或寫日主
+            } else {
+                const god = getTenGod(dayMaster, char);
+                tenGodHtml = `<div class="ten-god-top">${god}</div>`;
             }
+
+            el.innerHTML = `
+                ${tenGodHtml}
+                <div class="char-main ${colorClass}">${char}</div>
+            `;
+        }
+
+        // 渲染地支方塊 (含藏干)
+        function renderBranch(elementId, char, dayMaster) {
+            const el = document.getElementById(elementId);
+            const colorClass = getWuXingColorClass(char);
+            
+            // 計算藏干與十神
+            const hiddenStems = ZHI_CANG_GAN[char] || [];
+            let hiddenHtml = hiddenStems.map(stem => {
+                const god = getTenGod(dayMaster, stem);
+                // 顯示格式：藏干(十神)
+                // 簡化十神顯示：正印->印, 七殺->殺 (避免太擠)
+                // 或者保持全名，用小字體
+                return `${stem}<span style="font-size:9px;color:#999">(${god})</span>`;
+            }).join(" "); // 這裡用空格分隔
+
+            el.innerHTML = `
+                <div class="char-main ${colorClass}">${char}</div>
+                <div class="hidden-stems">${hiddenHtml}</div>
+            `;
+        }
+
+        // 繪製五行圖表
+        function renderChart(counts) {
+            const ctx = document.getElementById('wuxingChart').getContext('2d');
+            if (myChart) myChart.destroy();
+
+            const dataValues = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
+            
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['木', '火', '土', '金', '水'],
+                    datasets: [{
+                        label: '五行數量',
+                        data: dataValues,
+                        backgroundColor: [
+                            'rgba(56, 142, 60, 0.6)', 'rgba(211, 47, 47, 0.6)', 'rgba(121, 85, 72, 0.6)', 
+                            'rgba(251, 192, 45, 0.6)', 'rgba(25, 118, 210, 0.6)'
+                        ],
+                        borderColor: [
+                            '#388E3C', '#D32F2F', '#795548', '#FBC02D', '#1976D2'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 文字總結
+            let summary = [];
+            if (counts['金'] < 1) summary.push("缺金");
+            if (counts['木'] < 1) summary.push("缺木");
+            if (counts['水'] < 1) summary.push("缺水");
+            if (counts['火'] < 1) summary.push("缺火");
+            if (counts['土'] < 1) summary.push("缺土");
+            
+            let maxVal = Math.max(...dataValues);
+            if (maxVal >= 4) summary.push("某行過旺");
+
+            document.getElementById('wuxing-text').innerText = summary.length > 0 ? "提示：" + summary.join("、") : "五行分佈相對平衡";
         }
     </script>
 </body>
