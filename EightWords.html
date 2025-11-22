@@ -513,16 +513,16 @@
 
             // 文字總結
             let summary = [];
-            if (counts['金'] < 1) summary.push("缺金");
-            if (counts['木'] < 1) summary.push("缺木");
-            if (counts['水'] < 1) summary.push("缺水");
-            if (counts['火'] < 1) summary.push("缺火");
-            if (counts['土'] < 1) summary.push("缺土");
+            if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
+            if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
+            if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
+            if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
+            if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
             
             let maxVal = Math.max(...dataValues);
-            if (maxVal >= 4) summary.push("某行過旺");
+            if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
 
-            document.getElementById('wuxing-text').innerText = summary.length > 0 ? "提示：" + summary.join("、") : "五行分佈相對平衡";
+            document.getElementById('wuxing-text').innerText = summary.length > 0 ? "提示：" + summary.join("、") : "五行分佈相對平衡,時機在哪?趕快詢問多多老師";
         }
     </script>
 </body>
