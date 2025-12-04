@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>多多萬事屋｜命理諮詢</title>
+    
+    <!-- 1. 核心函式庫 -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 全域設定 --- */
+        :root {
+            --bg-base: #fdfbf7;       /* 米白宣紙底 */
+            --primary: #5D4037;       /* 深棕主色 */
+            --accent-light: #FFECB3;  /* 淺橘黃 */
+            --accent-pink: #FFCCBC;   /* 淺粉橘 */
+            --active-tab: #FFE0B2;    /* 選中頁籤 */
+            
+            /* 五行色 */
+            --wood: #388E3C; --fire: #D32F2F; --earth: #795548; --metal: #FBC02D; --water: #1976D2;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--primary);
+            padding-top: 70px; /* 留給固定導航列 */
+            padding-bottom: 40px;
+        }
+
+        /* --- 導航列 (固定置頂) --- */
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+            display: flex;
+            overflow-x: auto; /* 允許小螢幕橫滑，雖然我們設計為4個剛好 */
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 15px 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 15px;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background-color: var(--active-tab);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        /* --- 內容區塊控制 --- */
+        .tab-content { display: none; animation: fadeIn 0.5s; padding: 0 20px; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 卡片樣式 --- */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-pink);
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title svg { margin-right: 8px; width: 24px; height: 24px; stroke: var(--primary); }
+
+        /* --- 價目表互動元件 --- */
+        .option-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+        
+        .check-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .check-btn.selected {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .price-display {
+            background: var(--accent-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* --- 八字排盤樣式 (繼承自 Pro+) --- */
+        .bazi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .column-header { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .char-container {
+            background: #fff; border: 1px solid #ddd; border-radius: 6px;
+            padding: 8px 2px; min-height: 70px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .ten-god-top { font-size: 10px; color: #8d6e63; height: 12px; margin-bottom: 2px; }
+        .char-main { font-size: 22px; font-weight: bold; line-height: 1.1; }
+        .hidden-stems { font-size: 10px; color: #999; margin-top: 4px; line-height: 1.2; }
+        .day-master-box { border: 2px solid var(--primary); background-color: #fff8e1; }
+        
+        /* 五行顏色 */
+        .w-wood { color: var(--wood); }
+        .w-fire { color: var(--fire); }
+        .w-earth { color: var(--earth); }
+        .w-metal { color: var(--metal); }
+        .w-water { color: var(--water); }
+
+        /* 按鈕樣式 */
+        .action-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: #fff;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(93, 64, 55, 0.3);
+            transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. 固定導航列 -->
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('home')">首頁</div>
+        <div class="nav-item" onclick="switchTab('pricing')">價目表</div>
+        <div class="nav-item" onclick="switchTab('bazi')">快速八字</div>
+        <div class="nav-item" onclick="switchTab('courses')">線上課程</div>
+    </nav>
+
+    <!-- 2. 分頁內容區 -->
+
+    <!-- Tab 1: 首頁 -->
+    <div id="home" class="tab-content active">
+        <div class="text-center mb-6 mt-4">
+            <h1 class="text-2xl font-bold tracking-widest text-gray-800">多多萬事屋</h1>
+            <p class="text-sm text-gray-500 mt-2">命理諮詢 • 運勢解析 • 心靈療癒</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                服務項目
+            </div>
+            <ul class="space-y-4 pl-2">
+                <li class="flex items-start">
+                    <span class="font-bold mr-2 text-yellow-700">A.</span>
+                    <div>
+                        <strong class="block text-gray-800">紫微斗數</strong>
+                        <span class="text-sm text-gray-500">命盤解析、問題解惑<br>流年各月運勢分析僅於中秋至春節期間服務，詳見公告</span>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-bold mr-2 text-yellow-700">B.</span>
+                    <div>
+                        <strong class="block text-gray-800">八字命理</strong>
+                        <span class="text-sm text-gray-500">原局喜用神、運勢流轉解析</span>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-bold mr-2 text-yellow-700">C.</span>
+                    <div>
+                        <strong class="block text-gray-800">卡牌占卜</strong>
+                        <span class="text-sm text-gray-500">塔羅、紫微、易經、玫瑰神諭</span>
+                    </div>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-bold mr-2 text-yellow-700">D.</span>
+                    <div>
+                        <strong class="block text-gray-800">寵物溝通</strong>
+                        <span class="text-sm text-gray-500">請洽 IG: <a href="https://instagram.com/trueme_life_tw" target="_blank" class="text-blue-600 underline">簇咪手作trueme_life_tw</a></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tab 2: 價目表 (含計算與預約) -->
+    <div id="pricing" class="tab-content">
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+                A. 紫微斗數
+            </div>
+            <p class="text-sm text-gray-500 mb-3">
+                基礎費用 $1000 (含一項問題)。<br>每加一項 +$400。<br>上限 $3000 (問到飽)。
+            </p>
+            <div class="option-group" id="ziwei-options">
+                <div class="check-btn selected" id="ziwei-none" onclick="toggleZiwei(this, 'none')">不進行諮詢</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '工作')">工作</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '感情')">感情</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '財運')">財運</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '健康')">健康</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '家庭')">家庭</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '流年')">流年</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '其他')">其他</div>
+                <div class="check-btn w-full text-center" style="border-color: #8B0000; color:#8B0000" onclick="toggleZiwei(this, '問到飽')">∞ 問到飽 (全選)</div>
+            </div>
+            <div class="text-right text-gray-600 text-sm">紫微小計：$<span id="ziwei-price">0</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                B. 八字解析
+            </div>
+            <p class="text-sm text-gray-500 mb-3">
+                原局解析、喜用分析、大運流年流月運勢。
+            </p>
+            <div class="space-y-2">
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="bazi-option" value="0" checked onchange="calcTotal()" class="mr-3">
+                    <span class="text-gray-400">不進行解析</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="bazi-option" value="1" onchange="calcTotal()" class="mr-3">
+                    <span>單次解析 ($400)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                C. 卡牌占卜
+            </div>
+            <p class="text-sm text-gray-500 mb-3">請選擇牌陣類型：</p>
+            <div class="space-y-2">
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="0" data-name="無" data-price="0" checked onchange="calcTotal()" class="mr-3">
+                    <span class="text-gray-400">不進行占卜</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="1" data-name="易經牌 (2張)" data-price="50" onchange="calcTotal()" class="mr-3">
+                    <span>易經牌 (2張) $50</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="2" data-name="塔羅牌 (3張)" data-price="150" onchange="calcTotal()" class="mr-3">
+                    <span>塔羅牌 (3張) $150</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="3" data-name="紫微牌 (3張)" data-price="150" onchange="calcTotal()" class="mr-3">
+                    <span>紫微牌 (3張) $150</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="4" data-name="解惑牌組 (9張)" data-price="300" onchange="calcTotal()" class="mr-3">
+                    <span>解惑牌組 (9張) $300</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="price-display">
+            總金額：$<span id="final-total">0</span>
+        </div>
+        <button class="action-btn" onclick="sendReservation()">送出預約</button>
+        <p class="text-xs text-center mt-2 text-gray-400">送出後請等待多多老師確認</p>
+    </div>
+
+    <!-- Tab 3: 快速八字 (整合版) -->
+    <div id="bazi" class="tab-content">
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                八字速查
+            </div>
+            <div class="mb-4 text-center">
+                <label class="block text-sm text-gray-500 mb-1">請輸入國曆生辰</label>
+                <input type="datetime-local" id="birthDate" class="w-full p-2 border rounded text-center bg-gray-50">
+            </div>
+            <button class="w-full bg-gray-700 text-white py-2 rounded-full mb-6 font-bold" onclick="calculateBazi()">開始排盤</button>
+
+            <!-- 結果顯示區 (預設隱藏) -->
+            <div id="bazi-result" style="display:none;">
+                <div class="bazi-grid">
+                    <div class="column-header">年柱</div>
+                    <div class="column-header">月柱</div>
+                    <div class="column-header">日柱</div>
+                    <div class="column-header">時柱</div>
+
+                    <!-- 天干 -->
+                    <div id="year-gan" class="char-container"></div>
+                    <div id="month-gan" class="char-container"></div>
+                    <div id="day-gan" class="char-container day-master-box"></div>
+                    <div id="time-gan" class="char-container"></div>
+
+                    <!-- 地支 -->
+                    <div id="year-zhi" class="char-container"></div>
+                    <div id="month-zhi" class="char-container"></div>
+                    <div id="day-zhi" class="char-container"></div>
+                    <div id="time-zhi" class="char-container"></div>
+                </div>
+
+                <!-- 五行圖表 -->
+                <div class="border p-3 rounded mb-4">
+                    <h4 class="text-sm font-bold text-center mb-2">五行能量</h4>
+                    <div style="height:150px"><canvas id="wuxingChart"></canvas></div>
+                    <div id="wuxing-text" class="text-xs text-center mt-2 text-red-800"></div>
+                </div>
+
+                <!-- 性格 -->
+                <div class="bg-orange-50 p-3 rounded border-l-4 border-yellow-700">
+                    <h4 class="font-bold text-yellow-900 mb-1"><span id="dm-label"></span>性格分析</h4>
+                    <div id="dm-desc" class="text-sm text-gray-700 text-justify"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 4: 線上課程 -->
+    <div id="courses" class="tab-content">
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                紫微斗數初級班
+            </div>
+            <p class="text-sm text-gray-600 mb-4">適合完全零基礎，從認識命盤宮位星性開始，掌握自己的人生。</p>
+            <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-red-800">$3,600</span>
+                <button class="bg-yellow-600 text-white px-4 py-2 rounded-full text-sm" onclick="window.open('https://example.com/course1')">前往報名，別忘了折扣碼</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                紫微斗數中級班
+            </div>
+            <p class="text-sm text-gray-600 mb-4">深入四化應用與流年推算，學習如何解盤與運勢預測。</p>
+            <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-red-800">$10,800</span>
+                <button class="bg-yellow-600 text-white px-4 py-2 rounded-full text-sm" onclick="window.open('https://example.com/course2')">前往報名，別忘了折扣碼</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                八字行運班
+            </div>
+            <p class="text-sm text-gray-600 mb-4">了解五行生剋與大運流年，掌握人生起伏的關鍵時機。</p>
+            <div class="flex justify-between items-center">
+                <span class="text-xl font-bold text-red-800">$3,600</span>
+                <button class="bg-yellow-600 text-white px-4 py-2 rounded-full text-sm" onclick="window.open('https://example.com/course3')">前往報名，別忘了折扣碼</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ★★★ 請填入 LIFF ID ★★★
+        const YOUR_LIFF_ID = "請填入您的LIFF_ID";
+
+        // =======================
+        // 1. 初始化與頁籤切換
+        // =======================
+        document.addEventListener('DOMContentLoaded', function() {
+            liff.init({ liffId: YOUR_LIFF_ID }).catch(err => console.error(err));
+        });
+
+        function switchTab(tabId) {
+            // 隱藏所有內容
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // 顯示選中內容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 更新導航狀態 (這裡簡單用索引對應，或根據onclick文字)
+            const navItems = document.querySelectorAll('.nav-item');
+            if(tabId === 'home') navItems[0].classList.add('active');
+            if(tabId === 'pricing') navItems[1].classList.add('active');
+            if(tabId === 'bazi') navItems[2].classList.add('active');
+            if(tabId === 'courses') navItems[3].classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        // =======================
+        // 2. 價目表計算邏輯
+        // =======================
+        let selectedZiwei = [];
+
+        function toggleZiwei(btn, item) {
+            const noneBtn = document.getElementById('ziwei-none');
+            
+            if (item === 'none') {
+                selectedZiwei = [];
+                document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            } else {
+                // 如果點選任何項目，取消「不進行」的選取
+                if (noneBtn.classList.contains('selected')) {
+                    noneBtn.classList.remove('selected');
+                }
+
+                if (item === '問到飽') {
+                    // 如果選問到飽
+                    if (selectedZiwei.includes('問到飽')) {
+                        // 取消問到飽 -> 回到全空 (選取不進行)
+                        selectedZiwei = [];
+                        btn.classList.remove('selected');
+                        noneBtn.classList.add('selected');
+                    } else {
+                        // 選取問到飽 -> 清除其他一般項目
+                        selectedZiwei = ['問到飽'];
+                        document.querySelectorAll('#ziwei-options .check-btn').forEach(b => {
+                            if (b !== btn && b !== noneBtn) b.classList.remove('selected');
+                        });
+                        btn.classList.add('selected');
+                    }
+                } else {
+                    // 點選一般項目
+                    if (selectedZiwei.includes('問到飽')) {
+                        // 如果原本是問到飽，移除問到飽，加入新項
+                        selectedZiwei = [item];
+                        document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                    } else {
+                        if (selectedZiwei.includes(item)) {
+                            selectedZiwei = selectedZiwei.filter(i => i !== item);
+                            btn.classList.remove('selected');
+                        } else {
+                            selectedZiwei.push(item);
+                            btn.classList.add('selected');
+                        }
+                    }
+                    
+                    // 如果取消完所有項目，自動選回「不進行」
+                    if (selectedZiwei.length === 0) {
+                        noneBtn.classList.add('selected');
+                    }
+                }
+            }
+            calcTotal();
+        }
+
+        function calcTotal() {
+            // A. 紫微計算
+            let ziweiPrice = 0;
+            if (selectedZiwei.includes('問到飽')) {
+                ziweiPrice = 3000;
+            } else if (selectedZiwei.length > 0) {
+                ziweiPrice = 1000 + (selectedZiwei.length - 1) * 400;
+                if (ziweiPrice > 3000) ziweiPrice = 3000; // 上限 3000
+            }
+            document.getElementById('ziwei-price').innerText = ziweiPrice;
+
+            // B. 八字計算 (改為 Radio Button 邏輯)
+            const baziOption = document.querySelector('input[name="bazi-option"]:checked');
+            let baziPrice = (baziOption && baziOption.value === '1') ? 400 : 0;
+
+            // C. 卡牌計算
+            const cardOption = document.querySelector('input[name="card-option"]:checked');
+            let cardPrice = parseInt(cardOption.dataset.price || 0);
+
+            // 總計
+            let total = ziweiPrice + baziPrice + cardPrice;
+            document.getElementById('final-total').innerText = total;
+        }
+
+        function sendReservation() {
+            // 收集資料
+            const baziOption = document.querySelector('input[name="bazi-option"]:checked');
+            const cardOption = document.querySelector('input[name="card-option"]:checked');
+            const cardName = cardOption.dataset.name;
+            const total = document.getElementById('final-total').innerText;
+
+            let details = "";
+            if (selectedZiwei.length > 0) details += `🟣 紫微斗數：${selectedZiwei.join(', ')}\n`;
+            if (baziOption && baziOption.value === '1') details += `🟡 八字解析：單次\n`;
+            if (cardName !== "無") details += `🃏 卡牌占卜：${cardName}\n`;
+
+            if (details === "") {
+                alert("請至少選擇一項服務喔！");
+                return;
+            }
+
+            const msg = `【🔮 多多萬事屋預約單】\n\n` +
+                        details +
+                        `------------------\n` +
+                        `💰 預估金額：$${total}\n\n` +
+                        `請老師確認時間與內容，謝謝！`;
+
+            if (liff.isInClient()) {
+                liff.sendMessages([{ type: 'text', text: msg }])
+                    .then(() => liff.closeWindow())
+                    .catch(err => alert('發送失敗：' + err));
+            } else {
+                alert("預覽訊息：\n\n" + msg);
+            }
+        }
+
+        // =======================
+        // 3. 八字計算邏輯 (Pro+ 整合版)
+        // =======================
+        const WUXING = { "甲":"木", "乙":"木", "寅":"木", "卯":"木", "丙":"火", "丁":"火", "巳":"火", "午":"火", "戊":"土", "己":"土", "辰":"土", "戌":"土", "丑":"土", "未":"土", "庚":"金", "辛":"金", "申":"金", "酉":"金", "壬":"水", "癸":"水", "亥":"水", "子":"水" };
+        const YINYANG = { "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0 };
+        const ELEMENTS = ["木", "火", "土", "金", "水"];
+        const ZHI_CANG_GAN = { "子":["癸"], "丑":["己","癸","辛"], "寅":["甲","丙","戊"], "卯":["乙"], "辰":["戊","乙","癸"], "巳":["丙","庚","戊"], "午":["丁","己"], "未":["己","丁","乙"], "申":["庚","壬","戊"], "酉":["辛"], "戌":["戊","辛","丁"], "亥":["壬","甲"] };
+        const DM_TRAITS = { "甲":"甲木參天，剛毅正直，有責任感，領導風範。", "乙":"乙木如藤，柔順堅韌，心思細膩，善隨機應變。", "丙":"丙火如陽，熱情開朗，不拘小節，情緒來去快。", "丁":"丁火如燭，溫和細膩，洞察力強，富有奉獻精神。", "戊":"戊土如山，沈穩厚重，講信用，包容力強。", "己":"己土如園，柔和多才，通情達理，善溝通。", "庚":"庚金如鐵，剛毅果決，講義氣，執行力強。", "辛":"辛金如珠，溫潤秀氣，自尊強，外柔內剛。", "壬":"壬水如海，聰明機智，寬宏大量，喜自由。", "癸":"癸水如露，內斂平靜，溫柔細心，以柔克剛。" };
+        let myChart = null;
+
+        function calculateBazi() {
+            try {
+                if (typeof Solar === 'undefined') { alert("系統載入中..."); return; }
+                const input = document.getElementById('birthDate').value;
+                if (!input) { alert("請選擇生辰！"); return; }
+
+                const dateObj = new Date(input);
+                const solar = Solar.fromDate(dateObj);
+                const lunar = solar.getLunar();
+                const bazi = lunar.getEightChar();
+
+                const Gan = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getDayGan(), bazi.getTimeGan()];
+                const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
+                const DM = Gan[2];
+
+                // 渲染
+                renderStem("year-gan", Gan[0], DM); renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
+                renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM); renderBranch("time-zhi", Zhi[3], DM);
+
+                // 性格
+                document.getElementById('dm-label').innerText = `【${DM}】`;
+                document.getElementById('dm-desc').innerText = DM_TRAITS[DM];
+
+                // 五行統計與建議
+                const counts = { "金":0, "木":0, "水":0, "火":0, "土":0 };
+                [...Gan, ...Zhi].forEach(c => counts[WUXING[c]]++);
+                
+                // 畫圖
+                const ctx = document.getElementById('wuxingChart').getContext('2d');
+                if (myChart) myChart.destroy();
+                const dataVals = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['木','火','土','金','水'],
+                        datasets: [{ label: '數量', data: dataVals, backgroundColor: ['#388E3C','#D32F2F','#795548','#FBC02D','#1976D2'] }]
+                    },
+                    options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
+                });
+
+                // 您的專屬建議文字邏輯
+                let summary = [];
+                if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
+                if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
+                if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
+                if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
+                if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
+                let maxVal = Math.max(...dataVals);
+                if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
+                
+                document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
+
+                document.getElementById('bazi-result').style.display = 'block';
+
+            } catch (e) { alert("錯誤：" + e.message); }
+        }
+
+        function getTenGod(dm, target) {
+            if (dm === target) return ""; 
+            const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
+            const same = YINYANG[dm] === YINYANG[target];
+            const gods = [
+                same?"比肩":"劫財", same?"食神":"傷官", same?"偏財":"正財", same?"七殺":"正官", same?"偏印":"正印"
+            ];
+            return gods[relation];
+        }
+
+        function renderStem(id, char, dm, isDay=false) {
+            const god = isDay ? "" : getTenGod(dm, char);
+            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
+            document.getElementById(id).innerHTML = `<div class="ten-god-top">${god}</div><div class="char-main ${color}">${char}</div>`;
+        }
+
+        function renderBranch(id, char, dm) {
+            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
+            const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g).substring(0,1)})`).join(' ');
+            document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
+        }
+
+    </script>
+</body>
+</html>
