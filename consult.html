@@ -410,7 +410,17 @@
         // 1. 初始化與頁籤切換
         // =======================
         document.addEventListener('DOMContentLoaded', function() {
-            liff.init({ liffId: YOUR_LIFF_ID }).catch(err => console.error(err));
+            liff.init({ liffId: YOUR_LIFF_ID })
+                .then(() => {
+                    // 重要：檢查並自動登入，解決 access_token 錯誤
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    // alert('LIFF 初始化失敗：' + err); // 測試時可開啟
+                });
         });
 
         function switchTab(tabId) {
