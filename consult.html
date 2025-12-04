@@ -236,7 +236,7 @@
                 基礎費用 $1000 (含一項問題)。<br>每加一項 +$400。<br>上限 $3000 (問到飽)。
             </p>
             <div class="option-group" id="ziwei-options">
-                <div class="check-btn selected" id="ziwei-none" onclick="toggleZiwei(this, 'none')">不進行諮詢</div>
+                <div class="check-btn selected" id="ziwei-none" onclick="toggleZiwei(this, 'none')">不諮詢</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '工作')">工作</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '感情')">感情</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '財運')">財運</div>
@@ -260,7 +260,7 @@
             <div class="space-y-2">
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="bazi-option" value="0" checked onchange="calcTotal()" class="mr-3">
-                    <span class="text-gray-400">不進行解析</span>
+                    <span class="text-gray-400">不解析</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="bazi-option" value="1" onchange="calcTotal()" class="mr-3">
@@ -274,11 +274,11 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                 C. 卡牌占卜
             </div>
-            <p class="text-sm text-gray-500 mb-3">請選擇牌陣類型：</p>
+            <p class="text-sm text-gray-500 mb-3">請選擇占卜項目：</p>
             <div class="space-y-2">
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="card-option" value="0" data-name="無" data-price="0" checked onchange="calcTotal()" class="mr-3">
-                    <span class="text-gray-400">不進行占卜</span>
+                    <span class="text-gray-400">不占卜</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="card-option" value="1" data-name="易經牌 (2張)" data-price="50" onchange="calcTotal()" class="mr-3">
@@ -294,7 +294,7 @@
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="card-option" value="4" data-name="解惑牌組 (9張)" data-price="300" onchange="calcTotal()" class="mr-3">
-                    <span>解惑牌組 (9張) $300</span>
+                    <span>解惑牌組 (9張) $300 (推薦)</span>
                 </label>
             </div>
         </div>
