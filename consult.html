@@ -43,7 +43,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             z-index: 100;
             display: flex;
-            overflow-x: auto; /* 允許小螢幕橫滑，雖然我們設計為4個剛好 */
+            overflow-x: auto; /* 允許小螢幕橫滑 */
         }
 
         .nav-item {
@@ -125,7 +125,7 @@
             margin-top: 10px;
         }
 
-        /* --- 八字排盤樣式 (繼承自 Pro+) --- */
+        /* --- 八字排盤樣式 (Pro+ 修正版) --- */
         .bazi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -134,21 +134,23 @@
             margin-bottom: 15px;
         }
         .column-header { font-size: 12px; color: #888; margin-bottom: 4px; }
+        
         .char-container {
             background: #fff; border: 1px solid #ddd; border-radius: 6px;
-            padding: 8px 2px; min-height: 70px;
+            padding: 8px 2px; min-height: 80px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .ten-god-top { font-size: 10px; color: #8d6e63; height: 12px; margin-bottom: 2px; }
         .char-main { font-size: 22px; font-weight: bold; line-height: 1.1; }
         
-        /* 修改：藏干文字稍微縮小並允許換行，增加行高，確保完整顯示 */
+        /* 藏干文字樣式優化，允許換行且縮小字級 */
         .hidden-stems { 
             font-size: 9px; 
             color: #999; 
             margin-top: 4px; 
             line-height: 1.4; 
             white-space: pre-wrap; 
+            text-align: center;
         }
         .day-master-box { border: 2px solid var(--primary); background-color: #fff8e1; }
         
@@ -174,6 +176,17 @@
         }
         .action-btn:active { transform: scale(0.98); }
 
+        /* 表單輸入框樣式 */
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            background-color: #fff;
+        }
+
     </style>
 </head>
 <body>
@@ -181,7 +194,7 @@
     <!-- 1. 固定導航列 -->
     <nav class="nav-bar">
         <div class="nav-item active" onclick="switchTab('home')">首頁</div>
-        <div class="nav-item" onclick="switchTab('pricing')">價目表</div>
+        <div class="nav-item" onclick="switchTab('pricing')">諮詢價目 / 預約</div>
         <div class="nav-item" onclick="switchTab('bazi')">八字速查</div>
         <div class="nav-item" onclick="switchTab('courses')">線上課程</div>
     </nav>
@@ -208,7 +221,7 @@
                         <span class="text-sm text-gray-500">命盤解析、問題解惑</span>
                     </div>
                 </li>
-                <!-- 補回 a. 項目 -->
+                <!-- 保留您的 a. 項目 -->
                 <li class="flex items-start">
                     <span class="font-bold mr-2 text-yellow-700">a.</span>
                     <div>
@@ -227,7 +240,7 @@
                     <span class="font-bold mr-2 text-yellow-700">C.</span>
                     <div>
                         <strong class="block text-gray-800">卡牌占卜</strong>
-                        <span class="text-sm text-gray-500">塔羅、紫微、易經、玫瑰神諭</span>
+                        <span class="text-sm text-gray-500">塔羅牌、紫微牌、易經牌、玫瑰神諭卡、能量卡、課題卡</span>
                     </div>
                 </li>
                 <li class="flex items-start">
@@ -316,13 +329,32 @@
         </div>
 
         <div class="price-display">
-            總金額：$<span id="final-total">0</span>
+            總預估金額：$<span id="final-total">0</span>
         </div>
-        <button class="action-btn" onclick="sendReservation()">送出預約</button>
-        <p class="text-xs text-center mt-2 text-gray-400">送出後請等待多多老師確認</p>
+
+        <!-- 補回：預約資料填寫區 -->
+        <div class="card" style="margin-top: 20px; background-color: #fff8e1; border: 2px solid #ffecb3;">
+            <div class="card-title" style="color: #8d6e63; border-color: #d7ccc8;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                預約資料
+            </div>
+            
+            <label class="block text-sm text-gray-600 mb-1">您的姓名/暱稱</label>
+            <input type="text" id="custName" class="form-input" placeholder="例如：王小明">
+
+            <label class="block text-sm text-gray-600 mb-1">希望預約日期與時間</label>
+            <input type="datetime-local" id="reservationTime" class="form-input"  placeholder="例如：12月20日下午3:00">
+            <p class="text-xs text-red-500 mb-3">* 此為希望時段，實際時間請以回覆確認為準。</p>
+
+            <label class="block text-sm text-gray-600 mb-1">備註/想問的問題</label>
+            <textarea id="custNote" class="form-input" rows="2" placeholder="簡述您的問題..."></textarea>
+        </div>
+
+        <button class="action-btn" onclick="sendReservation()">送出預約申請</button>
+        <p class="text-xs text-center mt-2 text-gray-400">送出後請稍待多多老師確認回覆</p>
     </div>
 
-    <!-- Tab 3: 快速八字 (整合版) -->
+    <!-- Tab 3: 八字速查 (整合版) -->
     <div id="bazi" class="tab-content">
         <div class="card">
             <div class="card-title">
@@ -412,7 +444,7 @@
     </div>
 
     <script>
-        // ★★★ 請填入 LIFF ID ★★★
+        // ★★★ 請填入 LIFF ID (使用您代碼中的 ID) ★★★
         const YOUR_LIFF_ID = "2008538785-7DvjVKw5";
 
         // =======================
@@ -433,14 +465,11 @@
         });
 
         function switchTab(tabId) {
-            // 隱藏所有內容
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            // 顯示選中內容
             document.getElementById(tabId).classList.add('active');
             
-            // 更新導航狀態 (這裡簡單用索引對應，或根據onclick文字)
             const navItems = document.querySelectorAll('.nav-item');
             if(tabId === 'home') navItems[0].classList.add('active');
             if(tabId === 'pricing') navItems[1].classList.add('active');
@@ -463,20 +492,16 @@
                 document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
             } else {
-                // 如果點選任何項目，取消「不進行」的選取
                 if (noneBtn.classList.contains('selected')) {
                     noneBtn.classList.remove('selected');
                 }
 
                 if (item === '問到飽') {
-                    // 如果選問到飽
                     if (selectedZiwei.includes('問到飽')) {
-                        // 取消問到飽 -> 回到全空 (選取不進行)
                         selectedZiwei = [];
                         btn.classList.remove('selected');
                         noneBtn.classList.add('selected');
                     } else {
-                        // 選取問到飽 -> 清除其他一般項目
                         selectedZiwei = ['問到飽'];
                         document.querySelectorAll('#ziwei-options .check-btn').forEach(b => {
                             if (b !== btn && b !== noneBtn) b.classList.remove('selected');
@@ -484,9 +509,7 @@
                         btn.classList.add('selected');
                     }
                 } else {
-                    // 點選一般項目
                     if (selectedZiwei.includes('問到飽')) {
-                        // 如果原本是問到飽，移除問到飽，加入新項
                         selectedZiwei = [item];
                         document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
                         btn.classList.add('selected');
@@ -500,7 +523,6 @@
                         }
                     }
                     
-                    // 如果取消完所有項目，自動選回「不進行」
                     if (selectedZiwei.length === 0) {
                         noneBtn.classList.add('selected');
                     }
@@ -510,35 +532,35 @@
         }
 
         function calcTotal() {
-            // A. 紫微計算
             let ziweiPrice = 0;
             if (selectedZiwei.includes('問到飽')) {
                 ziweiPrice = 3000;
             } else if (selectedZiwei.length > 0) {
                 ziweiPrice = 1000 + (selectedZiwei.length - 1) * 400;
-                if (ziweiPrice > 3000) ziweiPrice = 3000; // 上限 3000
+                if (ziweiPrice > 3000) ziweiPrice = 3000;
             }
             document.getElementById('ziwei-price').innerText = ziweiPrice;
 
-            // B. 八字計算 (改為 Radio Button 邏輯)
             const baziOption = document.querySelector('input[name="bazi-option"]:checked');
             let baziPrice = (baziOption && baziOption.value === '1') ? 400 : 0;
 
-            // C. 卡牌計算
             const cardOption = document.querySelector('input[name="card-option"]:checked');
             let cardPrice = parseInt(cardOption.dataset.price || 0);
 
-            // 總計
             let total = ziweiPrice + baziPrice + cardPrice;
             document.getElementById('final-total').innerText = total;
         }
 
         function sendReservation() {
-            // 收集資料
             const baziOption = document.querySelector('input[name="bazi-option"]:checked');
             const cardOption = document.querySelector('input[name="card-option"]:checked');
             const cardName = cardOption.dataset.name;
             const total = document.getElementById('final-total').innerText;
+            
+            // 獲取預約資料
+            const custName = document.getElementById('custName').value.trim();
+            const reservationTime = document.getElementById('reservationTime').value;
+            const custNote = document.getElementById('custNote').value.trim();
 
             let details = "";
             if (selectedZiwei.length > 0) details += `🟣 紫微斗數：${selectedZiwei.join(', ')}\n`;
@@ -549,12 +571,26 @@
                 alert("請至少選擇一項服務喔！");
                 return;
             }
+            
+            // 新增防呆：檢查預約資料
+            if (!custName || !reservationTime) {
+                alert("請填寫姓名與希望預約的時間！");
+                return;
+            }
 
-            const msg = `【🔮 多多萬事屋預約單】\n\n` +
+            // 格式化時間顯示
+            const timeObj = new Date(reservationTime);
+            const timeStr = timeObj.toLocaleString('zh-TW', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+            const msg = `【🔮 多多萬事屋預約申請】\n\n` +
+                        `👤 姓名：${custName}\n` +
+                        `🗓️ 希望時段：${timeStr}\n` +
+                        `------------------\n` +
                         details +
                         `------------------\n` +
-                        `💰 預估金額：$${total}\n\n` +
-                        `稍後多多老師將與您確認內容與預約時間，謝謝！`;
+                        `💰 預估金額：$${total}\n` +
+                        `📝 備註：${custNote || '無'}\n\n` +
+                        `此為預約申請，請等待老師確認時段。`;
 
             if (liff.isInClient()) {
                 if (!liff.isLoggedIn()) {
@@ -637,7 +673,7 @@
         }
 
         function getTenGod(dm, target) {
-            // 修改1: 移除提早回傳，確保比肩/劫財也能正確判斷
+            // [修復]: 移除原本會導致比肩消失的判斷
             // if (dm === target) return ""; 
             
             const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
@@ -657,7 +693,7 @@
 
         function renderBranch(id, char, dm) {
             const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
-            // 修改2: 移除 substring(0,1)，顯示完整十神名稱
+            // [修復]: 移除 substring(0,1)，顯示全名
             const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g)})`).join(' ');
             document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
         }
