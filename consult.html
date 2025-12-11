@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>多多萬事屋｜命理諮詢</title>
     
+    <!-- 1. 核心函式庫 -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
@@ -14,18 +15,14 @@
     <style>
         /* --- 全域設定 --- */
         :root {
-            --bg-base: #fdfbf7; /* 米白宣紙底 */
-            --primary: #5D4037; /* 深棕主色 */
-            --accent-light: #FFECB3; /* 淺橘黃 */
-            --accent-pink: #FFCCBC; /* 淺粉橘 */
-            --active-tab: #FFE0B2; /* 選中頁籤 */
+            --bg-base: #fdfbf7;       /* 米白宣紙底 */
+            --primary: #5D4037;       /* 深棕主色 */
+            --accent-light: #FFECB3;  /* 淺橘黃 */
+            --accent-pink: #FFCCBC;   /* 淺粉橘 */
+            --active-tab: #FFE0B2;    /* 選中頁籤 */
             
             /* 五行色 */
-            --wood: #388E3C;
-            --fire: #D32F2F; 
-            --earth: #795548; 
-            --metal: #FBC02D; 
-            --water: #1976D2;
+            --wood: #388E3C; --fire: #D32F2F; --earth: #795548; --metal: #FBC02D; --water: #1976D2;
         }
 
         body {
@@ -139,8 +136,7 @@
         .column-header { font-size: 12px; color: #888; margin-bottom: 4px; }
         
         .char-container {
-            background: #fff;
-            border: 1px solid #ddd; border-radius: 6px;
+            background: #fff; border: 1px solid #ddd; border-radius: 6px;
             padding: 8px 2px; min-height: 80px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
@@ -149,7 +145,7 @@
         
         /* 藏干文字樣式優化，允許換行且縮小字級 */
         .hidden-stems { 
-            font-size: 9px;
+            font-size: 9px; 
             color: #999; 
             margin-top: 4px; 
             line-height: 1.4; 
@@ -195,6 +191,7 @@
 </head>
 <body>
 
+    <!-- 1. 固定導航列 -->
     <nav class="nav-bar">
         <div class="nav-item active" onclick="switchTab('home')">首頁</div>
         <div class="nav-item" onclick="switchTab('pricing')">諮詢價目 / 預約</div>
@@ -202,6 +199,9 @@
         <div class="nav-item" onclick="switchTab('courses')">線上課程</div>
     </nav>
 
+    <!-- 2. 分頁內容區 -->
+
+    <!-- Tab 1: 首頁 -->
     <div id="home" class="tab-content active">
         <div class="text-center mb-6 mt-4">
             <h1 class="text-2xl font-bold tracking-widest text-gray-800">多多萬事屋</h1>
@@ -221,6 +221,7 @@
                         <span class="text-sm text-gray-500">命盤解析、問題解惑</span>
                     </div>
                 </li>
+                <!-- 保留您的 a. 項目 -->
                 <li class="flex items-start">
                     <span class="font-bold mr-2 text-yellow-700">a.</span>
                     <div>
@@ -253,6 +254,7 @@
         </div>
     </div>
 
+    <!-- Tab 2: 價目表 (含計算與預約) -->
     <div id="pricing" class="tab-content">
         <div class="card">
             <div class="card-title">
@@ -330,6 +332,7 @@
             總預估金額：$<span id="final-total">0</span>
         </div>
 
+        <!-- 補回：預約資料填寫區 -->
         <div class="card" style="margin-top: 20px; background-color: #fff8e1; border: 2px solid #ffecb3;">
             <div class="card-title" style="color: #8d6e63; border-color: #d7ccc8;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
@@ -340,7 +343,7 @@
             <input type="text" id="custName" class="form-input" placeholder="例如：王小明">
 
             <label class="block text-sm text-gray-600 mb-1">希望預約日期與時間</label>
-            <input type="datetime-local" id="reservationTime" class="form-input">
+            <input type="datetime-local" id="reservationTime" class="form-input"  placeholder="例如：12月20日下午3:00">
             <p class="text-xs text-red-500 mb-3">* 此為希望時段，實際時間請以回覆確認為準。</p>
 
             <label class="block text-sm text-gray-600 mb-1">備註/想問的問題</label>
@@ -351,6 +354,7 @@
         <p class="text-xs text-center mt-2 text-gray-400">送出後請稍待多多老師確認回覆</p>
     </div>
 
+    <!-- Tab 3: 八字速查 (整合版) -->
     <div id="bazi" class="tab-content">
         <div class="card">
             <div class="card-title">
@@ -363,6 +367,7 @@
             </div>
             <button class="w-full bg-gray-700 text-white py-2 rounded-full mb-6 font-bold" onclick="calculateBazi()">開始排盤</button>
 
+            <!-- 結果顯示區 (預設隱藏) -->
             <div id="bazi-result" style="display:none;">
                 <div class="bazi-grid">
                     <div class="column-header">年柱</div>
@@ -370,23 +375,27 @@
                     <div class="column-header">日柱</div>
                     <div class="column-header">時柱</div>
 
+                    <!-- 天干 -->
                     <div id="year-gan" class="char-container"></div>
                     <div id="month-gan" class="char-container"></div>
                     <div id="day-gan" class="char-container day-master-box"></div>
                     <div id="time-gan" class="char-container"></div>
 
+                    <!-- 地支 -->
                     <div id="year-zhi" class="char-container"></div>
                     <div id="month-zhi" class="char-container"></div>
                     <div id="day-zhi" class="char-container"></div>
                     <div id="time-zhi" class="char-container"></div>
                 </div>
 
+                <!-- 五行圖表 -->
                 <div class="border p-3 rounded mb-4">
                     <h4 class="text-sm font-bold text-center mb-2">五行能量</h4>
                     <div style="height:150px"><canvas id="wuxingChart"></canvas></div>
                     <div id="wuxing-text" class="text-xs text-center mt-2 text-red-800"></div>
                 </div>
 
+                <!-- 性格 -->
                 <div class="bg-orange-50 p-3 rounded border-l-4 border-yellow-700">
                     <h4 class="font-bold text-yellow-900 mb-1"><span id="dm-label"></span>性格分析</h4>
                     <div id="dm-desc" class="text-sm text-gray-700 text-justify"></div>
@@ -395,6 +404,7 @@
         </div>
     </div>
 
+    <!-- Tab 4: 線上課程 -->
     <div id="courses" class="tab-content">
         <div class="card">
             <div class="card-title">
@@ -434,27 +444,30 @@
     </div>
 
     <script>
-        // ★★★ 請確認您的 LIFF ID ★★★
+        // ★★★ 請填入 LIFF ID (使用您代碼中的 ID) ★★★
         const YOUR_LIFF_ID = "2008538785-7DvjVKw5";
-        
+
         // =======================
         // 1. 初始化與頁籤切換
         // =======================
         document.addEventListener('DOMContentLoaded', function() {
             liff.init({ liffId: YOUR_LIFF_ID })
                 .then(() => {
+                    // 重要：檢查並自動登入，解決 access_token 錯誤
                     if (!liff.isLoggedIn()) {
                         liff.login();
                     }
                 })
                 .catch(err => {
                     console.error(err);
+                    // alert('LIFF 初始化失敗：' + err); // 測試時可開啟
                 });
         });
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
             document.getElementById(tabId).classList.add('active');
             
             const navItems = document.querySelectorAll('.nav-item');
@@ -470,8 +483,10 @@
         // 2. 價目表計算邏輯
         // =======================
         let selectedZiwei = [];
+
         function toggleZiwei(btn, item) {
             const noneBtn = document.getElementById('ziwei-none');
+            
             if (item === 'none') {
                 selectedZiwei = [];
                 document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
@@ -525,6 +540,7 @@
                 if (ziweiPrice > 3000) ziweiPrice = 3000;
             }
             document.getElementById('ziwei-price').innerText = ziweiPrice;
+
             const baziOption = document.querySelector('input[name="bazi-option"]:checked');
             let baziPrice = (baziOption && baziOption.value === '1') ? 400 : 0;
 
@@ -535,140 +551,62 @@
             document.getElementById('final-total').innerText = total;
         }
 
-        // ★★★ 核心修改：發送 Flex Message (已修正錯誤) ★★★
         function sendReservation() {
             const baziOption = document.querySelector('input[name="bazi-option"]:checked');
             const cardOption = document.querySelector('input[name="card-option"]:checked');
             const cardName = cardOption.dataset.name;
             const total = document.getElementById('final-total').innerText;
+            
+            // 獲取預約資料
             const custName = document.getElementById('custName').value.trim();
             const reservationTime = document.getElementById('reservationTime').value;
             const custNote = document.getElementById('custNote').value.trim();
 
-            // 防呆
-            let items = [];
-            if (selectedZiwei.length > 0) items.push({ name: "紫微斗數", desc: selectedZiwei.join(', ') });
-            if (baziOption && baziOption.value === '1') items.push({ name: "八字解析", desc: "單次解析" });
-            if (cardName !== "無") items.push({ name: "卡牌占卜", desc: cardName });
+            let details = "";
+            if (selectedZiwei.length > 0) details += `🟣 紫微斗數：${selectedZiwei.join(', ')}\n`;
+            if (baziOption && baziOption.value === '1') details += `🟡 八字解析：單次\n`;
+            if (cardName !== "無") details += `🃏 卡牌占卜：${cardName}\n`;
 
-            if (items.length === 0) {
+            if (details === "") {
                 alert("請至少選擇一項服務喔！");
                 return;
             }
+            
+            // 新增防呆：檢查預約資料
             if (!custName || !reservationTime) {
                 alert("請填寫姓名與希望預約的時間！");
                 return;
             }
 
-            // 時間格式化
+            // 格式化時間顯示
             const timeObj = new Date(reservationTime);
-            const dateStr = timeObj.toLocaleString('zh-TW', { month: '2-digit', day: '2-digit', weekday: 'short' });
-            const timeStr = timeObj.toLocaleString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            const timeStr = timeObj.toLocaleString('zh-TW', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
-            // 產生 Flex
-            const flexMessage = createReservationFlex(custName, dateStr, timeStr, items, total, custNote);
+            const msg = `【🔮 多多萬事屋預約申請】\n\n` +
+                        `👤 姓名：${custName}\n` +
+                        `🗓️ 希望時段：${timeStr}\n` +
+                        `------------------\n` +
+                        details +
+                        `------------------\n` +
+                        `💰 預估金額：$${total}\n` +
+                        `📝 備註：${custNote || '無'}\n\n` +
+                        `此為預約申請，請等待老師確認時段。`;
 
-            // 發送
             if (liff.isInClient()) {
-                liff.sendMessages([flexMessage])
-                    .then(() => {
-                        alert('預約申請已送出！請等待老師確認。');
-                        liff.closeWindow();
-                    })
-                    .catch(err => {
-                        alert('發送失敗：' + JSON.stringify(err));
-                    });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return;
+                }
+                liff.sendMessages([{ type: 'text', text: msg }])
+                    .then(() => liff.closeWindow())
+                    .catch(err => alert('發送失敗：' + err));
             } else {
-                console.log(flexMessage);
-                alert("請在 LINE App 中操作以發送預約單。");
+                alert("預覽訊息：\n\n" + msg);
             }
         }
 
-        // ★★★ 新增：產生 Flex Message (修正 align 錯誤) ★★★
-        function createReservationFlex(name, date, time, items, total, note) {
-            const itemRows = items.map(item => ({
-                type: "box",
-                layout: "horizontal",
-                margin: "md",
-                contents: [
-                    { type: "text", text: String(item.name), size: "sm", color: "#555555", flex: 3 },
-                    { type: "text", text: String(item.desc), size: "sm", color: "#111111", align: "end", flex: 7, wrap: true }
-                ]
-            }));
-
-            return {
-                type: "flex",
-                altText: "【多多萬事屋】有一筆新的預約申請",
-                contents: {
-                    type: "bubble",
-                    styles: {
-                        header: { backgroundColor: "#5D4037" },
-                        body: { backgroundColor: "#FFFBF0" }
-                    },
-                    header: {
-                        type: "box",
-                        layout: "vertical",
-                        contents: [
-                            { type: "text", text: "預約申請單", weight: "bold", size: "xl", color: "#FFFFFF" },
-                            { type: "text", text: "待老師確認中", size: "xs", color: "#FFECB3", margin: "sm" }
-                        ]
-                    },
-                    body: {
-                        type: "box",
-                        layout: "vertical",
-                        contents: [
-                            // 姓名與時間區塊
-                            {
-                                type: "box", layout: "vertical",
-                                contents: [
-                                    { type: "text", text: "申請人", size: "xs", color: "#888888" },
-                                    { type: "text", text: String(name), size: "lg", weight: "bold", color: "#5D4037" },
-                                    { type: "separator", margin: "md" },
-                                    { type: "text", text: "希望預約時間", size: "xs", color: "#888888", margin: "md" },
-                                    {
-                                        // 修正處：移除了 box 上的 align: "center"，改用 justifyContent
-                                        type: "box", layout: "horizontal", justifyContent: "center", margin: "sm",
-                                        contents: [
-                                            { type: "text", text: String(date), size: "xl", weight: "bold", color: "#D32F2F", align: "end", flex: 1 },
-                                            { type: "text", text: String(time), size: "xl", weight: "bold", color: "#333333", margin: "md", flex: 1 }
-                                        ]
-                                    }
-                                ]
-                            },
-                            { type: "separator", margin: "lg" },
-                            // 服務項目
-                            { type: "text", text: "服務項目", size: "xs", color: "#888888", margin: "lg" },
-                            ...itemRows,
-                            { type: "separator", margin: "lg" },
-                            // 金額
-                            {
-                                type: "box", layout: "horizontal", margin: "lg",
-                                contents: [
-                                    { type: "text", text: "預估金額", size: "sm", color: "#555555" },
-                                    { type: "text", text: "$" + String(total), size: "lg", weight: "bold", color: "#D32F2F", align: "end" }
-                                ]
-                            },
-                            // 備註
-                            {
-                                type: "box", layout: "vertical", margin: "lg", spacing: "sm",
-                                contents: [
-                                    { type: "text", text: "備註：", size: "xs", color: "#888888" },
-                                    { type: "text", text: note || "無", size: "sm", color: "#555555", wrap: true }
-                                ]
-                            }
-                        ]
-                    },
-                    footer: {
-                        type: "box", layout: "vertical", contents: [
-                            { type: "text", text: "此訊息由系統自動產生", size: "xxs", color: "#aaaaaa", align: "center" }
-                        ]
-                    }
-                }
-            };
-        }
-
         // =======================
-        // 3. 八字計算邏輯 (保持原樣)
+        // 3. 八字計算邏輯 (Pro+ 整合版)
         // =======================
         const WUXING = { "甲":"木", "乙":"木", "寅":"木", "卯":"木", "丙":"火", "丁":"火", "巳":"火", "午":"火", "戊":"土", "己":"土", "辰":"土", "戌":"土", "丑":"土", "未":"土", "庚":"金", "辛":"金", "申":"金", "酉":"金", "壬":"水", "癸":"水", "亥":"水", "子":"水" };
         const YINYANG = { "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0 };
@@ -691,11 +629,10 @@
                 const Gan = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getDayGan(), bazi.getTimeGan()];
                 const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
                 const DM = Gan[2];
+
                 // 渲染
-                renderStem("year-gan", Gan[0], DM);
-                renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
-                renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM);
-                renderBranch("time-zhi", Zhi[3], DM);
+                renderStem("year-gan", Gan[0], DM); renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
+                renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM); renderBranch("time-zhi", Zhi[3], DM);
 
                 // 性格
                 document.getElementById('dm-label').innerText = `【${DM}】`;
@@ -717,7 +654,8 @@
                     },
                     options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
                 });
-                // 建議文字
+
+                // 您的專屬建議文字邏輯
                 let summary = [];
                 if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
                 if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
@@ -726,6 +664,7 @@
                 if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
                 let maxVal = Math.max(...dataVals);
                 if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
+                
                 document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
 
                 document.getElementById('bazi-result').style.display = 'block';
@@ -734,6 +673,9 @@
         }
 
         function getTenGod(dm, target) {
+            // [修復]: 移除原本會導致比肩消失的判斷
+            // if (dm === target) return ""; 
+            
             const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
             const same = YINYANG[dm] === YINYANG[target];
             const gods = [
@@ -743,6 +685,7 @@
         }
 
         function renderStem(id, char, dm, isDay=false) {
+            // 修改3: 天干如果是日主，保持空白(或顯示日主)，其他的顯示十神
             const god = isDay ? "" : getTenGod(dm, char);
             const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
             document.getElementById(id).innerHTML = `<div class="ten-god-top">${god}</div><div class="char-main ${color}">${char}</div>`;
@@ -750,9 +693,11 @@
 
         function renderBranch(id, char, dm) {
             const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
+            // [修復]: 移除 substring(0,1)，顯示全名
             const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g)})`).join(' ');
             document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
         }
+
     </script>
 </body>
 </html>
