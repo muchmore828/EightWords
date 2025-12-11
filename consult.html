@@ -442,262 +442,325 @@
             </div>
         </div>
     </div>
-
     <script>
-        // ★★★ 請填入 LIFF ID (使用您代碼中的 ID) ★★★
-        const YOUR_LIFF_ID = "2008538785-7DvjVKw5";
+    // ★★★ 請填入 LIFF ID ★★★
+    const YOUR_LIFF_ID = "2008538785-7DvjVKw5";
 
-        // =======================
-        // 1. 初始化與頁籤切換
-        // =======================
-        document.addEventListener('DOMContentLoaded', function() {
-            liff.init({ liffId: YOUR_LIFF_ID })
-                .then(() => {
-                    // 重要：檢查並自動登入，解決 access_token 錯誤
-                    if (!liff.isLoggedIn()) {
-                        liff.login();
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    // alert('LIFF 初始化失敗：' + err); // 測試時可開啟
-                });
-        });
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            
-            const navItems = document.querySelectorAll('.nav-item');
-            if(tabId === 'home') navItems[0].classList.add('active');
-            if(tabId === 'pricing') navItems[1].classList.add('active');
-            if(tabId === 'bazi') navItems[2].classList.add('active');
-            if(tabId === 'courses') navItems[3].classList.add('active');
-            
-            window.scrollTo(0, 0);
-        }
-
-        // =======================
-        // 2. 價目表計算邏輯
-        // =======================
-        let selectedZiwei = [];
-
-        function toggleZiwei(btn, item) {
-            const noneBtn = document.getElementById('ziwei-none');
-            
-            if (item === 'none') {
-                selectedZiwei = [];
-                document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-            } else {
-                if (noneBtn.classList.contains('selected')) {
-                    noneBtn.classList.remove('selected');
-                }
-
-                if (item === '問到飽') {
-                    if (selectedZiwei.includes('問到飽')) {
-                        selectedZiwei = [];
-                        btn.classList.remove('selected');
-                        noneBtn.classList.add('selected');
-                    } else {
-                        selectedZiwei = ['問到飽'];
-                        document.querySelectorAll('#ziwei-options .check-btn').forEach(b => {
-                            if (b !== btn && b !== noneBtn) b.classList.remove('selected');
-                        });
-                        btn.classList.add('selected');
-                    }
-                } else {
-                    if (selectedZiwei.includes('問到飽')) {
-                        selectedZiwei = [item];
-                        document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
-                        btn.classList.add('selected');
-                    } else {
-                        if (selectedZiwei.includes(item)) {
-                            selectedZiwei = selectedZiwei.filter(i => i !== item);
-                            btn.classList.remove('selected');
-                        } else {
-                            selectedZiwei.push(item);
-                            btn.classList.add('selected');
-                        }
-                    }
-                    
-                    if (selectedZiwei.length === 0) {
-                        noneBtn.classList.add('selected');
-                    }
-                }
-            }
-            calcTotal();
-        }
-
-        function calcTotal() {
-            let ziweiPrice = 0;
-            if (selectedZiwei.includes('問到飽')) {
-                ziweiPrice = 3000;
-            } else if (selectedZiwei.length > 0) {
-                ziweiPrice = 1000 + (selectedZiwei.length - 1) * 400;
-                if (ziweiPrice > 3000) ziweiPrice = 3000;
-            }
-            document.getElementById('ziwei-price').innerText = ziweiPrice;
-
-            const baziOption = document.querySelector('input[name="bazi-option"]:checked');
-            let baziPrice = (baziOption && baziOption.value === '1') ? 400 : 0;
-
-            const cardOption = document.querySelector('input[name="card-option"]:checked');
-            let cardPrice = parseInt(cardOption.dataset.price || 0);
-
-            let total = ziweiPrice + baziPrice + cardPrice;
-            document.getElementById('final-total').innerText = total;
-        }
-
-        function sendReservation() {
-            const baziOption = document.querySelector('input[name="bazi-option"]:checked');
-            const cardOption = document.querySelector('input[name="card-option"]:checked');
-            const cardName = cardOption.dataset.name;
-            const total = document.getElementById('final-total').innerText;
-            
-            // 獲取預約資料
-            const custName = document.getElementById('custName').value.trim();
-            const reservationTime = document.getElementById('reservationTime').value;
-            const custNote = document.getElementById('custNote').value.trim();
-
-            let details = "";
-            if (selectedZiwei.length > 0) details += `🟣 紫微斗數：${selectedZiwei.join(', ')}\n`;
-            if (baziOption && baziOption.value === '1') details += `🟡 八字解析：單次\n`;
-            if (cardName !== "無") details += `🃏 卡牌占卜：${cardName}\n`;
-
-            if (details === "") {
-                alert("請至少選擇一項服務喔！");
-                return;
-            }
-            
-            // 新增防呆：檢查預約資料
-            if (!custName || !reservationTime) {
-                alert("請填寫姓名與希望預約的時間！");
-                return;
-            }
-
-            // 格式化時間顯示
-            const timeObj = new Date(reservationTime);
-            const timeStr = timeObj.toLocaleString('zh-TW', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-
-            const msg = `【🔮 多多萬事屋預約申請】\n\n` +
-                        `👤 姓名：${custName}\n` +
-                        `🗓️ 希望時段：${timeStr}\n` +
-                        `------------------\n` +
-                        details +
-                        `------------------\n` +
-                        `💰 預估金額：$${total}\n` +
-                        `📝 備註：${custNote || '無'}\n\n` +
-                        `此為預約申請，請等待老師確認時段。`;
-
-            if (liff.isInClient()) {
+    // =======================
+    // 1. 初始化與頁籤切換
+    // =======================
+    document.addEventListener('DOMContentLoaded', function() {
+        liff.init({ liffId: YOUR_LIFF_ID })
+            .then(() => {
                 if (!liff.isLoggedIn()) {
                     liff.login();
-                    return;
                 }
-                liff.sendMessages([{ type: 'text', text: msg }])
-                    .then(() => liff.closeWindow())
-                    .catch(err => alert('發送失敗：' + err));
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        
+        const navItems = document.querySelectorAll('.nav-item');
+        if(tabId === 'home') navItems[0].classList.add('active');
+        if(tabId === 'pricing') navItems[1].classList.add('active');
+        if(tabId === 'bazi') navItems[2].classList.add('active');
+        if(tabId === 'courses') navItems[3].classList.add('active');
+        
+        window.scrollTo(0, 0);
+    }
+
+    // =======================
+    // 2. 價目表計算邏輯
+    // =======================
+    let selectedZiwei = [];
+    function toggleZiwei(btn, item) {
+        const noneBtn = document.getElementById('ziwei-none');
+        if (item === 'none') {
+            selectedZiwei = [];
+            document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        } else {
+            if (noneBtn.classList.contains('selected')) {
+                noneBtn.classList.remove('selected');
+            }
+
+            if (item === '問到飽') {
+                if (selectedZiwei.includes('問到飽')) {
+                    selectedZiwei = [];
+                    btn.classList.remove('selected');
+                    noneBtn.classList.add('selected');
+                } else {
+                    selectedZiwei = ['問到飽'];
+                    document.querySelectorAll('#ziwei-options .check-btn').forEach(b => {
+                        if (b !== btn && b !== noneBtn) b.classList.remove('selected');
+                    });
+                    btn.classList.add('selected');
+                }
             } else {
-                alert("預覽訊息：\n\n" + msg);
+                if (selectedZiwei.includes('問到飽')) {
+                    selectedZiwei = [item];
+                    document.querySelectorAll('#ziwei-options .check-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                } else {
+                    if (selectedZiwei.includes(item)) {
+                        selectedZiwei = selectedZiwei.filter(i => i !== item);
+                        btn.classList.remove('selected');
+                    } else {
+                        selectedZiwei.push(item);
+                        btn.classList.add('selected');
+                    }
+                }
+                
+                if (selectedZiwei.length === 0) {
+                    noneBtn.classList.add('selected');
+                }
             }
         }
+        calcTotal();
+    }
 
-        // =======================
-        // 3. 八字計算邏輯 (Pro+ 整合版)
-        // =======================
-        const WUXING = { "甲":"木", "乙":"木", "寅":"木", "卯":"木", "丙":"火", "丁":"火", "巳":"火", "午":"火", "戊":"土", "己":"土", "辰":"土", "戌":"土", "丑":"土", "未":"土", "庚":"金", "辛":"金", "申":"金", "酉":"金", "壬":"水", "癸":"水", "亥":"水", "子":"水" };
-        const YINYANG = { "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0 };
-        const ELEMENTS = ["木", "火", "土", "金", "水"];
-        const ZHI_CANG_GAN = { "子":["癸"], "丑":["己","癸","辛"], "寅":["甲","丙","戊"], "卯":["乙"], "辰":["戊","乙","癸"], "巳":["丙","庚","戊"], "午":["丁","己"], "未":["己","丁","乙"], "申":["庚","壬","戊"], "酉":["辛"], "戌":["戊","辛","丁"], "亥":["壬","甲"] };
-        const DM_TRAITS = { "甲":"甲木參天，剛毅正直，有責任感，領導風範。", "乙":"乙木如藤，柔順堅韌，心思細膩，善隨機應變。", "丙":"丙火如陽，熱情開朗，不拘小節，情緒來去快。", "丁":"丁火如燭，溫和細膩，洞察力強，富有奉獻精神。", "戊":"戊土如山，沈穩厚重，講信用，包容力強。", "己":"己土如園，柔和多才，通情達理，善溝通。", "庚":"庚金如鐵，剛毅果決，講義氣，執行力強。", "辛":"辛金如珠，溫潤秀氣，自尊強，外柔內剛。", "壬":"壬水如海，聰明機智，寬宏大量，喜自由。", "癸":"癸水如露，內斂平靜，溫柔細心，以柔克剛。" };
-        let myChart = null;
+    function calcTotal() {
+        let ziweiPrice = 0;
+        if (selectedZiwei.includes('問到飽')) {
+            ziweiPrice = 3000;
+        } else if (selectedZiwei.length > 0) {
+            ziweiPrice = 1000 + (selectedZiwei.length - 1) * 400;
+            if (ziweiPrice > 3000) ziweiPrice = 3000;
+        }
+        document.getElementById('ziwei-price').innerText = ziweiPrice;
+        const baziOption = document.querySelector('input[name="bazi-option"]:checked');
+        let baziPrice = (baziOption && baziOption.value === '1') ? 400 : 0;
 
-        function calculateBazi() {
-            try {
-                if (typeof Solar === 'undefined') { alert("系統載入中..."); return; }
-                const input = document.getElementById('birthDate').value;
-                if (!input) { alert("請選擇生辰！"); return; }
+        const cardOption = document.querySelector('input[name="card-option"]:checked');
+        let cardPrice = parseInt(cardOption.dataset.price || 0);
 
-                const dateObj = new Date(input);
-                const solar = Solar.fromDate(dateObj);
-                const lunar = solar.getLunar();
-                const bazi = lunar.getEightChar();
+        let total = ziweiPrice + baziPrice + cardPrice;
+        document.getElementById('final-total').innerText = total;
+    }
 
-                const Gan = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getDayGan(), bazi.getTimeGan()];
-                const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
-                const DM = Gan[2];
+    // ★★★ 核心修改：發送 Flex Message ★★★
+    function sendReservation() {
+        // 1. 蒐集資料
+        const baziOption = document.querySelector('input[name="bazi-option"]:checked');
+        const cardOption = document.querySelector('input[name="card-option"]:checked');
+        const cardName = cardOption.dataset.name;
+        const total = document.getElementById('final-total').innerText;
+        const custName = document.getElementById('custName').value.trim();
+        const reservationTime = document.getElementById('reservationTime').value;
+        const custNote = document.getElementById('custNote').value.trim();
 
-                // 渲染
-                renderStem("year-gan", Gan[0], DM); renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
-                renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM); renderBranch("time-zhi", Zhi[3], DM);
+        // 2. 防呆檢查
+        let items = [];
+        if (selectedZiwei.length > 0) items.push({ name: "紫微斗數", desc: selectedZiwei.join(', ') });
+        if (baziOption && baziOption.value === '1') items.push({ name: "八字解析", desc: "單次解析" });
+        if (cardName !== "無") items.push({ name: "卡牌占卜", desc: cardName });
 
-                // 性格
-                document.getElementById('dm-label').innerText = `【${DM}】`;
-                document.getElementById('dm-desc').innerText = DM_TRAITS[DM];
-
-                // 五行統計與建議
-                const counts = { "金":0, "木":0, "水":0, "火":0, "土":0 };
-                [...Gan, ...Zhi].forEach(c => counts[WUXING[c]]++);
-                
-                // 畫圖
-                const ctx = document.getElementById('wuxingChart').getContext('2d');
-                if (myChart) myChart.destroy();
-                const dataVals = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
-                myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['木','火','土','金','水'],
-                        datasets: [{ label: '數量', data: dataVals, backgroundColor: ['#388E3C','#D32F2F','#795548','#FBC02D','#1976D2'] }]
-                    },
-                    options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
-                });
-
-                // 您的專屬建議文字邏輯
-                let summary = [];
-                if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
-                if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
-                if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
-                if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
-                if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
-                let maxVal = Math.max(...dataVals);
-                if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
-                
-                document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
-
-                document.getElementById('bazi-result').style.display = 'block';
-
-            } catch (e) { alert("錯誤：" + e.message); }
+        if (items.length === 0) {
+            alert("請至少選擇一項服務喔！");
+            return;
+        }
+        if (!custName || !reservationTime) {
+            alert("請填寫姓名與希望預約的時間！");
+            return;
         }
 
-        function getTenGod(dm, target) {
-            // [修復]: 移除原本會導致比肩消失的判斷
-            // if (dm === target) return ""; 
+        // 3. 時間格式化
+        const timeObj = new Date(reservationTime);
+        const dateStr = timeObj.toLocaleString('zh-TW', { month: '2-digit', day: '2-digit', weekday: 'short' });
+        const timeStr = timeObj.toLocaleString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit' });
+
+        // 4. 產生 Flex Message JSON
+        const flexMessage = createReservationFlex(custName, dateStr, timeStr, items, total, custNote);
+
+        // 5. 發送
+        if (liff.isInClient()) {
+            liff.sendMessages([flexMessage])
+                .then(() => {
+                    alert('預約申請已送出！請等待老師確認。');
+                    liff.closeWindow();
+                })
+                .catch(err => alert('發送失敗：' + err));
+        } else {
+            console.log(flexMessage);
+            alert("此功能需在 LINE App 內執行才能發送 Flex Message。");
+        }
+    }
+
+    // ★★★ 新增：產生 Flex Message 的工廠函式 ★★★
+    function createReservationFlex(name, date, time, items, total, note) {
+        // 動態產生項目列表
+        const itemRows = items.map(item => ({
+            type: "box",
+            layout: "horizontal",
+            margin: "md",
+            contents: [
+                { type: "text", text: item.name, size: "sm", color: "#555555", flex: 3 },
+                { type: "text", text: item.desc, size: "sm", color: "#111111", align: "end", flex: 7, wrap: true }
+            ]
+        }));
+
+        return {
+            type: "flex",
+            altText: "【多多萬事屋】有一筆新的預約申請",
+            contents: {
+                type: "bubble",
+                styles: {
+                    header: { backgroundColor: "#5D4037" },
+                    body: { backgroundColor: "#FFFBF0" }
+                },
+                header: {
+                    type: "box",
+                    layout: "vertical",
+                    contents: [
+                        { type: "text", text: "預約申請單", weight: "bold", size: "xl", color: "#FFFFFF" },
+                        { type: "text", text: "待老師確認中", size: "xs", color: "#FFECB3", margin: "sm" }
+                    ]
+                },
+                body: {
+                    type: "box",
+                    layout: "vertical",
+                    contents: [
+                        // 姓名與時間區塊
+                        {
+                            type: "box", layout: "vertical",
+                            contents: [
+                                { type: "text", text: "申請人", size: "xs", color: "#888888" },
+                                { type: "text", text: name, size: "lg", weight: "bold", color: "#5D4037" },
+                                { type: "separator", margin: "md" },
+                                { type: "text", text: "希望預約時間", size: "xs", color: "#888888", margin: "md" },
+                                {
+                                    type: "box", layout: "horizontal", align: "center", margin: "sm",
+                                    contents: [
+                                        { type: "text", text: date, size: "xl", weight: "bold", color: "#D32F2F" },
+                                        { type: "text", text: time, size: "xl", weight: "bold", color: "#333333", margin: "md" }
+                                    ]
+                                }
+                            ]
+                        },
+                        { type: "separator", margin: "lg" },
+                        // 服務項目區塊
+                        { type: "text", text: "服務項目", size: "xs", color: "#888888", margin: "lg" },
+                        ...itemRows,
+                        { type: "separator", margin: "lg" },
+                        // 金額與備註
+                        {
+                            type: "box", layout: "horizontal", margin: "lg",
+                            contents: [
+                                { type: "text", text: "預估金額", size: "sm", color: "#555555" },
+                                { type: "text", text: "$" + total, size: "lg", weight: "bold", color: "#D32F2F", align: "end" }
+                            ]
+                        },
+                        {
+                            type: "box", layout: "vertical", margin: "lg", spacing: "sm",
+                            contents: [
+                                { type: "text", text: "備註：", size: "xs", color: "#888888" },
+                                { type: "text", text: note || "無", size: "sm", color: "#555555", wrap: true }
+                            ]
+                        }
+                    ]
+                },
+                footer: {
+                    type: "box", layout: "vertical", contents: [
+                        { type: "text", text: "此訊息由系統自動產生", size: "xxs", color: "#aaaaaa", align: "center" }
+                    ]
+                }
+            }
+        };
+    }
+
+    // =======================
+    // 3. 八字計算邏輯 (保持原樣)
+    // =======================
+    const WUXING = { "甲":"木", "乙":"木", "寅":"木", "卯":"木", "丙":"火", "丁":"火", "巳":"火", "午":"火", "戊":"土", "己":"土", "辰":"土", "戌":"土", "丑":"土", "未":"土", "庚":"金", "辛":"金", "申":"金", "酉":"金", "壬":"水", "癸":"水", "亥":"水", "子":"水" };
+    const YINYANG = { "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0 };
+    const ELEMENTS = ["木", "火", "土", "金", "水"];
+    const ZHI_CANG_GAN = { "子":["癸"], "丑":["己","癸","辛"], "寅":["甲","丙","戊"], "卯":["乙"], "辰":["戊","乙","癸"], "巳":["丙","庚","戊"], "午":["丁","己"], "未":["己","丁","乙"], "申":["庚","壬","戊"], "酉":["辛"], "戌":["戊","辛","丁"], "亥":["壬","甲"] };
+    const DM_TRAITS = { "甲":"甲木參天，剛毅正直，有責任感，領導風範。", "乙":"乙木如藤，柔順堅韌，心思細膩，善隨機應變。", "丙":"丙火如陽，熱情開朗，不拘小節，情緒來去快。", "丁":"丁火如燭，溫和細膩，洞察力強，富有奉獻精神。", "戊":"戊土如山，沈穩厚重，講信用，包容力強。", "己":"己土如園，柔和多才，通情達理，善溝通。", "庚":"庚金如鐵，剛毅果決，講義氣，執行力強。", "辛":"辛金如珠，溫潤秀氣，自尊強，外柔內剛。", "壬":"壬水如海，聰明機智，寬宏大量，喜自由。", "癸":"癸水如露，內斂平靜，溫柔細心，以柔克剛。" };
+    let myChart = null;
+
+    function calculateBazi() {
+        try {
+            if (typeof Solar === 'undefined') { alert("系統載入中..."); return; }
+            const input = document.getElementById('birthDate').value;
+            if (!input) { alert("請選擇生辰！"); return; }
+
+            const dateObj = new Date(input);
+            const solar = Solar.fromDate(dateObj);
+            const lunar = solar.getLunar();
+            const bazi = lunar.getEightChar();
+
+            const Gan = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getDayGan(), bazi.getTimeGan()];
+            const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
+            const DM = Gan[2];
+            // 渲染
+            renderStem("year-gan", Gan[0], DM);
+            renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
+            renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM);
+            renderBranch("time-zhi", Zhi[3], DM);
+
+            // 性格
+            document.getElementById('dm-label').innerText = `【${DM}】`;
+            document.getElementById('dm-desc').innerText = DM_TRAITS[DM];
+
+            // 五行統計與建議
+            const counts = { "金":0, "木":0, "水":0, "火":0, "土":0 };
+            [...Gan, ...Zhi].forEach(c => counts[WUXING[c]]++);
             
-            const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
-            const same = YINYANG[dm] === YINYANG[target];
-            const gods = [
-                same?"比肩":"劫財", same?"食神":"傷官", same?"偏財":"正財", same?"七殺":"正官", same?"偏印":"正印"
-            ];
-            return gods[relation];
-        }
+            // 畫圖
+            const ctx = document.getElementById('wuxingChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            const dataVals = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['木','火','土','金','水'],
+                    datasets: [{ label: '數量', data: dataVals, backgroundColor: ['#388E3C','#D32F2F','#795548','#FBC02D','#1976D2'] }]
+                },
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }, plugins: { legend: { display: false } } }
+            });
+            // 建議文字
+            let summary = [];
+            if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
+            if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
+            if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
+            if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
+            if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
+            let maxVal = Math.max(...dataVals);
+            if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
+            document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
 
-        function renderStem(id, char, dm, isDay=false) {
-            // 修改3: 天干如果是日主，保持空白(或顯示日主)，其他的顯示十神
-            const god = isDay ? "" : getTenGod(dm, char);
-            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
-            document.getElementById(id).innerHTML = `<div class="ten-god-top">${god}</div><div class="char-main ${color}">${char}</div>`;
-        }
+            document.getElementById('bazi-result').style.display = 'block';
 
-        function renderBranch(id, char, dm) {
-            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
-            // [修復]: 移除 substring(0,1)，顯示全名
-            const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g)})`).join(' ');
-            document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
-        }
+        } catch (e) { alert("錯誤：" + e.message); }
+    }
 
+    function getTenGod(dm, target) {
+        const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
+        const same = YINYANG[dm] === YINYANG[target];
+        const gods = [
+            same?"比肩":"劫財", same?"食神":"傷官", same?"偏財":"正財", same?"七殺":"正官", same?"偏印":"正印"
+        ];
+        return gods[relation];
+    }
+
+    function renderStem(id, char, dm, isDay=false) {
+        const god = isDay ? "" : getTenGod(dm, char);
+        const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
+        document.getElementById(id).innerHTML = `<div class="ten-god-top">${god}</div><div class="char-main ${color}">${char}</div>`;
+    }
+
+    function renderBranch(id, char, dm) {
+        const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
+        const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g)})`).join(' ');
+        document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
+    }
     </script>
+    
 </body>
 </html>
