@@ -570,7 +570,20 @@
                     options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
 
+                // 您的專屬建議文字邏輯
+                let summary = [];
+                if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
+                if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
+                if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
+                if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
+                if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
+                let maxVal = Math.max(...dataVals);
+                if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
+                
+                document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
+
                 document.getElementById('bazi-result').style.display = 'block';
+
             } catch (e) { alert("錯誤：" + e.message); }
         }
 
