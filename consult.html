@@ -167,6 +167,8 @@
             box-shadow: 0 4px 10px rgba(93, 64, 55, 0.3);
             transition: transform 0.1s;
         }
+        .action-btn:active { transform: scale(0.98); }
+        
         .form-input {
             width: 100%;
             padding: 10px;
@@ -539,6 +541,7 @@
 
         function calculateBazi() {
             try {
+                if (typeof Solar === 'undefined') { alert("系統載入中..."); return; }
                 const input = document.getElementById('birthDate').value;
                 if (!input) { alert("請選擇生辰！"); return; }
                 const dateObj = new Date(input);
@@ -561,6 +564,7 @@
                 
                 const ctx = document.getElementById('wuxingChart').getContext('2d');
                 if (myChart) myChart.destroy();
+                const dataVals = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
