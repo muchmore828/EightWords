@@ -221,14 +221,6 @@
                         <span class="text-sm text-gray-500">命盤解析、問題解惑</span>
                     </div>
                 </li>
-                <!-- 保留您的 a. 項目 -->
-                <li class="flex items-start">
-                    <span class="font-bold mr-2 text-yellow-700">a.</span>
-                    <div>
-                        <strong class="block text-gray-800">紫微斗數流年各月運勢分析</strong>
-                        <span class="text-sm text-gray-500">結合本命、大運、小限、流年、流月五盤合一，搭配八字運勢流轉<br>**僅於中秋至春節期間服務，詳見公告**</span>
-                    </div>
-                </li>
                 <li class="flex items-start">
                     <span class="font-bold mr-2 text-yellow-700">B.</span>
                     <div>
@@ -262,10 +254,11 @@
                 A. 紫微斗數
             </div>
             <p class="text-sm text-gray-500 mb-3">
-                基礎費用 $1000 (含一項問題)。<br>每加一項 +$400。<br>上限 $3000 (問到飽)。
+                基礎命盤 $600 (首次諮詢定盤，概述一生設定)。<br>每個問題 +$600。(從十年、流年直面問題)。
             </p>
             <div class="option-group" id="ziwei-options">
                 <div class="check-btn selected" id="ziwei-none" onclick="toggleZiwei(this, 'none')">不進行諮詢</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '基礎命盤')">基礎命盤</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '工作')">工作</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '感情')">感情</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '財運')">財運</div>
@@ -273,7 +266,6 @@
                 <div class="check-btn" onclick="toggleZiwei(this, '家庭')">家庭</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '流年')">流年</div>
                 <div class="check-btn" onclick="toggleZiwei(this, '其他')">其他</div>
-                <div class="check-btn w-full text-center" style="border-color: #8B0000; color:#8B0000" onclick="toggleZiwei(this, '問到飽')">∞ 問到飽 (全選)</div>
             </div>
             <div class="text-right text-gray-600 text-sm">紫微小計：$<span id="ziwei-price">0</span></div>
         </div>
@@ -286,16 +278,14 @@
             <p class="text-sm text-gray-500 mb-3">
                 原局解析、喜用分析、大運流年流月運勢。
             </p>
-            <div class="space-y-2">
-                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="bazi-option" value="0" checked onchange="calcTotal()" class="mr-3">
-                    <span class="text-gray-400">不進行解析</span>
-                </label>
-                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="bazi-option" value="1" onchange="calcTotal()" class="mr-3">
-                    <span>單次解析 ($400)</span>
-                </label>
+            <div class="option-group" id="ziwei-options">
+                <div class="check-btn selected" id="ziwei-none" onclick="toggleZiwei(this, 'none')">不進行諮詢</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '基礎八字')">基礎八字</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '工作')">工作</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '感情')">感情</div>
+                <div class="check-btn" onclick="toggleZiwei(this, '財運')">財運</div>
             </div>
+            <div class="text-right text-gray-600 text-sm">八字小計：$<span id="ziwei-price">0</span></div>
         </div>
 
         <div class="card">
