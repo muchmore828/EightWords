@@ -244,17 +244,17 @@
                 A. 紫微斗數
             </div>
             <p class="text-sm text-gray-500 mb-3">
-                基礎命盤 $600<br>【首次諮詢定盤，概述一生設定】<br><br>其餘每個加選問題 +$600<br>【從十年、流年角度直面問題】
+                ● 核心診斷 ● 基礎命盤解析 $600<br>【首次諮詢定盤，概述一生設定】<br>● ● 這是所有深度對話的起點，你將獲得：確立個人特質、天賦屬性與目前所處的人生週期<br><br>● 主題加購 ● 深度專題 $600 / 項<br>【從十年、流年角度直面問題】<br>● ● 「建議初次諮詢可選擇 1-2 個項目，進行更完整的主題對談。」
             </p>
             <div class="option-group" id="ziwei-options">
                 <div class="check-btn selected" id="ziwei-none" onclick="toggleOption('ziwei', this, 'none')">不進行諮詢</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '基礎命盤')">基礎命盤</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '工作')">工作</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '感情')">感情</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '財運')">財運</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '健康')">健康</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '家庭')">家庭</div>
-                <div class="check-btn" onclick="toggleOption('ziwei', this, '流年')">流年</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '基礎命盤解析')">基礎命盤解析</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '升遷、轉職、離職')">升遷、轉職、離職</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '感情、婚姻、桃花')">感情、婚姻、桃花</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '投資、理財、買房')">投資、理財、買房</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '健康、疾病、養生')">健康、疾病、養生</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '子女、雙親、關係')">子女、雙親、關係</div>
+                <div class="check-btn" onclick="toggleOption('ziwei', this, '流年、環境、衝擊')">流年、環境、衝擊</div>
                 <div class="check-btn" onclick="toggleOption('ziwei', this, '其他')">其他</div>
             </div>
             <div class="text-right text-gray-600 text-sm">紫微小計：$<span id="ziwei-price">0</span></div>
@@ -267,14 +267,14 @@
                 B. 八字解析
             </div>
             <p class="text-sm text-gray-500 mb-3">
-                基礎八字 $600<br>【原局、喜用分析】<br><br>其餘每個加選問題 +$600<br>【從十年、流年角度直面問題】
+                基礎八字解析 $600<br>【原局、喜用分析】<br><br>其餘每個加選問題 +$600<br>【從十年、流年角度直面運勢問題】
             </p>
             <div class="option-group" id="bazi-options">
                 <div class="check-btn selected" id="bazi-none" onclick="toggleOption('bazi', this, 'none')">不進行諮詢</div>
-                <div class="check-btn" onclick="toggleOption('bazi', this, '基礎八字')">基礎八字</div>
-                <div class="check-btn" onclick="toggleOption('bazi', this, '工作')">工作</div>
-                <div class="check-btn" onclick="toggleOption('bazi', this, '感情')">感情</div>
-                <div class="check-btn" onclick="toggleOption('bazi', this, '財運')">財運</div>
+                <div class="check-btn" onclick="toggleOption('bazi', this, '基礎八字解析')">基礎八字解析</div>
+                <div class="check-btn" onclick="toggleOption('bazi', this, '升遷、轉職、離職')">升遷、轉職、離職</div>
+                <div class="check-btn" onclick="toggleOption('bazi', this, '感情、婚姻、桃花')">感情、婚姻、桃花</div>
+                <div class="check-btn" onclick="toggleOption('bazi', this, '投資、理財、買房')">投資、理財、買房</div>
                 <div class="check-btn" onclick="toggleOption('bazi', this, '其他')">其他</div>
             </div>
             <div class="text-right text-gray-600 text-sm">八字小計：$<span id="bazi-price">0</span></div>
@@ -286,7 +286,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                 C. 卡牌占卜
             </div>
-            <p class="text-sm text-gray-500 mb-3">請選擇占卜項目：<br>【基本9張，視問題增加張數】</p>
+            <p class="text-sm text-gray-500 mb-3">你是否正為了某特定事件煩惱？<br>● ● 透過卡牌做現況透視與盲點偵測，依慣性路徑，推演未來1-3個月可能走向<br>【基本9張，視問題增加張數】</p>
             <div class="space-y-2">
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="card-option" value="0" data-name="無" data-price="0" checked onchange="calcTotal()" class="mr-3">
