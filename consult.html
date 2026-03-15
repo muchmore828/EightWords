@@ -286,15 +286,19 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                 C. 卡牌占卜
             </div>
-            <p class="text-sm text-gray-500 mb-3">【基本9張，視問題增加張數】<br>你是否正為了某特定事件煩惱？<br>—— 透過卡牌做現況透視與盲點偵測，依慣性路徑，推演未來1-3個月可能走向。</p>
+            <p class="text-sm text-gray-500 mb-3">你是否正為了某特定事件煩惱？<br>—— 透過卡牌做現況透視與盲點偵測，依慣性路徑，推演未來1-3個月可能走向。<br>1.塔羅一刻【15mins,三張塔羅牌與一張課題卡】<br>2.卡牌鐘點【60mins,九張卡牌】</p>
             <div class="space-y-2">
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
                     <input type="radio" name="card-option" value="0" data-name="無" data-price="0" checked onchange="calcTotal()" class="mr-3">
                     <span class="text-gray-400">不進行占卜</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="card-option" value="300" data-name="解惑牌組 (9+張)" data-price="300" onchange="calcTotal()" class="mr-3">
-                    <span>解惑牌組 (9+張) $300</span>
+                    <input type="radio" name="card-option" value="250" data-name="解惑牌組 (9+張)" data-price="250" onchange="calcTotal()" class="mr-3">
+                    <span>塔羅一刻 (4+張) $250</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="card-option" value="500" data-name="解惑牌組 (9+張)" data-price="500" onchange="calcTotal()" class="mr-3">
+                    <span>卡牌鐘點 (9+張) $500</span>
                 </label>
             </div>
         </div>
