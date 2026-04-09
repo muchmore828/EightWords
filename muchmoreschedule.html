@@ -234,13 +234,50 @@
 
             for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
 
-            // 資料轉換為 Map
-            const scheduleMap = {};
-            data.forEach(item => {
-                const d = new Date(item.Date);
-                const key = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-                scheduleMap[key] = item;
-            });
+            // --- 優化後的比對邏輯 ---
+const scheduleMap = {};
+data.forEach(item => {
+    // 1. 強制將 Google 傳來的日期轉為 YYYY-MM-DD 格式
+    const rawDate = new Date(item.Date);
+    const key = `${rawDate.getFullYear()}-${rawDate.getMonth() + 1}-${rawDate.getDate()}`;
+    scheduleMap[key] = item;
+});
+
+for (let d = 1; d <= daysInMonth; d++) {
+    // 2. 這裡生成的 Key 也要完全一致
+    const dateKey = `${year}-${month + 1}-${d}`;
+    const dayData = scheduleMap[dateKey];
+    const dayOfWeek = new Date(year, month, d).getDay();
+    
+    let className = "cal-day";
+    let statusText = "";
+    let onClickStr = "";
+
+    // 檢查是否有匹配的資料
+    if (dayData) {
+        // 增加一個 Debug 用法，如果你在開發者工具看，會看到匹配成功的資料
+        console.log(`日期 ${dateKey} 匹配成功:`, dayData);
+
+        if (dayData.Type === "固定公休" || dayData.Type === "店休日") {
+            className += " status-off";
+        } else if (String(dayData.Slots).toLowerCase() === "full") {
+            className += " status-full";
+            statusText = "<span style='font-size:0.7em'>滿</span>";
+        } else if (dayData.Slots) {
+            className += " status-available";
+            const slots = String(dayData.Slots).split(',');
+            const hours = dayData.Hours || "14:00~19:00";
+            // 修正引號轉義問題
+            const slotsJson = JSON.stringify(slots).replace(/"/g, '&quot;');
+            onClickStr = `showSlots('${d}', '${hours}', ${slotsJson})`;
+        }
+    } else if (dayOfWeek === 1) {
+        // 預設週一為公休
+        className += " status-off";
+    }
+
+    grid.innerHTML += `<div class="${className}" onclick="${onClickStr}">${d}${statusText}</div>`;
+}
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateKey = `${year}-${month + 1}-${d}`;
