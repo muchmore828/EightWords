@@ -294,7 +294,7 @@
                         onClickStr = `showSlots('${d}', '店休', [])`;
                     } else if (slots !== "") {
                         className += " status-booked";
-                        statusText = "<span style='font-size:0.7em'>預約</span>";
+                        statusText = "<span style='font-size:0.7em'></span>";
                         const slotsArray = slots.split(',');
                         const slotsJson = JSON.stringify(slotsArray).replace(/"/g, '&quot;');
                         onClickStr = `showSlots('${d}', '${hours}', ${slotsJson})`;
@@ -320,7 +320,7 @@
                 dateInfo.innerText = `📅 ${day}日 店長肯多休息中 💤`;
                 container.innerHTML = `<p style="font-size: 0.85em; color: #888;">今日公休，祝您有美好的一天！</p>`;
             } else if (slots.length > 0) {
-                dateInfo.innerText = `📅 ${day}日 已預約時段 💙`;
+                dateInfo.innerText = `📅 ${day}日 營業時間 ${hours || '正常營業'}`<br>`已預約時段 💙`;
                 slots.forEach(s => {
                     if(s.trim()) {
                         container.innerHTML += `<span class="slot-item">${s.trim()}</span>`;
