@@ -195,7 +195,7 @@
         </div>
 
         <div class="card">
-            <h3>📅 營業與預約</h3>
+            <h3>📅 營業與預約狀態</h3>
             <div id="month-label" class="calendar-header">讀取中...</div>
             <div id="calendar-grid" class="calendar-grid"></div>
             
@@ -203,7 +203,7 @@
                 <p id="selected-date-info" style="margin: 0 0 10px 0; font-weight: bold; font-size: 0.9em;"></p>
                 <div id="slots-container" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
             </div>
-            <p style="font-size: 0.75em; color: #aaa; margin-top: 15px; text-align: center;">💡 綠色代表尚有空檔，紅色代表店休</p>
+            <p style="font-size: 0.75em; color: #aaa; margin-top: 15px; text-align: center;">💡 綠色代表當日部分時段有預約，紅色代表店休</p>
         </div>
     </div>
 
@@ -319,7 +319,7 @@
                 });
             } else {
                 dateInfo.innerText = `📅 ${day}日 營業時間 ${hours}`;
-                container.innerHTML = `<p style="font-size: 0.85em; color: #888;">今日尚無預約時段開放，歡迎直接到店！</p>`;
+                container.innerHTML = `<p style="font-size: 0.85em; color: #888;">今日尚無預定預約，歡迎直接到店或留言預訂！</p>`;
             }
             
             box.style.display = 'block';
@@ -342,7 +342,7 @@
                 badge.style.color = "#ccc";
                 greet.innerText = "肯多店長休息中";
             } else {
-                badge.innerText = "今日熱情營業 ✨";
+                badge.innerText = "今日正常營業 ✨";
                 greet.innerText = "下午好，想喝點什麼？";
             }
         }
