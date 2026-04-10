@@ -172,7 +172,7 @@
     <div class="container">
         <div class="card">
             <h3>🐾 胖多多集點卡</h3>
-            <p style="font-size: 0.9em; margin-bottom: 15px;">實體卡數位化！消費滿100元即累積1點<br>換取50元優惠券，最高可享一年餐飲九折。</p>
+            <p style="font-size: 0.9em; margin-bottom: 15px;">實體卡數位化！餐飲消費滿100元即累積1點<br>每5點可獲得50元兌換券<br>集滿十五點，可享一年餐飲九折。</p>
             <a href="https://u.lin.ee/sFWqYyn" target="_blank" style="background:var(--accent-orange); color:white; text-decoration:none; display:block; text-align:center; padding:12px; border-radius:15px; font-weight:bold; cursor: pointer;">打開我的集點卡</a>
         </div>
 
@@ -278,15 +278,29 @@
     }
 
     function showSlots(day, hours, slots) {
-        const box = document.getElementById('slot-details');
-        document.getElementById('selected-date-info').innerText = `📅 ${day}日 營業時間 ${hours}`;
-        const container = document.getElementById('slots-container');
-        container.innerHTML = '';
+    const box = document.getElementById('slot-details');
+    const dateInfo = document.getElementById('selected-date-info');
+    const container = document.getElementById('slots-container');
+    
+    // 清空舊內容
+    container.innerHTML = '';
+
+    // 判斷是否為店休（檢查 slots 是否為空陣列，或者 hours 包含 "休息"）
+    if (!slots || slots.length === 0 || (slots.length === 1 && slots[0] === "") || hours.includes("休息")) {
+        dateInfo.innerText = `📅 ${day}日 店長肯多休息中 💤`;
+        container.innerHTML = `<p style="font-size: 0.9em; color: var(--text-gray);">今日不開放預約與點餐，祝您有美好的一天！</p>`;
+    } else {
+        // 正常營業有時段的情況
+        dateInfo.innerText = `📅 ${day}日 營業時間 ${hours}`;
         slots.forEach(s => {
-            if(s.trim()) container.innerHTML += `<a href="#" class="slot-btn">${s.trim()}</a>`;
+            if(s.trim()) {
+                container.innerHTML += `<a href="#" class="slot-btn">${s.trim()}</a>`;
+            }
         });
-        box.style.display = 'block';
     }
+    
+    box.style.display = 'block';
+}
 
     function updateHeroStatus(data) {
         const now = new Date();
