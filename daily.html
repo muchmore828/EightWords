@@ -27,7 +27,7 @@
             border-radius: 20px; border: 8px solid white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        /* 牌背：修正路徑與呈現 */
+        /* 牌背設定 */
         .card-back {
             background-color: #d4a373;
             background-image: url('https://muchmore828.github.io/EightWords/cardback.png');
@@ -35,15 +35,14 @@
             background-position: center;
             display: flex; align-items: center; justify-content: center;
         }
-        /* 牌面 */
+        /* 牌面設定 */
         .card-front { transform: rotateY(180deg); background: white; }
         
         .soft-shadow { box-shadow: 0 4px 15px rgba(212, 163, 115, 0.2); }
 
-        /* 讓卡片內的圖片填滿上半部 */
         #result-img {
             width: 100%;
-            height: 220px; /* 稍微拉高圖片佔比 */
+            height: 220px;
             object-fit: cover;
             border-radius: 12px;
         }
@@ -58,11 +57,10 @@
 
     <div id="draw-zone" class="card-container mb-8">
         <div class="card" id="main-card" onclick="drawToday()">
-            <div class="card-face card-back">
-                </div> 
+            <div class="card-face card-back"></div> 
         
             <div class="card-face card-front flex flex-col p-4">
-                <img id="result-img" src="" alt="塔羅牌面">
+                <img id="result-img" src="" alt="能量卡片">
                 <h2 id="result-name" class="text-center font-bold text-lg text-stone-700 mt-2"></h2>
                 <div class="flex-1 flex items-center justify-center">
                     <p id="result-quote" class="text-sm text-stone-500 leading-relaxed italic text-center px-2"></p>
@@ -73,18 +71,22 @@
 
     <div id="result-detail" class="hidden w-full max-w-sm">
         <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white soft-shadow mb-6 text-center">
-            <h3 class="text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">今日推薦飲品</h3>
-            <p id="result-drink" class="text-stone-700 font-bold text-lg"></p>
+            <h3 class="text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">今日推薦飲品/點心</h3>
+            <p id="result-drink" class="text-stone-700 font-bold text-lg mb-4"></p>
+            
+            <button onclick="shareToLine()" class="w-full py-3 bg-[#06C755] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#05b34c] transition-colors">
+                <span>LINE 分享給好友</span>
+            </button>
         </div>
         <p class="text-center text-xs text-stone-400 mt-4">能量訊息每日重置，明天再來看看吧！</p>
     </div>
 
     <script>
-        // 1. 設定 22 張塔羅牌（請記得將 img 路徑換成你產出的 Kento 塔羅圖）
+        // 1. 設定 22 張塔羅牌與飲品連結
         const cards = [
             { name: "0. 愚者", drink: "可爾必思", img: "https://via.placeholder.com/400x600?text=The+Fool" },
             { name: "1. 魔術師", drink: "嘉年華鬆餅", img: "https://via.placeholder.com/400x600?text=The+Magician" },
-            { name: "2. 女祭司", drink: "麝香葡萄", img: "https://via.placeholder.com/400x600?text=High+Priestess" },
+            { name: "2. 女教皇", drink: "麝香葡萄", img: "https://via.placeholder.com/400x600?text=High+Priestess" },
             { name: "3. 皇后", drink: "草莓果醬鬆餅", img: "https://via.placeholder.com/400x600?text=The+Empress" },
             { name: "4. 皇帝", drink: "美式咖啡", img: "https://via.placeholder.com/400x600?text=The+Emperor" },
             { name: "5. 教皇", drink: "高山冬片", img: "https://via.placeholder.com/400x600?text=The+Hierophant" },
@@ -106,7 +108,7 @@
             { name: "21. 世界", drink: "Ｑ心麻糬鬆餅", img: "https://via.placeholder.com/400x600?text=The+World" }
         ];
 
-        // 2. 金句列表 (已為你保留原本清單)
+        // 2. 金句列表
         const quotes = [
             "當你放慢呼吸，答案自然會浮現。",
             "今日適合在忙碌中，為自己留出十分鐘的空白。",
@@ -189,6 +191,21 @@
             document.getElementById('result-drink').innerText = data.drink;
             document.getElementById('result-img').src = data.img;
             document.getElementById('result-detail').classList.remove('hidden');
+        }
+
+        function shareToLine() {
+            const cardName = document.getElementById('result-name').innerText;
+            const quote = document.getElementById('result-quote').innerText;
+            const webUrl = window.location.href;
+            
+            const shareText = encodeURIComponent(
+                `🔮 多多萬事屋 | 每日占卜\n\n` +
+                `我今天抽到了：【${cardName}】\n` +
+                `能量訊息：${quote}\n\n` +
+                `快來領取你的今日建議吧 👇\n${webUrl}`
+            );
+
+            window.open(`https://line.it/R/msg/text/?${shareText}`, '_blank');
         }
     </script>
 </body>
