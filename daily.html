@@ -13,7 +13,6 @@
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
         }
-        /* 粉彩感卡片容器 */
         .card-container { perspective: 1000px; width: 240px; height: 380px; }
         .card {
             width: 100%; height: 100%;
@@ -27,17 +26,13 @@
             border-radius: 20px; border: 8px solid white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        /* 牌背設定 */
         .card-back {
             background-color: #d4a373;
             background-image: url('https://muchmore828.github.io/EightWords/cardback.png');
             background-size: cover;
             background-position: center;
-            display: flex; align-items: center; justify-content: center;
         }
-        /* 牌面設定 */
         .card-front { transform: rotateY(180deg); background: white; }
-        
         .soft-shadow { box-shadow: 0 4px 15px rgba(212, 163, 115, 0.2); }
 
         #result-img {
@@ -58,9 +53,8 @@
     <div id="draw-zone" class="card-container mb-8">
         <div class="card" id="main-card" onclick="drawToday()">
             <div class="card-face card-back"></div> 
-        
             <div class="card-face card-front flex flex-col p-4">
-                <img id="result-img" src="" alt="能量卡片">
+                <img id="result-img" src="" alt="能量卡片" onerror="this.src='https://via.placeholder.com/400x600?text=Card+Image'">
                 <h2 id="result-name" class="text-center font-bold text-lg text-stone-700 mt-2"></h2>
                 <div class="flex-1 flex items-center justify-center">
                     <p id="result-quote" class="text-sm text-stone-500 leading-relaxed italic text-center px-2"></p>
@@ -69,32 +63,25 @@
         </div>
     </div>
 
-    <div id="result-detail" class="hidden w-full max-w-sm">
-        <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white soft-shadow mb-6 text-center">
+    <div id="result-detail" class="hidden w-full max-w-sm space-y-4">
+        <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white soft-shadow text-center">
             <h3 class="text-stone-400 text-xs font-bold uppercase tracking-widest mb-2">今日推薦飲品/點心</h3>
             <p id="result-drink" class="text-stone-700 font-bold text-lg mb-4"></p>
             
-            <button onclick="shareToLine()" class="w-full py-3 bg-[#06C755] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#05b34c] transition-colors">
-                <span>LINE 分享給好友</span>
-            </button>
-        </div>
-        <p class="text-center text-xs text-stone-400 mt-4">能量訊息每日重置，明天再來看看吧！</p>
-    </div>
-
-    <div id="result-detail" class="hidden w-full max-w-sm space-y-4">
-        <div class="bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white soft-shadow text-center">
             <div class="flex flex-col gap-3">
-                <button onclick="shareToLine()" class="...">分享給好友</button>
+                <button onclick="shareToLine()" class="w-full py-3 bg-[#06C755] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#05b34c] transition-colors">
+                    <span>LINE 分享給好友</span>
+                </button>
 
-                <a href="https://lin.ee/NBCScpf" class="w-full py-3 bg-stone-700 text-white rounded-xl font-bold flex items-center justify-center gap-2">
+                <a href="https://lin.ee/NBCScpf" class="w-full py-3 bg-stone-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-stone-800 transition-colors text-center">
                     <span>回多肉咖啡官方帳號</span>
                 </a>
             </div>
         </div>
+        <p class="text-center text-xs text-stone-400 mt-4">能量訊息每日重置，明天再來看看吧！</p>
     </div>
 
     <script>
-        // 1. 設定 22 張塔羅牌與飲品連結
         const cards = [
             { name: "0. 愚者", drink: "可爾必思", img: "https://via.placeholder.com/400x600?text=The+Fool" },
             { name: "1. 魔術師", drink: "嘉年華鬆餅", img: "https://via.placeholder.com/400x600?text=The+Magician" },
@@ -120,44 +107,7 @@
             { name: "21. 世界", drink: "Ｑ心麻糬鬆餅", img: "https://via.placeholder.com/400x600?text=The+World" }
         ];
 
-        // 2. 金句列表
-        const quotes = [
-            "當你放慢呼吸，答案自然會浮現。",
-            "今日適合在忙碌中，為自己留出十分鐘的空白。",
-            "宇宙的安排總有其美意，即便是暫時的停留。",
-            "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。",
-            "有時候，不採取行動也是一種最有力的行動。",
-            "每一滴萃取的苦澀，都是為了襯托後續的回甘。",
-            "心亂的時候，就把目光收回到眼前的這杯茶。",
-            "暫時的迷路，是為了讓你遇見未曾預期的風景。",
-            "生活不是為了趕路，而是為了感受路。",
-            "把生活調成靜音，你才能聽見靈魂的耳語。",
-            "所有的「來不及」，其實都是另一種「剛剛好」。",
-            "像貓一樣，在陽光最好的地方，專心地虛度光陰。",
-            "練習對外界的雜音微笑，然後優雅地轉身。",
-            "既然無法控制風的方向，那就調整帆的角度。",
-            "最好的狀態，是心裡有事，但臉上無痕。",
-            "你的價值，不需要透過別人的肯定來「定標」。",
-            "偶爾的脆弱並不可恥，它是靈魂在提醒你該休息了。",
-            "成長是一場與自己的對話，不必急著給世界答案。",
-            "保持一點「必要的任性」，是愛自己最直觀的方式。",
-            "那些看似平淡的重複，正是支撐夢想的骨架。",
-            "與其追逐光，不如讓自己成為發光的人。",
-            "你的善良必須帶點鋒芒，才不至於在溫柔中迷失。",
-            "完美的包裝或許迷人，但真實的靈魂更有飽足感。",
-            "允許自己有不開心的權利，這也是一種自由。",
-            "把期待調低，快樂自然就會溢出來。",
-            "命運的劇本雖然寫好，但演出的語氣由你決定。",
-            "順著流走，你會發現阻力其實是另一種推力。",
-            "每一場相遇都有其保存期限，所以請在當下盡興。",
-            "宇宙從不辜負一個認真對待「現在」的人。",
-            "所有的失去，最終都會以另一種形式歸來。",
-            "保持開放的心態，好運才會找到入口。",
-            "練習把「為什麼發生在我身上」改成「這想教會我什麼」。",
-            "穩定自己的頻率，世界自然會與你共振。",
-            "當你開始愛自己，全宇宙都會為你讓路。",
-            "今天的遺憾，是明天驚喜的伏筆。"
-        ];
+        const quotes = ["當你放慢呼吸，答案自然會浮現。", "今日適合在忙碌中，為自己留出十分鐘的空白。", "宇宙的安排總有其美意，即便是暫時的停留。", "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。", "有時候，不採取行動也是一種最有力的行動。"];
 
         const cardEl = document.getElementById('main-card');
         const STORAGE_KEY = 'muchmore_daily_draw';
@@ -167,7 +117,6 @@
         function checkHistory() {
             const today = new Date().toLocaleDateString();
             const history = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
             if (history && history.date === today) {
                 displayResult(history.data);
                 cardEl.classList.add('is-flipped');
@@ -177,22 +126,11 @@
 
         function drawToday() {
             if (cardEl.classList.contains('is-flipped')) return;
-
             const randomCard = cards[Math.floor(Math.random() * cards.length)];
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            const resultData = {
-                name: randomCard.name,
-                quote: randomQuote,
-                drink: randomCard.drink,
-                img: randomCard.img
-            };
-
+            const resultData = { name: randomCard.name, quote: randomQuote, drink: randomCard.drink, img: randomCard.img };
             const today = new Date().toLocaleDateString();
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                date: today,
-                data: resultData
-            }));
-
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ date: today, data: resultData }));
             displayResult(resultData);
             cardEl.classList.add('is-flipped');
         }
@@ -206,32 +144,12 @@
         }
 
         function shareToLine() {
-            try {
-                const cardName = document.getElementById('result-name').innerText;
-                const quote = document.getElementById('result-quote').innerText;
-        
-            // 你的官方帳號連結
-                const officialLineUrl = "https://lin.ee/NBCScpf";
-        
-                const shareText = 
-                    `🔮 多多萬事屋 | 每日占卜\n\n` +
-                    `我今天抽到了：【${cardName}】\n` +
-                    `能量訊息：${quote}\n\n` +
-                    `想領取你的今日能量建議嗎？\n` +
-                    `趕快加入「多肉咖啡」官方Line好友，點擊選單開始占卜吧 👇\n` +
-                    `${officialLineUrl}`;
-
-                const lineScheme = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
-
-                // 執行跳轉分享
-                window.location.href = lineScheme;
-
-            } catch (e) {
-                console.error("分享發生錯誤", e);
-                alert("分享功能目前無法在您的瀏覽器啟動。");
-            }
+            const cardName = document.getElementById('result-name').innerText;
+            const quote = document.getElementById('result-quote').innerText;
+            const officialLineUrl = "https://lin.ee/NBCScpf";
+            const shareText = `🔮 多多萬事屋 | 每日占卜\n\n我今天抽到了：【${cardName}】\n能量訊息：${quote}\n\n想領取你的今日能量建議嗎？\n趕快加入「多肉咖啡」官方Line好友，開始占卜吧 👇\n${officialLineUrl}`;
+            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
-        
     </script>
 </body>
 </html>
