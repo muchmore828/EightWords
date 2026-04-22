@@ -194,24 +194,37 @@
         }
 
         function shareToLine() {
-            const cardName = document.getElementById('result-name').innerText;
-            const quote = document.getElementById('result-quote').innerText;
-    
-            // 使用目前網頁網址，並確保它是乾淨的
-            const webUrl = window.location.origin + window.location.pathname;
-    
-            const shareText = [
-                `🔮 多多萬事屋 | 每日占卜`,
-                `我今天抽到了：【${cardName}】`,
-                `能量訊息：${quote}`,
-                ``,
-                `快來領取你的今日建議吧 👇`,
-                webUrl
-            ].join('\n');
+            try {
+                const cardName = document.getElementById('result-name').innerText;
+                const quote = document.getElementById('result-quote').innerText;
+        
+                // 確保網址是乾淨的，並強制使用 https
+                const webUrl = window.location.href.split('?')[0].split('#')[0];
+        
+                const shareText = 
+                    `🔮 多多萬事屋 | 每日占卜\n\n` +
+                    `我今天抽到了：【${cardName}】\n` +
+                    `能量訊息：${quote}\n\n` +
+                    `快來領取你的今日建議吧 👇\n` +
+                    `${webUrl}`;
 
-            // 使用 location.href 代替 window.open，能更有效地觸發 LINE 轉傳
-            const lineUrl = `https://line.it/R/msg/text/?${encodeURIComponent(shareText)}`;
-            window.location.href = lineUrl;
+                const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
+
+                // 方法一：直接跳轉（最常用）
+                window.location.href = lineUrl;
+
+                // 方法二：保險機制，如果 0.5 秒後沒跳轉，嘗試模擬點擊
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = lineUrl;
+                    link.rel = 'noopener';
+                    link.click();
+                }, 500);
+
+            } catch (e) {
+                console.error("分享發生錯誤", e);
+                alert("分享功能目前無法在您的瀏覽器啟動，請嘗試複製連結分享。");
+            }
         }
         
     </script>
