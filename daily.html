@@ -13,7 +13,7 @@
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
         }
-        /* 粉彩感卡片 */
+        /* 粉彩感卡片容器 */
         .card-container { perspective: 1000px; width: 240px; height: 380px; }
         .card {
             width: 100%; height: 100%;
@@ -27,16 +27,26 @@
             border-radius: 20px; border: 8px solid white;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        /* 牌背：粉彩筆觸感 */
+        /* 牌背：修正路徑與呈現 */
         .card-back {
-            background: #d4a373;
-            background-image:https://muchmore828.github.io/EightWords/logo.png;/* 或放入你的 Kento 牌背圖 */
+            background-color: #d4a373;
+            background-image: url('https://muchmore828.github.io/EightWords/cardback.png');
+            background-size: cover;
+            background-position: center;
             display: flex; align-items: center; justify-content: center;
         }
         /* 牌面 */
         .card-front { transform: rotateY(180deg); background: white; }
         
         .soft-shadow { box-shadow: 0 4px 15px rgba(212, 163, 115, 0.2); }
+
+        /* 讓卡片內的圖片填滿上半部 */
+        #result-img {
+            width: 100%;
+            height: 220px; /* 稍微拉高圖片佔比 */
+            object-fit: cover;
+            border-radius: 12px;
+        }
     </style>
 </head>
 <body class="p-6">
@@ -45,18 +55,15 @@
         <h1 class="text-2xl font-bold text-stone-700">☕ 多多萬事屋</h1>
         <p class="text-stone-400 text-sm mt-1">—— 領取你的今日能量建議 ——</p>
     </div>
-    <div class="card" id="main-card" onclick="drawToday()">
-        <div class="card-face card-back"></div> 
-    
-        <div class="card-face card-front flex flex-col p-4">
-            </div>
-    </div>
+
     <div id="draw-zone" class="card-container mb-8">
         <div class="card" id="main-card" onclick="drawToday()">
-            <div class="card-face card-back text-white text-4xl">🐾</div>
+            <div class="card-face card-back">
+                </div> 
+        
             <div class="card-face card-front flex flex-col p-4">
-                <img id="result-img" src="" class="w-full h-48 object-cover rounded-lg mb-4">
-                <h2 id="result-name" class="text-center font-bold text-lg text-stone-700"></h2>
+                <img id="result-img" src="" alt="塔羅牌面">
+                <h2 id="result-name" class="text-center font-bold text-lg text-stone-700 mt-2"></h2>
                 <div class="flex-1 flex items-center justify-center">
                     <p id="result-quote" class="text-sm text-stone-500 leading-relaxed italic text-center px-2"></p>
                 </div>
@@ -73,34 +80,33 @@
     </div>
 
     <script>
-        // 1. 設定 22 張塔羅牌 (這裡簡略列出，你可以自行填入對應圖片網址)
+        // 1. 設定 22 張塔羅牌（請記得將 img 路徑換成你產出的 Kento 塔羅圖）
         const cards = [
-            { name: "0. 愚者", drink: "可爾必思", img: "https://via.placeholder.com/200x300?text=The+Fool" },
-            { name: "1. 魔術師", drink: "嘉年華鬆餅", img: "https://via.placeholder.com/200x300?text=The+Magician" },
-            { name: "2. 女祭司", drink: "麝香葡萄", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "3. 皇后", drink: "草莓果醬鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "4. 皇帝", drink: "美式咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "5. 教皇", drink: "高山冬片", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "6. 戀人", drink: "紅茶拿鐵", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "7. 戰車", drink: "夏戀", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "8. 力量", drink: "多肉布丁", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "9. 隱士", drink: "單品咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "10. 命運之輪", drink: "阿尼亞", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "11. 正義", drink: "拿鐵咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "12. 吊人", drink: "香魚片", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "13. 死神", drink: "春梅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "14. 節制", drink: "綠茶拿鐵", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "15. 惡魔", drink: "榛果巧克力鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "16. 高塔", drink: "摩卡咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "17. 星星", drink: "草莓果茶", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "18. 月亮", drink: "香絲", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "19. 太陽", drink: "原味鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "20. 審判", drink: "可可牛奶", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            { name: "21. 世界", drink: "Ｑ心麻糬鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
-            // ... 請補齊 22 張
+            { name: "0. 愚者", drink: "可爾必思", img: "https://via.placeholder.com/400x600?text=The+Fool" },
+            { name: "1. 魔術師", drink: "嘉年華鬆餅", img: "https://via.placeholder.com/400x600?text=The+Magician" },
+            { name: "2. 女祭司", drink: "麝香葡萄", img: "https://via.placeholder.com/400x600?text=High+Priestess" },
+            { name: "3. 皇后", drink: "草莓果醬鬆餅", img: "https://via.placeholder.com/400x600?text=The+Empress" },
+            { name: "4. 皇帝", drink: "美式咖啡", img: "https://via.placeholder.com/400x600?text=The+Emperor" },
+            { name: "5. 教皇", drink: "高山冬片", img: "https://via.placeholder.com/400x600?text=The+Hierophant" },
+            { name: "6. 戀人", drink: "紅茶拿鐵", img: "https://via.placeholder.com/400x600?text=The+Lovers" },
+            { name: "7. 戰車", drink: "夏戀", img: "https://via.placeholder.com/400x600?text=The+Chariot" },
+            { name: "8. 力量", drink: "多肉布丁", img: "https://via.placeholder.com/400x600?text=Strength" },
+            { name: "9. 隱士", drink: "單品咖啡", img: "https://via.placeholder.com/400x600?text=The+Hermit" },
+            { name: "10. 命運之輪", drink: "阿尼亞", img: "https://via.placeholder.com/400x600?text=Wheel+of+Fortune" },
+            { name: "11. 正義", drink: "拿鐵咖啡", img: "https://via.placeholder.com/400x600?text=Justice" },
+            { name: "12. 吊人", drink: "香魚片", img: "https://via.placeholder.com/400x600?text=Hanged+Man" },
+            { name: "13. 死神", drink: "春梅", img: "https://via.placeholder.com/400x600?text=Death" },
+            { name: "14. 節制", drink: "綠茶拿鐵", img: "https://via.placeholder.com/400x600?text=Temperance" },
+            { name: "15. 惡魔", drink: "榛果巧克力鬆餅", img: "https://via.placeholder.com/400x600?text=The+Devil" },
+            { name: "16. 高塔", drink: "摩卡咖啡", img: "https://via.placeholder.com/400x600?text=The+Tower" },
+            { name: "17. 星星", drink: "草莓果茶", img: "https://via.placeholder.com/400x600?text=The+Star" },
+            { name: "18. 月亮", drink: "香絲", img: "https://via.placeholder.com/400x600?text=The+Moon" },
+            { name: "19. 太陽", drink: "原味鬆餅", img: "https://via.placeholder.com/400x600?text=The+Sun" },
+            { name: "20. 審判", drink: "可可牛奶", img: "https://via.placeholder.com/400x600?text=Judgement" },
+            { name: "21. 世界", drink: "Ｑ心麻糬鬆餅", img: "https://via.placeholder.com/400x600?text=The+World" }
         ];
 
-        // 2. 設定 30 句心法金句
+        // 2. 金句列表 (已為你保留原本清單)
         const quotes = [
             "當你放慢呼吸，答案自然會浮現。",
             "今日適合在忙碌中，為自己留出十分鐘的空白。",
@@ -136,8 +142,7 @@
             "練習把「為什麼發生在我身上」改成「這想教會我什麼」。",
             "穩定自己的頻率，世界自然會與你共振。",
             "當你開始愛自己，全宇宙都會為你讓路。",
-            "今天的遺憾，是明天驚喜的伏筆。"            
-            // 
+            "今天的遺憾，是明天驚喜的伏筆。"
         ];
 
         const cardEl = document.getElementById('main-card');
@@ -152,7 +157,7 @@
             if (history && history.date === today) {
                 displayResult(history.data);
                 cardEl.classList.add('is-flipped');
-                cardEl.onclick = null; // 禁止重複點擊
+                cardEl.onclick = null;
             }
         }
 
@@ -168,7 +173,6 @@
                 img: randomCard.img
             };
 
-            // 儲存結果到 LocalStorage
             const today = new Date().toLocaleDateString();
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
                 date: today,
