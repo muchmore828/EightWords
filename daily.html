@@ -29,7 +29,8 @@
         }
         /* 牌背：粉彩筆觸感 */
         .card-back {
-            background: #d4a373; /* 或放入你的 Kento 牌背圖 */
+            background: #d4a373;
+            background-image:https://muchmore828.github.io/EightWords/logo.png;/* 或放入你的 Kento 牌背圖 */
             display: flex; align-items: center; justify-content: center;
         }
         /* 牌面 */
@@ -44,7 +45,12 @@
         <h1 class="text-2xl font-bold text-stone-700">☕ 多多萬事屋</h1>
         <p class="text-stone-400 text-sm mt-1">—— 領取你的今日能量建議 ——</p>
     </div>
-
+    <div class="card" id="main-card" onclick="drawToday()">
+        <div class="card-face card-back"></div> 
+    
+        <div class="card-face card-front flex flex-col p-4">
+            </div>
+    </div>
     <div id="draw-zone" class="card-container mb-8">
         <div class="card" id="main-card" onclick="drawToday()">
             <div class="card-face card-back text-white text-4xl">🐾</div>
@@ -69,9 +75,28 @@
     <script>
         // 1. 設定 22 張塔羅牌 (這裡簡略列出，你可以自行填入對應圖片網址)
         const cards = [
-            { name: "0. 愚者", drink: "阿尼亞 (驚喜特調)", img: "https://via.placeholder.com/200x300?text=The+Fool" },
-            { name: "1. 魔術師", drink: "摩卡咖啡 (層次豐富)", img: "https://via.placeholder.com/200x300?text=The+Magician" },
-            { name: "2. 女教皇", drink: "高山冬片茶 (沉穩冷靜)", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "0. 愚者", drink: "可爾必思", img: "https://via.placeholder.com/200x300?text=The+Fool" },
+            { name: "1. 魔術師", drink: "嘉年華鬆餅", img: "https://via.placeholder.com/200x300?text=The+Magician" },
+            { name: "2. 女祭司", drink: "麝香葡萄", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "3. 皇后", drink: "草莓果醬鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "4. 皇帝", drink: "美式咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "5. 教皇", drink: "高山冬片", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "6. 戀人", drink: "紅茶拿鐵", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "7. 戰車", drink: "夏戀", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "8. 力量", drink: "多肉布丁", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "9. 隱士", drink: "單品咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "10. 命運之輪", drink: "阿尼亞", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "11. 正義", drink: "拿鐵咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "12. 吊人", drink: "香魚片", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "13. 死神", drink: "春梅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "14. 節制", drink: "綠茶拿鐵", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "15. 惡魔", drink: "榛果巧克力鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "16. 高塔", drink: "摩卡咖啡", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "17. 星星", drink: "草莓果茶", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "18. 月亮", drink: "香絲", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "19. 太陽", drink: "原味鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "20. 審判", drink: "可可牛奶", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
+            { name: "21. 世界", drink: "Ｑ心麻糬鬆餅", img: "https://via.placeholder.com/200x300?text=The+High+Priestess" },
             // ... 請補齊 22 張
         ];
 
@@ -82,7 +107,37 @@
             "宇宙的安排總有其美意，即便是暫時的停留。",
             "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。",
             "有時候，不採取行動也是一種最有力的行動。",
-            // ... 請補齊 30 句
+            "每一滴萃取的苦澀，都是為了襯托後續的回甘。",
+            "心亂的時候，就把目光收回到眼前的這杯茶。",
+            "暫時的迷路，是為了讓你遇見未曾預期的風景。",
+            "生活不是為了趕路，而是為了感受路。",
+            "把生活調成靜音，你才能聽見靈魂的耳語。",
+            "所有的「來不及」，其實都是另一種「剛剛好」。",
+            "像貓一樣，在陽光最好的地方，專心地虛度光陰。",
+            "練習對外界的雜音微笑，然後優雅地轉身。",
+            "既然無法控制風的方向，那就調整帆的角度。",
+            "最好的狀態，是心裡有事，但臉上無痕。",
+            "你的價值，不需要透過別人的肯定來「定標」。",
+            "偶爾的脆弱並不可恥，它是靈魂在提醒你該休息了。",
+            "成長是一場與自己的對話，不必急著給世界答案。",
+            "保持一點「必要的任性」，是愛自己最直觀的方式。",
+            "那些看似平淡的重複，正是支撐夢想的骨架。",
+            "與其追逐光，不如讓自己成為發光的人。",
+            "你的善良必須帶點鋒芒，才不至於在溫柔中迷失。",
+            "完美的包裝或許迷人，但真實的靈魂更有飽足感。",
+            "允許自己有不開心的權利，這也是一種自由。",
+            "把期待調低，快樂自然就會溢出來。",
+            "命運的劇本雖然寫好，但演出的語氣由你決定。",
+            "順著流走，你會發現阻力其實是另一種推力。",
+            "每一場相遇都有其保存期限，所以請在當下盡興。",
+            "宇宙從不辜負一個認真對待「現在」的人。",
+            "所有的失去，最終都會以另一種形式歸來。",
+            "保持開放的心態，好運才會找到入口。",
+            "練習把「為什麼發生在我身上」改成「這想教會我什麼」。",
+            "穩定自己的頻率，世界自然會與你共振。",
+            "當你開始愛自己，全宇宙都會為你讓路。",
+            "今天的遺憾，是明天驚喜的伏筆。"            
+            // 
         ];
 
         const cardEl = document.getElementById('main-card');
