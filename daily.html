@@ -196,17 +196,24 @@
         function shareToLine() {
             const cardName = document.getElementById('result-name').innerText;
             const quote = document.getElementById('result-quote').innerText;
-            const webUrl = window.location.href;
-            
-            const shareText = encodeURIComponent(
-                `🔮 多多萬事屋 | 每日占卜\n\n` +
-                `我今天抽到了：【${cardName}】\n` +
-                `能量訊息：${quote}\n\n` +
-                `快來領取你的今日建議吧 👇\n${webUrl}`
-            );
+    
+            // 使用目前網頁網址，並確保它是乾淨的
+            const webUrl = window.location.origin + window.location.pathname;
+    
+            const shareText = [
+                `🔮 多多萬事屋 | 每日占卜`,
+                `我今天抽到了：【${cardName}】`,
+                `能量訊息：${quote}`,
+                ``,
+                `快來領取你的今日建議吧 👇`,
+                webUrl
+            ].join('\n');
 
-            window.open(`https://line.it/R/msg/text/?${shareText}`, '_blank');
+            // 使用 location.href 代替 window.open，能更有效地觸發 LINE 轉傳
+            const lineUrl = `https://line.it/R/msg/text/?${encodeURIComponent(shareText)}`;
+            window.location.href = lineUrl;
         }
+        
     </script>
 </body>
 </html>
