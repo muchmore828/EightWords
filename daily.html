@@ -15,6 +15,7 @@
         #result-img { width: 100%; height: auto; display: block; }
         #screenshot-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         #preview-image { max-width: 95%; max-height: 80%; border-radius: 12px; border: 3px solid white; }
+        /* 讓大獎文字的 \n 換行符號生效 */
         #result-intro { white-space: pre-line; }
     </style>
 </head>
@@ -69,6 +70,9 @@
     </div>
 
     <script>
+        // 用於分享時抓取卡片名稱
+        let currentCardName = "";
+
         const config = {
             isTestMode: true, 
             luckyChance: 15,
@@ -148,7 +152,7 @@
             "偶爾的脆弱並不可恥，它是靈魂在提醒你該休息了。",
             "成長是一場與自己的對話，不必急著給世界答案。",
             "保持一點「必要的任性」，是愛自己最直觀的方式。",
-            "那些看似平淡的重複，正是支撐夢想的骨架。",
+            "那些觀察平淡的重複，正是支撐夢想的骨架。",
             "與其追逐光，不如讓自己成為發光的人。",
             "你的善良必須帶點鋒芒，才不至於在溫柔中迷失。",
             "完美的包裝或許迷人，但真實的靈魂更有飽足感。",
@@ -202,6 +206,7 @@
         }
 
         function renderResult(data) {
+            currentCardName = data.card.name; // 存入全域變數供分享使用
             document.getElementById('init-draw-zone').classList.add('hidden');
             document.getElementById('result-wrapper').classList.remove('hidden');
             document.getElementById('result-img').src = data.card.img;
@@ -233,7 +238,8 @@
 
         function shareToLine() {
             const quote = document.getElementById('result-quote').innerText;
-            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${card}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
+            // 修正：使用全域變數 currentCardName
+            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${currentCardName}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
     </script>
