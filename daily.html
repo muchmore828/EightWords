@@ -87,7 +87,7 @@
 
         <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6">
             <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95 transition">
-                ✨ 生成分享憑證 (請長按儲存)
+                ✨ 生成折扣憑證 (請長按儲存)
             </button>
             <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">
                 LINE 分享占卜結果
@@ -105,18 +105,18 @@
 
     <script>
         // ==========================================
-        // 📊 抽獎機率設定 (目前設為 40% 中大獎)
+        // 📊 抽獎機率設定 (目前設為 30% 中大獎)
         // ==========================================
         const prizeConfig = {
-            luckyChance: 40, // 中大獎的百分比 (0-100)
+            luckyChance: 40, 
             normalText: "出示畫面享推薦餐點折扣：",
-            luckyText: "🎉 宇宙級好運！出示畫面享隱藏驚喜：",
+            luckyText: "🎉 宇宙級好運！出示畫面享推薦餐點隱藏折扣：",
             normalDiscount: "折 10 元",
-            luckyDiscount: "折 50 元 (驚喜限定)"
+            luckyDiscount: "折 50 元 (宇宙限定)"
         };
 
         // ==========================================
-        // 🃏 卡牌資料庫
+        // 🃏 卡牌資料庫 (完整 0-21 號)
         // ==========================================
         const cards = [
             { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
@@ -128,12 +128,23 @@
             { name: "6. 戀人", img: "https://muchmore828.github.io/EightWords/6_The_Lovers.png" },
             { name: "7. 戰車", img: "https://muchmore828.github.io/EightWords/7_The_Chariot.png" },
             { name: "8. 力量", img: "https://muchmore828.github.io/EightWords/8_Strength.png" },
+            { name: "9. 隱士", img: "https://muchmore828.github.io/EightWords/9_The_Hermit.png" },
+            { name: "10. 命運之輪", img: "https://muchmore828.github.io/EightWords/10_Wheel_of_Fortune.png" },
+            { name: "11. 正義", img: "https://muchmore828.github.io/EightWords/11_Justice.png" },
+            { name: "12. 吊人", img: "https://muchmore828.github.io/EightWords/12_The_Hanged_Man.png" },
+            { name: "13. 死神", img: "https://muchmore828.github.io/EightWords/13_Death.png" },
+            { name: "14. 節制", img: "https://muchmore828.github.io/EightWords/14_Temperance.png" },
+            { name: "15. 惡魔", img: "https://muchmore828.github.io/EightWords/15_The_Devil.png" },
+            { name: "16. 高塔", img: "https://muchmore828.github.io/EightWords/16_The_Tower.png" },
+            { name: "17. 星星", img: "https://muchmore828.github.io/EightWords/17_The_Star.png" },
+            { name: "18. 月亮", img: "https://muchmore828.github.io/EightWords/18_The_Moon.png" },
+            { name: "19. 太陽", img: "https://muchmore828.github.io/EightWords/19_The_Sun.png" },
+            { name: "20. 審判", img: "https://muchmore828.github.io/EightWords/20_Judgement.png" },
             { name: "21. 世界", img: "https://muchmore828.github.io/EightWords/21_World.png" }
-            // 往後可在此一行一行增加...
         ];
 
         // ==========================================
-        // ☕ 飲品點心清單
+        // ☕ 飲品點心清單 (完整 22 項)
         // ==========================================
         const drinks = [
             "可爾必思",
@@ -161,7 +172,7 @@
         ];
 
         // ==========================================
-        // ✨ 能量金句清單
+        // ✨ 能量金句清單 (完整 35 則)
         // ==========================================
         const quotes = [
             "當你放慢思緒，答案自然會浮現。",
@@ -202,11 +213,10 @@
         ];
 
         // ==========================================
-        // ⚙️ 核心邏輯 (大獎判定)
+        // ⚙️ 核心邏輯
         // ==========================================
 
         function drawToday() {
-            // 判定大獎
             const roll = Math.floor(Math.random() * 100) + 1;
             const isLucky = roll <= prizeConfig.luckyChance;
 
@@ -221,13 +231,11 @@
             document.getElementById('init-draw-zone').classList.add('hidden');
             document.getElementById('result-wrapper').classList.remove('hidden');
             
-            // 內容填充
             document.getElementById('result-img').src = randomCard.img;
             document.getElementById('result-quote').innerText = `「${randomQuote}」`;
             document.getElementById('date-info').innerText = `占卜日期：${now.toLocaleDateString()}`;
             document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
             
-            // 大獎與一般獎的差異邏輯
             if (isLucky) {
                 document.getElementById('result-drink').innerText = `${randomDrink} (${prizeConfig.luckyDiscount})`;
                 document.getElementById('result-intro').innerText = prizeConfig.luckyText;
@@ -254,7 +262,7 @@
                 }).then(canvas => {
                     document.getElementById('preview-image').src = canvas.toDataURL("image/png");
                     document.getElementById('screenshot-overlay').style.display = 'flex';
-                    btn.innerText = "✨ 生成分享憑證 (請長按儲存)";
+                    btn.innerText = "✨ 生成折扣憑證 (請長按儲存)";
                 });
             }, 600);
         }
