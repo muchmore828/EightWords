@@ -26,7 +26,7 @@
         
         .view-section { display: none; animation: fadeIn 0.4s ease; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
         /* 點餐專用樣式 */
         .qty-btn { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: all 0.2s; }
@@ -45,7 +45,7 @@
         .status-off { background-color: var(--off-red) !important; color: var(--off-text) !important; }
         .status-booked { background-color: var(--booked-blue) !important; color: var(--booked-text) !important; }
         
-        .footer-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 100; }
+        .footer-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 30px; box-shadow: 0 12px 30px rgba(0,0,0,0.1); z-index: 100; }
         .nav-item { border:none; background:none; color: var(--text-gray); font-size: 0.85em; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--accent-orange); font-weight: bold; }
         .nav-icon { display: block; font-size: 1.4em; }
@@ -58,7 +58,7 @@
             <img src="https://muchmore828.github.io/EightWords/logo.png" class="w-12 h-12 rounded-full border-2 border-white object-cover" alt="Kento">
         </div>
         <h1 id="greeting-text" class="text-sm font-bold">下午好，想喝點什麼？</h1>
-        <div id="shop-status-badge" class="mt-1 inline-block px-3 py-0.5 rounded-full bg-stone-700 text-[10px] border border-stone-600">
+        <div id="shop-status-badge" class="mt-1 inline-block px-3 py-0.5 rounded-full bg-stone-700 text-[12px] border border-stone-600">
             同步狀態中...
         </div>
     </header>
@@ -91,19 +91,19 @@
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="內用(外桌)" class="hidden" checked>
                     <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
-                        <div class="text-base">🌳</div><div class="text-[10px] font-bold">外桌</div>
+                        <div class="text-base"></div><div class="text-[12px] font-bold">外桌</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="內用(內桌)" class="hidden">
                     <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
-                        <div class="text-base">🛋️</div><div class="text-[10px] font-bold">內桌</div>
+                        <div class="text-base"></div><div class="text-[12px] font-bold">內桌</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="外帶" class="hidden">
                     <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
-                        <div class="text-base">🛍️</div><div class="text-[10px] font-bold">外帶</div>
+                        <div class="text-base"></div><div class="text-[12px] font-bold">外帶</div>
                     </div>
                 </label>
             </div>
@@ -119,11 +119,11 @@
             <div class="flex gap-1">
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="payment" value="現金" class="hidden" checked onchange="updatePaymentHint()">
-                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[10px] font-bold text-gray-500 bg-white">現金</div>
+                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[12px] font-bold text-gray-500 bg-white">現金</div>
                 </label>
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="payment" value="LINE Pay" class="hidden" onchange="updatePaymentHint()">
-                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[10px] font-bold text-gray-500 bg-white">LinePay</div>
+                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[12px] font-bold text-gray-500 bg-white">LinePay</div>
                 </label>
             </div>
         </div>
@@ -272,7 +272,7 @@
             let offset = firstDay === 0 ? 6 : firstDay - 1;
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            grid.innerHTML = ['一', '二', '三', '四', '五', '六', '日'].map(d => `<div class="text-[10px] font-bold text-gray-400 py-2">${d}</div>`).join('');
+            grid.innerHTML = ['一', '二', '三', '四', '五', '六', '日'].map(d => `<div class="text-[12px] font-bold text-gray-400 py-2">${d}</div>`).join('');
             for (let i = 0; i < offset; i++) grid.innerHTML += `<div></div>`;
 
             const scheduleMap = {};
@@ -325,7 +325,7 @@
             } else {
                 info.innerText = `📅 ${day}日 營業: ${hours || '14:00-19:00'}`;
                 if (slots.length > 0) {
-                    slots.forEach(s => container.innerHTML += `<span class="bg-white text-blue-500 text-[10px] px-2 py-1 rounded-lg border border-blue-100 font-bold">${s}</span>`);
+                    slots.forEach(s => container.innerHTML += `<span class="bg-white text-blue-500 text-[12px] px-2 py-1 rounded-lg border border-blue-100 font-bold">${s}</span>`);
                 } else {
                     container.innerHTML = `<p class="text-xs text-gray-400">目前無預約。</p>`;
                 }
@@ -338,9 +338,9 @@
             const today = data.find(item => { const d = new Date(item.Date); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}` === dateKey; });
             const badge = document.getElementById('shop-status-badge');
             if (today && (String(today.Type).includes("休") || String(today.Hours).includes("休"))) {
-                badge.innerText = "今日店休中 😴"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-red-900/30 text-[10px] border border-red-800";
+                badge.innerText = "今日店休中 😴"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-red-900/30 text-[12px] border border-red-800";
             } else {
-                badge.innerText = "今日正常營業 ✨"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-green-900/30 text-[10px] border border-green-800";
+                badge.innerText = "今日正常營業 ✨"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-green-900/30 text-[12px] border border-green-800";
             }
         }
 
