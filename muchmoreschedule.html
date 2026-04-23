@@ -19,15 +19,16 @@
             --off-red: #ffebeb;
             --off-text: #ff6b6b;
         }
-        /* 修正 1：增加 padding-bottom 確保捲動到底部時不會被點餐條遮住付款方式 */
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--pastel-cream); padding-bottom: 180px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--pastel-cream); height: 100vh; overflow: hidden; }
         
-        /* 視圖切換邏輯 */
+        /* 布局調整：讓主區域可以獨立捲動 */
+        main { height: calc(100vh - 120px); overflow-y: auto; padding-bottom: 250px; }
+        
         .view-section { display: none; animation: fadeIn 0.4s ease; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 點餐頁專用樣式 */
+        /* 點餐專用樣式 */
         .qty-btn { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; transition: all 0.2s; }
         .minus-btn { background-color: #E9ECEF; color: #495057; }
         .hot-theme { background-color: #E53935; color: white; } 
@@ -35,13 +36,15 @@
         .default-theme { background-color: #FB8C00; color: white; } 
         .option-card input:checked + div { border-color: #2E7D32; background-color: #E8F5E9; color: #1B5E20; }
 
+        /* 固定底部區塊 */
+        .fixed-bottom-controls { position: fixed; bottom: 155px; left: 0; width: 100%; background: white; padding: 12px 16px; border-top: 1px solid #eee; z-index: 40; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); }
+
         /* 日曆專用樣式 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
         .cal-day { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85em; border-radius: 12px; background: white; border: 1px solid #f0f0f0; cursor: pointer; }
         .status-off { background-color: var(--off-red) !important; color: var(--off-text) !important; }
         .status-booked { background-color: var(--booked-blue) !important; color: var(--booked-text) !important; }
         
-        /* 底部導航 */
         .footer-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 100; }
         .nav-item { border:none; background:none; color: var(--text-gray); font-size: 0.85em; text-align: center; cursor: pointer; }
         .nav-item.active { color: var(--accent-orange); font-weight: bold; }
@@ -50,23 +53,22 @@
 </head>
 <body>
 
-    <header class="bg-stone-800 text-white p-6 rounded-b-[40px] shadow-lg text-center">
-        <div class="flex justify-center mb-3">
-            <img src="https://muchmore828.github.io/EightWords/logo.png" class="w-16 h-16 rounded-full border-2 border-white object-cover" alt="Kento">
+    <header class="bg-stone-800 text-white p-6 rounded-b-[40px] shadow-lg text-center h-[120px]">
+        <div class="flex justify-center mb-1">
+            <img src="https://muchmore828.github.io/EightWords/logo.png" class="w-12 h-12 rounded-full border-2 border-white object-cover" alt="Kento">
         </div>
-        <h1 id="greeting-text" class="text-lg font-bold">下午好，想喝點什麼？</h1>
-        <div id="shop-status-badge" class="mt-2 inline-block px-4 py-1 rounded-full bg-stone-700 text-xs border border-stone-600">
+        <h1 id="greeting-text" class="text-sm font-bold">下午好，想喝點什麼？</h1>
+        <div id="shop-status-badge" class="mt-1 inline-block px-3 py-0.5 rounded-full bg-stone-700 text-[10px] border border-stone-600">
             同步狀態中...
         </div>
     </header>
 
-    <main class="container mx-auto px-4 mt-6">
-        
+    <main class="container mx-auto px-4 mt-4">
         <section id="view-home" class="view-section active space-y-6">
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-orange-50">
                 <h3 class="text-orange-400 font-bold flex items-center gap-2 mb-2">🐾 胖多多集點卡</h3>
-                <p class="text-sm text-gray-500 mb-4">實體卡數位化！<br>餐飲消費100元即可累積1點<br>每5點可獲得50元折抵券<br>集滿15點享一年餐飲九折優惠！</p>
-                <a href="https://u.lin.ee/sFWqYyn" class="block w-full py-3 bg-[#ff9a76] text-white text-center rounded-2xl font-bold shadow-md">打開我的集點卡</a>
+                <p class="text-sm text-gray-500 mb-4">消費100元即可累積1點，集滿享優惠！</p>
+                <a href="https://u.lin.ee/sFWqYyn" class="block w-full py-3 bg-[#ff9a76] text-white text-center rounded-2xl font-bold">打開我的集點卡</a>
             </div>
 
             <div class="bg-white p-5 rounded-3xl shadow-sm border border-orange-50">
@@ -85,53 +87,50 @@
         </section>
 
         <section id="view-order" class="view-section">
-            <div class="grid grid-cols-3 gap-2 mb-6">
+            <div class="grid grid-cols-3 gap-2 mb-4">
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="內用(外桌)" class="hidden" checked>
-                    <div class="border border-gray-200 bg-white rounded-2xl py-3 transition-all">
-                        <div class="text-lg">🌳</div><div class="text-xs font-bold">外桌</div>
+                    <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
+                        <div class="text-base">🌳</div><div class="text-[10px] font-bold">外桌</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="內用(內桌)" class="hidden">
-                    <div class="border border-gray-200 bg-white rounded-2xl py-3 transition-all">
-                        <div class="text-lg">🛋️</div><div class="text-xs font-bold">內桌</div>
+                    <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
+                        <div class="text-base">🛋️</div><div class="text-[10px] font-bold">內桌</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer text-center">
                     <input type="radio" name="orderType" value="外帶" class="hidden">
-                    <div class="border border-gray-200 bg-white rounded-2xl py-3 transition-all">
-                        <div class="text-lg">🛍️</div><div class="text-xs font-bold">外帶</div>
+                    <div class="border border-gray-200 bg-white rounded-2xl py-2 transition-all">
+                        <div class="text-base">🛍️</div><div class="text-[10px] font-bold">外帶</div>
                     </div>
                 </label>
             </div>
-
-            <div id="menu-container" class="grid gap-4"></div>
-
-            <div class="mt-6 bg-white p-5 rounded-3xl shadow-sm space-y-4">
-                <div>
-                    <h3 class="font-bold text-gray-700 mb-2 text-sm">📝 訂單備註</h3>
-                    <textarea id="customerNote" rows="2" placeholder="甜度冰塊調整..." class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm"></textarea>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-700 mb-2 text-sm">💳 付款方式(餐後結帳)</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="option-card cursor-pointer">
-                            <input type="radio" name="payment" value="現金" class="hidden" checked onchange="updatePaymentHint()">
-                            <div class="border border-gray-200 rounded-xl p-3 text-center text-xs font-bold text-gray-500">💵 現金</div>
-                        </label>
-                        <label class="option-card cursor-pointer">
-                            <input type="radio" name="payment" value="LINE Pay" class="hidden" onchange="updatePaymentHint()">
-                            <div class="border border-gray-200 rounded-xl p-3 text-center text-xs font-bold text-gray-500">💳 LINE Pay</div>
-                        </label>
-                    </div>
-                    <p id="payment-hint" class="hidden text-[10px] text-red-500 mt-2 p-2 bg-red-50 rounded-lg border border-red-100">⚠️ LINE Pay 請至櫃檯掃碼</p>
-                </div>
-            </div>
+            <div id="menu-container" class="grid gap-3"></div>
         </section>
     </main>
 
-    <div id="order-bar" class="fixed bottom-[85px] left-0 w-full bg-white border-t p-4 shadow-lg z-30 hidden">
+    <div id="fixed-order-controls" class="fixed-bottom-controls hidden">
+        <div class="flex gap-2 items-start mb-2">
+            <div class="flex-1">
+                <input type="text" id="customerNote" placeholder="📝 備註 (甜度冰塊...)" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs">
+            </div>
+            <div class="flex gap-1">
+                <label class="option-card cursor-pointer">
+                    <input type="radio" name="payment" value="現金" class="hidden" checked onchange="updatePaymentHint()">
+                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[10px] font-bold text-gray-500 bg-white">💵 現金</div>
+                </label>
+                <label class="option-card cursor-pointer">
+                    <input type="radio" name="payment" value="LINE Pay" class="hidden" onchange="updatePaymentHint()">
+                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[10px] font-bold text-gray-500 bg-white">💳 LP</div>
+                </label>
+            </div>
+        </div>
+        <p id="payment-hint" class="hidden text-[9px] text-red-500 bg-red-50 p-1 rounded text-center">⚠️ LINE Pay 請至櫃檯掃碼</p>
+    </div>
+
+    <div id="order-bar" class="fixed bottom-[85px] left-0 w-full bg-white border-t p-4 shadow-lg z-50 hidden">
         <div class="flex justify-between items-center max-w-500 mx-auto">
             <div class="text-xs text-gray-500">已選 <span id="total-count" class="font-bold text-orange-500">0</span> 份</div>
             <button onclick="submitOrder()" id="submit-btn" class="bg-stone-700 text-white px-8 py-2 rounded-xl font-bold text-sm disabled:bg-gray-300" disabled>送出訂單 ($0)</button>
@@ -173,19 +172,17 @@
             { id: 's1', name: '香絲(小)', price: 30, type: null, desc: '烘烤鱈魚香絲', img: 'https://placehold.co/100x100/ffecb3/333?text=Codfish' },
             { id: 's2', name: '香絲(大)', price: 60, type: null, desc: '烘烤鱈魚香絲', img: 'https://placehold.co/100x100/ffecb3/333?text=Codfish' },
             { id: 's3', name: '香魚片', price: 60, type: null, desc: '涮嘴小零食', img: 'https://placehold.co/100x100/ffecb3/333?text=Fish' },
-            { id: 's4', name: '多肉布丁', price: 70, type: null, desc: '手工焦糖布丁', img: 'https://placehold.co/100x100/ef5350/fff?text=Pudding' }
+            { id: 's4', name: '多肉布丁', price: 70, type: null, desc: '手工焦 caramel pudding', img: 'https://placehold.co/100x100/ef5350/fff?text=Pudding' }
         ];
 
         let cart = {};
         let currentDisplayDate = new Date();
         let globalData = [];
 
-        // 初始化
         async function init() {
             try {
                 await liff.init({ liffId: YOUR_LIFF_ID });
                 if (liff.isInClient() && !liff.isLoggedIn()) liff.login();
-                
                 renderMenu();
                 const response = await fetch(API_URL);
                 globalData = await response.json();
@@ -193,47 +190,45 @@
                 updateShopStatus(globalData);
             } catch (err) {
                 console.error("Init Failed", err);
-                renderMenu();
-                renderCalendar();
+                renderMenu(); renderCalendar();
             }
         }
 
-        // 頁面切換
         function switchView(view) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`view-${view}`).classList.add('active');
             document.getElementById(`nav-${view}`).classList.add('active');
             document.getElementById('order-bar').classList.toggle('hidden', view !== 'order');
+            document.getElementById('fixed-order-controls').classList.toggle('hidden', view !== 'order');
         }
 
-        // 點餐核心功能
         function renderMenu() {
             const container = document.getElementById('menu-container');
             container.innerHTML = menuItems.map(item => {
                 let controls = '';
-                if (item.type === 2) { // 冰熱都有
+                if (item.type === 2) {
                     controls = `
-                        <div class="flex items-center justify-between mt-1"><span class="text-[10px] text-red-500 font-bold">🔥 熱</span>
+                        <div class="flex items-center justify-between mt-1"><span class="text-[9px] text-red-500 font-bold">🔥 熱</span>
                         <div class="flex items-center"><div class="qty-btn minus-btn" onclick="updateCart('${item.id}', 'hot', -1)">-</div>
-                        <span class="mx-2 text-sm font-bold" id="qty-${item.id}-hot">0</span>
+                        <span class="mx-2 text-xs font-bold" id="qty-${item.id}-hot">0</span>
                         <div class="qty-btn plus-btn hot-theme" onclick="updateCart('${item.id}', 'hot', 1)">+</div></div></div>
-                        <div class="flex items-center justify-between mt-1"><span class="text-[10px] text-blue-500 font-bold">❄️ 冰</span>
+                        <div class="flex items-center justify-between mt-1"><span class="text-[9px] text-blue-500 font-bold">❄️ 冰</span>
                         <div class="flex items-center"><div class="qty-btn minus-btn" onclick="updateCart('${item.id}', 'cold', -1)">-</div>
-                        <span class="mx-2 text-sm font-bold" id="qty-${item.id}-cold">0</span>
+                        <span class="mx-2 text-xs font-bold" id="qty-${item.id}-cold">0</span>
                         <div class="qty-btn plus-btn cold-theme" onclick="updateCart('${item.id}', 'cold', 1)">+</div></div></div>`;
                 } else {
                     const variant = item.type === 1 ? 'hot' : (item.type === 0 ? 'cold' : 'default');
                     const theme = item.type === 1 ? 'hot-theme' : (item.type === 0 ? 'cold-theme' : 'default-theme');
                     controls = `<div class="flex items-center justify-end">
                         <div class="qty-btn minus-btn" onclick="updateCart('${item.id}', '${variant}', -1)">-</div>
-                        <span class="mx-2 text-sm font-bold" id="qty-${item.id}-${variant}">0</span>
+                        <span class="mx-2 text-xs font-bold" id="qty-${item.id}-${variant}">0</span>
                         <div class="qty-btn plus-btn ${theme}" onclick="updateCart('${item.id}', '${variant}', 1)">+</div></div>`;
                 }
                 return `<div class="bg-white p-3 rounded-2xl flex shadow-sm border border-gray-50">
-                    <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover mr-3">
-                    <div class="flex-1 flex flex-col justify-between">
-                        <div class="flex justify-between items-center"><h3 class="font-bold text-sm text-gray-800">${item.name}</h3><span class="text-sm font-bold">$${item.price}</span></div>
+                    <img src="${item.img}" class="w-14 h-14 rounded-xl object-cover mr-3">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1"><h3 class="font-bold text-xs text-gray-800">${item.name}</h3><span class="text-xs font-bold">$${item.price}</span></div>
                         ${controls}
                     </div></div>`;
             }).join('');
@@ -261,7 +256,6 @@
             sBtn.innerText = totalQty === 0 ? "請先選購" : `送出訂單 ($${totalP})`;
         }
 
-        // 日曆核心功能
         function changeMonth(offset) {
             currentDisplayDate.setMonth(currentDisplayDate.getMonth() + offset);
             renderCalendar();
@@ -293,48 +287,47 @@
                 const dayOfWeek = new Date(year, month, d).getDay();
                 let className = "cal-day", onClick = `showSlots('${d}', '', [])`;
 
-                // 修正 2：確保預約日期（藍色日期）能正確接收 Slots 陣列並觸發點擊
                 if (dayData) {
                     const type = String(dayData.Type || ""), hours = String(dayData.Hours || ""), slotsStr = String(dayData.Slots || "");
                     if (type.includes("休") || hours.includes("休")) { 
-                        className += " status-off"; 
-                        onClick = `showSlots('${d}', '店休', [])`; 
+                        className += " status-off"; onClick = `showSlots('${d}', '店休', [])`; 
                     }
                     else if (slotsStr && slotsStr.trim() !== "") { 
                         className += " status-booked"; 
-                        // 將字串轉為陣列再序列化傳入
                         const slotsArr = slotsStr.split(',').map(s => s.trim());
-                        onClick = `showSlots('${d}', '${hours}', ${JSON.stringify(slotsArr)})`; 
+                        // 修正：手動構建 JSON 字串避免引號錯誤
+                        const safeSlots = JSON.stringify(slotsArr).replace(/"/g, '&quot;');
+                        onClick = `showSlots('${d}', '${hours}', '${safeSlots}')`; 
                     }
-                    else { 
-                        onClick = `showSlots('${d}', '${hours}', [])`; 
-                    }
-                } else if (dayOfWeek === 1) { 
-                    className += " status-off"; 
-                    onClick = `showSlots('${d}', '店休', [])`; 
-                }
+                    else { onClick = `showSlots('${d}', '${hours}', [])`; }
+                } else if (dayOfWeek === 1) { className += " status-off"; onClick = `showSlots('${d}', '店休', [])`; }
 
                 grid.innerHTML += `<div class="${className}" onclick="${onClick}">${d}</div>`;
             }
         }
 
-        function showSlots(day, hours, slots) {
+        function showSlots(day, hours, slotsData) {
             const box = document.getElementById('slot-details');
             const info = document.getElementById('selected-date-info');
             const container = document.getElementById('slots-container');
             container.innerHTML = '';
             box.classList.remove('hidden');
 
+            let slots = [];
+            try { 
+                if (typeof slotsData === 'string' && slotsData !== '') slots = JSON.parse(slotsData.replace(/&quot;/g, '"'));
+                else if (Array.isArray(slotsData)) slots = slotsData;
+            } catch(e) { console.error("Parse Error", e); }
+
             if (hours === '店休') {
-                info.innerText = `📅 ${day}日 店長肯多休息中 💤`;
+                info.innerText = `📅 ${day}日 店長休息中`;
                 container.innerHTML = `<p class="text-xs text-gray-400">今日不營業喔！</p>`;
             } else {
-                info.innerText = `📅 ${day}日 營業時間: ${hours || '14:00-19:00'}`;
-                // 修正：檢查 slots 是否為有效陣列且有長度
-                if (Array.isArray(slots) && slots.length > 0) {
+                info.innerText = `📅 ${day}日 營業: ${hours || '14:00-19:00'}`;
+                if (slots.length > 0) {
                     slots.forEach(s => container.innerHTML += `<span class="bg-white text-blue-500 text-[10px] px-2 py-1 rounded-lg border border-blue-100 font-bold">${s}</span>`);
                 } else {
-                    container.innerHTML = `<p class="text-xs text-gray-400">目前無預約，歡迎詢問。</p>`;
+                    container.innerHTML = `<p class="text-xs text-gray-400">目前無預約。</p>`;
                 }
             }
         }
@@ -344,12 +337,10 @@
             const dateKey = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
             const today = data.find(item => { const d = new Date(item.Date); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}` === dateKey; });
             const badge = document.getElementById('shop-status-badge');
-            const greet = document.getElementById('greeting-text');
-
             if (today && (String(today.Type).includes("休") || String(today.Hours).includes("休"))) {
-                badge.innerText = "今日店休中 😴"; badge.classList.replace('bg-stone-700', 'bg-red-900/30'); greet.innerText = "肯多店長休息中";
+                badge.innerText = "今日店休中 😴"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-red-900/30 text-[10px] border border-red-800";
             } else {
-                badge.innerText = "今日正常營業 ✨"; badge.classList.replace('bg-stone-700', 'bg-green-900/30');
+                badge.innerText = "今日正常營業 ✨"; badge.className = "mt-1 inline-block px-3 py-0.5 rounded-full bg-green-900/30 text-[10px] border border-green-800";
             }
         }
 
@@ -363,7 +354,6 @@
             const note = document.getElementById('customerNote').value.trim();
             const pay = document.querySelector('input[name="payment"]:checked').value;
             let details = "", total = 0;
-
             for (const [key, qty] of Object.entries(cart)) {
                 if (qty > 0) {
                     const [id, variant] = key.split('-');
@@ -374,10 +364,8 @@
             }
             const msg = `【${type}】${pay}\n📝 備註：${note||'無'}\n------------------\n${details}------------------\n💰 總計：$${total}`;
             if (liff.isInClient()) {
-                liff.sendMessages([{ type: 'text', text: msg }]).then(() => liff.closeWindow()).catch(e => alert(e));
-            } else {
-                alert("預覽訂單：\n" + msg);
-            }
+                liff.sendMessages([{ type: 'text', text: msg }]).then(() => liff.closeWindow()).catch(e => alert("請確認LIFF權限:" + e));
+            } else { alert("預覽訂單：\n" + msg); }
         }
 
         init();
