@@ -233,7 +233,7 @@
 
         function shareToLine() {
             const quote = document.getElementById('result-quote').innerText;
-            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${cards}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
+            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${card}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
     </script>
