@@ -33,7 +33,7 @@
         .default-theme { background-color: #FB8C00; color: white; } 
 
         /* 固定底部區塊 */
-        .fixed-bottom-controls { position: fixed; bottom: 165px; left: 0; width: 100%; background: white; padding: 16px; border-top: 2px solid #f8f8f8; z-index: 40; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
+        .fixed-bottom-controls { position: fixed; bottom: 180px; left: 0; width: 100%; background: white; padding: 16px; border-top: 2px solid #f8f8f8; z-index: 40; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
 
         /* 日曆字體加大 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
@@ -313,7 +313,7 @@
                 if (slots.length > 0) {
                     slots.forEach(s => container.innerHTML += `<span class="bg-white text-blue-600 text-xs px-3 py-1.5 rounded-xl border border-blue-100 font-bold shadow-sm">${s}</span>`);
                 } else {
-                    container.innerHTML = `<p class="text-sm text-gray-400">今日尚無預約。</p>`;
+                    container.innerHTML = `<p class="text-sm text-gray-400">今日無安排預約。</p>`;
                 }
             }
         }
