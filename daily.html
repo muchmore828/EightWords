@@ -14,115 +14,94 @@
             min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             color: #5E503F;
-            padding-bottom: 50px;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .card-container { 
-            perspective: 1000px; 
-            width: 300px; 
-            aspect-ratio: 2 / 3; 
-            margin-bottom: 2rem;
-        }
-        .card {
-            width: 100%; height: 100%;
-            position: relative; transition: transform 0.8s;
-            transform-style: preserve-3d; cursor: pointer;
-        }
-        .card.is-flipped { transform: rotateY(180deg); }
-        .card-face {
-            position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden;
-            border-radius: 20px; border: 8px solid white;
-            box-shadow: 0 10px 25px rgba(244, 162, 97, 0.1); display: flex; flex-direction: column;
-            overflow: hidden;
-        }
-        .card-back {
-            background-color: #d4a373;
-            background-image: url('https://muchmore828.github.io/EightWords/cardback.png');
-            background-size: cover; background-position: center;
-        }
-        .card-front { transform: rotateY(180deg); background: white; }
-        
-        #result-img { width: 100%; height: auto; object-fit: contain; border-radius: 12px; }
-        
-        .hidden-prize-glow {
-            box-shadow: 0 0 20px #FFD700, 0 0 40px #FFA500 !important;
-            border: 8px solid #FFD700 !important;
-        }
-        .btn-orange { background-color: #F4A261; }
-        
-        /* 截圖目標區塊的特別設定 */
+        /* 截圖專用容器：確保高度自動撐開不裁切 */
         #final-capture-area {
-            background: transparent;
-            padding: 10px;
-            border-radius: 24px;
+            background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%);
+            width: 100%;
+            max-width: 380px;
+            padding: 30px 20px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
         }
+        .card-front { 
+            background: white; 
+            border-radius: 20px; 
+            border: 8px solid white;
+            box-shadow: 0 10px 25px rgba(244, 162, 97, 0.15); 
+            overflow: hidden;
+            width: 100%;
+        }
+        #result-img { width: 100%; height: auto; display: block; }
+        
+        /* 彈窗預覽層 */
+        #screenshot-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+        }
+        #preview-image { max-width: 95%; max-height: 80%; border-radius: 12px; border: 3px solid white; }
     </style>
 </head>
-<body class="p-6">
-
-    <div id="test-indicator" class="hidden mb-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
-        TEST MODE: 可重複抽牌
-    </div>
+<body class="p-4">
 
     <div class="text-center mb-6">
         <h1 class="text-2xl font-bold" style="color: #8D6E63;">☕ 多多萬事屋</h1>
-        <p class="opacity-60 text-xs mt-1" style="color: #BCAAA4;">—— 點擊卡片領取今日能量 ——</p>
+        <p class="opacity-60 text-xs mt-1" style="color: #BCAAA4;">領取你的今日能量建議</p>
     </div>
 
-    <div id="result-wrapper" class="hidden w-full max-w-sm">
-        
+    <div id="init-draw-zone" class="mt-10">
+        <div class="w-64 h-96 bg-[#d4a373] rounded-2xl border-8 border-white shadow-2xl cursor-pointer flex items-center justify-center text-white" 
+             style="background-image: url('https://muchmore828.github.io/EightWords/cardback.png'); background-size: cover; background-position: center;" 
+             onclick="drawToday()">
+            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">點擊翻牌</span>
+        </div>
+    </div>
+
+    <div id="result-wrapper" class="hidden w-full">
         <div id="final-capture-area">
-            <div class="card-container mx-auto" style="margin-bottom: 1.5rem;">
-                <div class="card is-flipped">
-                    <div class="card-face card-front p-4 flex flex-col" id="front-face">
-                        <img id="result-img" src="" crossOrigin="anonymous">
-                        <div class="flex-1 flex items-center justify-center mt-4">
-                            <p id="result-quote" class="text-sm leading-relaxed italic text-center px-2" style="color: #8D6E63;"></p>
-                        </div>
-                    </div>
+            <div class="card-front flex flex-col mb-6">
+                <img id="result-img" src="" crossOrigin="anonymous">
+                <div class="p-8 text-center">
+                    <p id="result-quote" class="text-lg italic leading-relaxed" style="color: #8D6E63;"></p>
                 </div>
             </div>
 
-            <div class="bg-white/90 backdrop-blur-sm p-6 rounded-3xl border border-white shadow-xl text-center relative overflow-hidden">
-                <div id="hidden-tag" class="hidden absolute top-0 right-0 bg-yellow-400 text-white text-[10px] px-2 py-1 font-bold">LUCKY!</div>
-                
-                <h3 class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mb-2">今日宇宙推薦</h3>
-                <p id="result-intro" class="text-xs text-stone-500 mb-2 leading-relaxed px-2"></p>
-                <p id="result-drink" class="text-stone-700 font-bold text-xl mb-4"></p>
-                
-                <div class="border-t border-dashed border-stone-200 pt-4">
-                    <p id="date-info" class="text-[10px] text-stone-400 font-mono"></p>
-                    <p id="expiry-info" class="text-[11px] text-orange-500 font-bold mt-1"></p>
-                    <p class="text-[9px] text-stone-300 mt-3">苗栗縣後龍鎮 | 多肉咖啡 Muchmore Cafe</p>
+            <div class="bg-white/95 p-8 rounded-3xl text-center shadow-lg border border-white">
+                <h3 class="text-stone-400 text-xs font-bold tracking-widest mb-2">今日宇宙推薦</h3>
+                <p id="result-intro" class="text-sm text-stone-500 mb-2"></p>
+                <p id="result-drink" class="text-stone-800 font-bold text-2xl mb-6"></p>
+                <div class="border-t border-dashed border-stone-200 pt-6">
+                    <p id="date-info" class="text-xs text-stone-400 font-mono"></p>
+                    <p id="expiry-info" class="text-sm text-orange-500 font-bold mt-1"></p>
+                    <p class="text-[10px] text-stone-300 mt-6 font-bold">苗栗縣頭份市 | 多肉咖啡 Muchmore Cafe</p>
                 </div>
             </div>
         </div>
 
-        <div class="mt-6 space-y-3 px-2">
-            <button onclick="captureTicket()" class="w-full py-4 bg-stone-800 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
-                <span>🖼️ 下載能量憑證 (截圖分享)</span>
+        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6">
+            <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95 transition">
+                ✨ 生成分享憑證 (請長按儲存)
             </button>
-            <button onclick="shareToLine()" class="w-full py-3 bg-[#06C755] text-white rounded-xl font-bold flex items-center justify-center gap-2 opacity-80">
-                <span>LINE 傳送文字給朋友</span>
+            <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">
+                LINE 分享占卜結果給好友
             </button>
-            <a href="https://lin.ee/NBCScpf" class="block text-center text-stone-400 text-sm underline pt-2">返回多肉咖啡官方帳號</a>
+            <a href="https://lin.ee/NBCScpf" class="block text-center text-stone-400 text-sm underline pb-10">返回多肉咖啡官方帳號</a>
         </div>
     </div>
 
-    <div id="init-draw-zone" class="card-container">
-        <div class="card" onclick="drawToday()">
-            <div class="card-face card-back"></div> 
-        </div>
+    <div id="screenshot-overlay" onclick="this.style.display='none'">
+        <p class="text-white mb-4 font-bold text-lg">憑證已生成！</p>
+        <img id="preview-image" src="" alt="能量憑證">
+        <p class="text-stone-300 mt-4 text-sm">請【長按圖片】儲存至相簿</p>
+        <button class="mt-8 px-10 py-3 bg-white text-stone-900 rounded-full font-bold text-sm">關閉預覽</button>
     </div>
 
     <script>
-        const IS_TEST_MODE = true; 
-        const probabilityConfig = {
-            hiddenPrizeChance: 40,
-            normalDiscount: "10 元折扣",
-            hiddenDiscount: "50 元特大驚喜"
-        };
-
+        // ==========================================
+        // 🃏 卡牌資料庫 (一行一筆，方便增減)
+        // ==========================================
         const cards = [
             { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
             { name: "1. 魔術師", img: "https://muchmore828.github.io/EightWords/1_The_Magician.png" },
@@ -133,94 +112,139 @@
             { name: "6. 戀人", img: "https://muchmore828.github.io/EightWords/6_The_Lovers.png" },
             { name: "7. 戰車", img: "https://muchmore828.github.io/EightWords/7_The_Chariot.png" },
             { name: "8. 力量", img: "https://muchmore828.github.io/EightWords/8_Strength.png" },
+            { name: "9. 隱士", img: "https://via.placeholder.com/400x600?text=9_Hermit" },
+            { name: "10. 命運之輪", img: "https://via.placeholder.com/400x600?text=10_Wheel" },
+            { name: "11. 正義", img: "https://via.placeholder.com/400x600?text=11_Justice" },
+            { name: "12. 吊人", img: "https://via.placeholder.com/400x600?text=12_HangedMan" },
+            { name: "13. 死神", img: "https://via.placeholder.com/400x600?text=13_Death" },
+            { name: "14. 節制", img: "https://via.placeholder.com/400x600?text=14_Temperance" },
+            { name: "15. 惡魔", img: "https://via.placeholder.com/400x600?text=15_Devil" },
+            { name: "16. 高塔", img: "https://via.placeholder.com/400x600?text=16_Tower" },
+            { name: "17. 星真", img: "https://via.placeholder.com/400x600?text=17_Star" },
+            { name: "18. 月亮", img: "https://via.placeholder.com/400x600?text=18_Moon" },
+            { name: "19. 太陽", img: "https://via.placeholder.com/400x600?text=19_Sun" },
+            { name: "20. 審判", img: "https://via.placeholder.com/400x600?text=20_Judgement" },
             { name: "21. 世界", img: "https://muchmore828.github.io/EightWords/21_World.png" }
-            // ... 其他卡片略過，請老闆自行補回 ...
         ];
 
-        const drinks = ["可爾必思","嘉年華鬆餅","美式咖啡","多肉布丁","拿鐵咖啡","榛果巧克力鬆餅"];
-        const quotes = ["當你放慢思緒，答案自然會浮現。","像貓一樣，在陽光最好的地方，專心地虛度光陰。","宇宙從不辜負一個認真對待「現在」的人。"];
+        // ==========================================
+        // ☕ 飲品點心清單 (一行一筆)
+        // ==========================================
+        const drinks = [
+            "可爾必思",
+            "嘉年華鬆餅",
+            "麝香葡萄",
+            "草莓果醬鬆餅",
+            "美式咖啡",
+            "高山冬片",
+            "紅茶拿鐵",
+            "夏戀",
+            "多肉布丁",
+            "單品咖啡",
+            "阿尼亞",
+            "拿鐵咖啡",
+            "香魚片",
+            "春梅",
+            "綠茶拿鐵",
+            "榛果巧克力鬆餅",
+            "摩卡咖啡",
+            "草莓果茶",
+            "香絲",
+            "原味鬆餅",
+            "可可牛奶",
+            "Ｑ心麻糬鬆餅"
+        ];
 
-        window.onload = () => {
-            if (IS_TEST_MODE) document.getElementById('test-indicator').classList.remove('hidden');
-            const history = JSON.parse(localStorage.getItem('muchmore_daily_draw_0424'));
-            const today = new Date().toLocaleDateString();
-            if (!IS_TEST_MODE && history && history.date === today) {
-                showFinal(history.data);
-            }
-        };
+        // ==========================================
+        // ✨ 能量金句清單 (一行一筆)
+        // ==========================================
+        const quotes = [
+            "當你放慢思緒，答案自然會浮現。",
+            "今日適合在忙碌中，為自己留出十分鐘的空白。",
+            "宇宙的安排總有其美意，即便是暫時的停留。",
+            "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。",
+            "有時候，不採取行動也是一種最有力的行動。",
+            "每一滴萃取的苦澀，都是為了襯托後續的回甘。",
+            "心亂的時候，就把目光收回到眼前的這杯茶。",
+            "暫時的迷路，是為了讓你遇見未曾看過的風景。",
+            "生活不是為了趕路，而是為了感受路。",
+            "把生活調成靜音，你才能聽見靈魂的耳語。",
+            "所有的「來不及」，其實都是另一種「剛剛好」。",
+            "像貓一樣，在陽光最好的地方，專心地虛度光陰。",
+            "練習對外界的雜音微笑，然後優雅地轉身。",
+            "既然無法控制風的方向，那就調整帆的角度。",
+            "最好的狀態，是心裡有事，但臉上無痕。",
+            "你的價值，不需要透過別人的肯定來「定義」。",
+            "偶爾的脆弱並不可恥，它是靈魂在提醒你該休息了。",
+            "成長是一場與自己的對話，不必急著給世界答案。",
+            "保持一點「必要的任性」，是愛自己最直觀的方式。",
+            "那些看似平淡的重複，正是支撐夢想的骨架。",
+            "與其追逐光，不如讓自己成為發光的人。",
+            "你的善良必須帶點鋒芒，才不至於在溫柔中迷失。",
+            "完美的包裝或許迷人，但真實的靈魂更有飽足感。",
+            "允許自己有不開心的權利，這也是一種自由。",
+            "把期待調低，快樂自然就會溢出來。",
+            "命運的劇本雖然寫好，但演出的語氣由你決定。",
+            "順著流走，你會發現阻力其實是另一種推力。",
+            "每一場相遇都有其保存期限，所以請在當下盡興。",
+            "宇宙從不辜負一個認真對待「現在」的人。",
+            "所有的失去，最終都會以另一種形式歸來。",
+            "保持開放的心態，好運才會找到入口。",
+            "練習把「為什麼發生在我身上」改成「這想教會我什麼」。",
+            "穩定自己的頻率，世界自然會與你共振。",
+            "當你開始愛自己，全宇宙都會為你讓路。",
+            "今天的遺憾，是明天驚喜的伏筆。"
+        ];
+
+        // ==========================================
+        // ⚙️ 核心邏輯 (抽牌與截圖)
+        // ==========================================
 
         function drawToday() {
-            const roll = Math.floor(Math.random() * 100) + 1;
-            const isHidden = roll <= probabilityConfig.hiddenPrizeChance;
-            const discount = isHidden ? probabilityConfig.hiddenDiscount : probabilityConfig.normalDiscount;
             const randomCard = cards[Math.floor(Math.random() * cards.length)];
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
             const randomDrink = drinks[Math.floor(Math.random() * drinks.length)];
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            
             const now = new Date();
-            const expiry = new Date();
-            expiry.setDate(now.getDate() + 2);
-            
-            const resultData = { 
-                date: now.toLocaleDateString(),
-                expiry: expiry.toLocaleDateString(),
-                quote: randomQuote, 
-                drink: randomDrink, 
-                img: randomCard.img,
-                discount: discount,
-                isHidden: isHidden
-            };
-            
-            if (!IS_TEST_MODE) localStorage.setItem('muchmore_daily_draw_0424', JSON.stringify({ date: now.toLocaleDateString(), data: resultData }));
-            showFinal(resultData);
-        }
+            const expiry = new Date(); 
+            expiry.setDate(now.getDate() + 2); // 兌換期限 D+2
 
-        function showFinal(data) {
+            // 切換畫面
             document.getElementById('init-draw-zone').classList.add('hidden');
             document.getElementById('result-wrapper').classList.remove('hidden');
             
-            document.getElementById('result-img').src = data.img;
-            document.getElementById('result-quote').innerText = `「${data.quote}」`;
-            document.getElementById('result-drink').innerText = `${data.drink} (${data.discount})`;
-            document.getElementById('date-info').innerText = `占卜日期：${data.date}`;
-            document.getElementById('expiry-info').innerText = `兌換期限至：${data.expiry}`;
-            
-            document.getElementById('result-intro').innerText = data.isHidden 
-                ? "【驚喜隱藏版！】宇宙今天特別眷顧你：" 
-                : "這份餐點與今日能量最契合，出示畫面享：";
-
-            if (data.isHidden) {
-                document.getElementById('hidden-tag').classList.remove('hidden');
-                document.getElementById('front-face').classList.add('hidden-prize-glow');
-            }
+            // 填充內容
+            document.getElementById('result-img').src = randomCard.img;
+            document.getElementById('result-quote').innerText = `「${randomQuote}」`;
+            document.getElementById('result-drink').innerText = randomDrink;
+            document.getElementById('date-info').innerText = `占卜日期：${now.toLocaleDateString()}`;
+            document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
+            document.getElementById('result-intro').innerText = "出示畫面即可享有推薦飲品折扣：";
         }
 
-        // --- 📸 核心：所見即所得截圖功能 ---
-        function captureTicket() {
-            const target = document.getElementById('final-capture-area');
+        async function captureTicket() {
             const btn = event.currentTarget;
-            btn.innerText = "✨ 正在產生憑證...";
+            btn.innerText = "⏳ 憑證生成中...";
+            const area = document.getElementById('final-capture-area');
             
-            html2canvas(target, {
-                useCORS: true,
-                scale: 3, // 提高品質，讓客人發限動不模糊
-                backgroundColor: "#FFF4F0" // 截圖底色
-            }).then(canvas => {
-                const imgData = canvas.toDataURL("image/png");
-                const link = document.createElement('a');
-                link.download = `多多萬事屋_能量憑證.png`;
-                link.href = imgData;
-                link.click();
-                
-                btn.innerText = "🖼️ 下載能量憑證 (截圖分享)";
-                alert("憑證已生成！\n\n請將圖片儲存並分享給朋友，\n到店出示此圖即可享有宇宙推薦優惠！");
-            });
+            // 延後執行確保圖片完全渲染
+            setTimeout(() => {
+                html2canvas(area, {
+                    useCORS: true,
+                    scale: 3, // 提高清晰度
+                    backgroundColor: "#FFE5D9"
+                }).then(canvas => {
+                    const imgData = canvas.toDataURL("image/png");
+                    document.getElementById('preview-image').src = imgData;
+                    document.getElementById('screenshot-overlay').style.display = 'flex';
+                    btn.innerText = "✨ 生成分享憑證 (請長按儲存)";
+                });
+            }, 600);
         }
 
         function shareToLine() {
             const quote = document.getElementById('result-quote').innerText;
-            const drink = document.getElementById('result-drink').innerText;
-            const officialLineUrl = "https://lin.ee/NBCScpf";
-            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n「${quote}」\n宇宙推薦：${drink}\n\n看你的今日能量建議 👇\n${officialLineUrl}`;
+            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n能量訊息：${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
     </script>
