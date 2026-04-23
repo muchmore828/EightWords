@@ -8,44 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body { 
-            font-family: 'Noto Sans TC', sans-serif; 
-            background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%);
-            min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            color: #5E503F;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        #final-capture-area {
-            background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%);
-            width: 100%;
-            max-width: 380px;
-            padding: 30px 20px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .card-front { 
-            background: white; 
-            border-radius: 20px; 
-            border: 8px solid white;
-            box-shadow: 0 10px 25px rgba(244, 162, 97, 0.15); 
-            overflow: hidden;
-            width: 100%;
-            position: relative;
-        }
-        /* 大獎發光特效 */
-        .prize-glow {
-            box-shadow: 0 0 25px #FFD700, 0 0 50px #FFA500 !important;
-            border: 8px solid #FFD700 !important;
-        }
+        body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #5E503F; padding-bottom: env(safe-area-inset-bottom); }
+        #final-capture-area { background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%); width: 100%; max-width: 380px; padding: 30px 20px; margin: 0 auto; display: flex; flex-direction: column; }
+        .card-front { background: white; border-radius: 20px; border: 8px solid white; box-shadow: 0 10px 25px rgba(244, 162, 97, 0.15); overflow: hidden; width: 100%; position: relative; }
+        .prize-glow { box-shadow: 0 0 25px #FFD700, 0 0 50px #FFA500 !important; border: 8px solid #FFD700 !important; }
         #result-img { width: 100%; height: auto; display: block; }
-        
-        #screenshot-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
-            z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
-        }
+        #screenshot-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         #preview-image { max-width: 95%; max-height: 80%; border-radius: 12px; border: 3px solid white; }
+        /* 讓換行符號 \n 生效 */
+        #result-intro { white-space: pre-line; }
     </style>
 </head>
 <body class="p-4">
@@ -58,8 +29,8 @@
     <div id="init-draw-zone" class="mt-10">
         <div class="w-64 h-96 bg-[#d4a373] rounded-2xl border-8 border-white shadow-2xl cursor-pointer flex items-center justify-center text-white" 
              style="background-image: url('https://muchmore828.github.io/EightWords/cardback.png'); background-size: cover; background-position: center;" 
-             onclick="drawToday()">
-            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">默數三秒點擊翻牌</span>
+             onclick="handleDraw()">
+            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">點擊翻牌</span>
         </div>
     </div>
 
@@ -72,11 +43,10 @@
                     <p id="result-quote" class="text-lg italic leading-relaxed" style="color: #8D6E63;"></p>
                 </div>
             </div>
-
             <div class="bg-white/95 p-8 rounded-3xl text-center shadow-lg border border-white">
                 <h3 class="text-stone-400 text-xs font-bold tracking-widest mb-2">今日宇宙推薦</h3>
-                <p id="result-drink" class="text-stone-800 font-bold text-2xl mb-6"></p>
                 <p id="result-intro" class="text-sm text-stone-500 mb-2"></p>
+                <p id="result-drink" class="text-stone-800 font-bold text-2xl mb-6"></p>
                 <div class="border-t border-dashed border-stone-200 pt-6">
                     <p id="date-info" class="text-xs text-stone-400 font-mono"></p>
                     <p id="expiry-info" class="text-sm text-orange-500 font-bold mt-1"></p>
@@ -84,39 +54,32 @@
                 </div>
             </div>
         </div>
-
-        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6">
-            <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95 transition">
-                ✨ 生成折扣憑證
-            </button>
-            <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">
-                LINE 分享占卜結果
-            </button>
-            <a href="https://lin.ee/NBCScpf" class="block text-center text-stone-400 text-sm underline pb-10">返回多肉咖啡官方帳號</a>
+        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6 pb-10">
+            <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95">✨ 生成折扣憑證 (可下次使用)</button>
+            <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">LINE 分享占卜結果</button>
+            <button onclick="resetForTest()" id="test-reset-btn" class="hidden w-full py-2 border border-dashed border-stone-300 text-stone-400 text-xs rounded-lg">測試模式：清除今日紀錄</button>
         </div>
     </div>
 
     <div id="screenshot-overlay" onclick="this.style.display='none'">
-        <p class="text-white mb-4 font-bold text-lg">憑證已生成！</p>
-        <img id="preview-image" src="" alt="能量憑證">
-        <p class="text-stone-300 mt-4 text-sm">請【長按圖片】儲存至相簿</p>
-        <button class="mt-8 px-10 py-3 bg-white text-stone-900 rounded-full font-bold text-sm">關閉預覽</button>
+        <img id="preview-image" src=""><p class="text-white mt-4">長按圖片儲存至相簿</p>
     </div>
 
     <script>
         // ==========================================
-        // 📊 抽獎機率設定 (目前設為 30% 中大獎)
+        // 📊 系統設定
         // ==========================================
-        const prizeConfig = {
-            luckyChance: 40, 
-            normalText: "出示畫面享推薦餐點折扣",
-            luckyText: "🎉 宇宙級好運！出示畫面享推薦餐點隱藏折扣",
-            normalDiscount: "折 5 元",
+        const config = {
+            isTestMode: true, 
+            luckyChance: 50,
+            normalText: "出示畫面享飲品推薦折扣：",
+            luckyText: "🎉 宇宙級好運！\n出示畫面享推薦餐點隱藏折扣",
+            normalDiscount: "折 10 元",
             luckyDiscount: "折 50 元"
         };
 
         // ==========================================
-        // 🃏 卡牌資料庫 (完整 0-21 號)
+        // 🃏 卡牌資料庫 (一行一筆)
         // ==========================================
         const cards = [
             { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
@@ -144,7 +107,7 @@
         ];
 
         // ==========================================
-        // ☕ 飲品點心清單 (完整 22 項)
+        // ☕ 飲品點心清單 (一行一筆)
         // ==========================================
         const drinks = [
             "可爾必思",
@@ -172,7 +135,7 @@
         ];
 
         // ==========================================
-        // ✨ 能量金句清單 (完整 35 則)
+        // ✨ 能量金句清單 (一行一筆)
         // ==========================================
         const quotes = [
             "當你放慢思緒，答案自然會浮現。",
@@ -216,55 +179,73 @@
         // ⚙️ 核心邏輯
         // ==========================================
 
-        function drawToday() {
+        window.onload = function() {
+            if (config.isTestMode) document.getElementById('test-reset-btn').classList.remove('hidden');
+            checkHistory();
+        };
+
+        function handleDraw() {
+            const today = new Date().toLocaleDateString();
+            if (!config.isTestMode && localStorage.getItem('lastDrawDate') === today) {
+                checkHistory();
+                return;
+            }
+            
             const roll = Math.floor(Math.random() * 100) + 1;
-            const isLucky = roll <= prizeConfig.luckyChance;
+            const isLucky = roll <= config.luckyChance;
+            const data = {
+                card: cards[Math.floor(Math.random() * cards.length)],
+                drink: drinks[Math.floor(Math.random() * drinks.length)],
+                quote: quotes[Math.floor(Math.random() * quotes.length)],
+                isLucky: isLucky,
+                date: today
+            };
 
-            const randomCard = cards[Math.floor(Math.random() * cards.length)];
-            const randomDrink = drinks[Math.floor(Math.random() * drinks.length)];
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            
-            const now = new Date();
-            const expiry = new Date(); 
-            expiry.setDate(now.getDate() + 2);
+            if (!config.isTestMode) {
+                localStorage.setItem('lastDrawDate', today);
+                localStorage.setItem('drawData', JSON.stringify(data));
+            }
+            renderResult(data);
+        }
 
-            document.getElementById('init-draw-zone').classList.add('hidden');
-            document.getElementById('result-wrapper').classList.remove('hidden');
-            
-            document.getElementById('result-img').src = randomCard.img;
-            document.getElementById('result-quote').innerText = `「${randomQuote}」`;
-            document.getElementById('date-info').innerText = `占卜日期：${now.toLocaleDateString()}`;
-            document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
-            
-            if (isLucky) {
-                document.getElementById('result-drink').innerText = `${randomDrink} (${prizeConfig.luckyDiscount})`;
-                document.getElementById('result-intro').innerText = prizeConfig.luckyText;
-                document.getElementById('card-container').classList.add('prize-glow');
-                document.getElementById('lucky-tag').classList.remove('hidden');
-            } else {
-                document.getElementById('result-drink').innerText = `${randomDrink} (${prizeConfig.normalDiscount})`;
-                document.getElementById('result-intro').innerText = prizeConfig.normalText;
-                document.getElementById('card-container').classList.remove('prize-glow');
-                document.getElementById('lucky-tag').classList.add('hidden');
+        function checkHistory() {
+            const savedData = localStorage.getItem('drawData');
+            if (!config.isTestMode && savedData) {
+                const data = JSON.parse(savedData);
+                if (data.date === new Date().toLocaleDateString()) renderResult(data);
             }
         }
 
-        async function captureTicket() {
-            const btn = event.currentTarget;
-            btn.innerText = "⏳ 正在繪製能量憑證...";
-            const area = document.getElementById('final-capture-area');
+        function renderResult(data) {
+            document.getElementById('init-draw-zone').classList.add('hidden');
+            document.getElementById('result-wrapper').classList.remove('hidden');
+            document.getElementById('result-img').src = data.card.img;
+            document.getElementById('result-quote').innerText = `「${data.quote}」`;
+            document.getElementById('result-drink').innerText = `${data.drink} (${data.isLucky ? config.luckyDiscount : config.normalDiscount})`;
+            document.getElementById('result-intro').innerText = data.isLucky ? config.luckyText : config.normalText;
+            document.getElementById('date-info').innerText = `占卜日期：${data.date}`;
             
-            setTimeout(() => {
-                html2canvas(area, {
-                    useCORS: true,
-                    scale: 3,
-                    backgroundColor: "#FFE5D9"
-                }).then(canvas => {
-                    document.getElementById('preview-image').src = canvas.toDataURL("image/png");
-                    document.getElementById('screenshot-overlay').style.display = 'flex';
-                    btn.innerText = "✨ 生成折扣憑證";
-                });
-            }, 600);
+            const expiry = new Date(); expiry.setDate(expiry.getDate() + 2);
+            document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
+
+            if (data.isLucky) {
+                document.getElementById('card-container').classList.add('prize-glow');
+                document.getElementById('lucky-tag').classList.remove('hidden');
+            }
+        }
+
+        function resetForTest() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        async function captureTicket() {
+            const btn = event.currentTarget; btn.innerText = "⏳ 繪製中...";
+            html2canvas(document.getElementById('final-capture-area'), { useCORS: true, scale: 3 }).then(canvas => {
+                document.getElementById('preview-image').src = canvas.toDataURL("image/png");
+                document.getElementById('screenshot-overlay').style.display = 'flex';
+                btn.innerText = "✨ 生成折扣憑證 (可下次使用)";
+            });
         }
 
         function shareToLine() {
