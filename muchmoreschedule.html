@@ -219,8 +219,8 @@
     </div>
 
     <nav class="footer-nav">
-        <a href="https://liff.line.me/2008538785-jQ0Wm6px" class="nav-item"><span class="nav-icon">☕</span>數位點餐</a>
-        <a href="https://liff.line.me/2008538785-7DvjVKw5" class="nav-item"><span class="nav-icon">🔮</span>預約諮詢</a>
+        <a href="javascript:void(0)" onclick="openLiff('2008538785-jQ0Wm6px" class="nav-item"><span class="nav-icon">☕</span>數位點餐</a>
+        <a href="javascript:void(0)" onclick="openLiff('2008538785-7DvjVKw5" class="nav-item"><span class="nav-icon">🔮</span>預約諮詢</a>
     </nav>
 
     <script>
@@ -240,7 +240,22 @@
                 console.error("初始化失敗:", e);
             }
         }
+        function openLiff(liffId) {
+            // 取得完整的 LIFF URL
+            const liffUrl = "https://liff.line.me/" + liffId;
 
+            if (liff.isInClient()) {
+                // 關鍵：使用 LINE 內建指令開啟，這會強迫 LINE 重新執行授權與初始化
+                liff.openWindow({
+                    url: liffUrl,
+                    external: false // false 代表在 LINE 裡面開啟新的 LIFF 視窗
+                });
+            } else {
+                // 非 LINE 環境則直接跳轉
+                window.location.href = liffUrl;
+            }
+        }
+        
         function changeMonth(offset) {
             currentDisplayDate.setMonth(currentDisplayDate.getMonth() + offset);
             renderCalendar();
