@@ -15,7 +15,6 @@
         #result-img { width: 100%; height: auto; display: block; }
         #screenshot-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         #preview-image { max-width: 95%; max-height: 80%; border-radius: 12px; border: 3px solid white; }
-        /* 讓換行符號 \n 生效 */
         #result-intro { white-space: pre-line; }
     </style>
 </head>
@@ -30,7 +29,7 @@
         <div class="w-64 h-96 bg-[#d4a373] rounded-2xl border-8 border-white shadow-2xl cursor-pointer flex items-center justify-center text-white" 
              style="background-image: url('https://muchmore828.github.io/EightWords/cardback.png'); background-size: cover; background-position: center;" 
              onclick="handleDraw()">
-            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">點擊翻牌</span>
+            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">默數三秒點擊翻牌</span>
         </div>
     </div>
 
@@ -54,10 +53,14 @@
                 </div>
             </div>
         </div>
-        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6 pb-10">
-            <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95">✨ 生成折扣憑證 (可下次使用)</button>
+        
+        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6 pb-10 text-center">
+            <button onclick="captureTicket()" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95">✨ 生成折扣憑證</button>
             <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">LINE 分享占卜結果</button>
-            <button onclick="resetForTest()" id="test-reset-btn" class="hidden w-full py-2 border border-dashed border-stone-300 text-stone-400 text-xs rounded-lg">測試模式：清除今日紀錄</button>
+            
+            <a href="https://lin.ee/NBCScpf" class="inline-block mt-4 text-stone-400 text-sm underline">返回多肉咖啡官方帳號</a>
+            
+            <button onclick="resetForTest()" id="test-reset-btn" class="hidden w-full mt-6 py-2 border border-dashed border-stone-300 text-stone-400 text-xs rounded-lg">測試模式：清除今日紀錄</button>
         </div>
     </div>
 
@@ -66,9 +69,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // 📊 系統設定
-        // ==========================================
         const config = {
             isTestMode: true, 
             luckyChance: 50,
@@ -78,9 +78,6 @@
             luckyDiscount: "折 50 元"
         };
 
-        // ==========================================
-        // 🃏 卡牌資料庫 (一行一筆)
-        // ==========================================
         const cards = [
             { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
             { name: "1. 魔術師", img: "https://muchmore828.github.io/EightWords/1_The_Magician.png" },
@@ -106,9 +103,6 @@
             { name: "21. 世界", img: "https://muchmore828.github.io/EightWords/21_World.png" }
         ];
 
-        // ==========================================
-        // ☕ 飲品點心清單 (一行一筆)
-        // ==========================================
         const drinks = [
             "可爾必思",
             "嘉年華鬆餅",
@@ -134,9 +128,6 @@
             "Ｑ心麻糬鬆餅"
         ];
 
-        // ==========================================
-        // ✨ 能量金句清單 (一行一筆)
-        // ==========================================
         const quotes = [
             "當你放慢思緒，答案自然會浮現。",
             "今日適合在忙碌中，為自己留出十分鐘的空白。",
@@ -175,10 +166,6 @@
             "今天的遺憾，是明天驚喜的伏筆。"
         ];
 
-        // ==========================================
-        // ⚙️ 核心邏輯
-        // ==========================================
-
         window.onload = function() {
             if (config.isTestMode) document.getElementById('test-reset-btn').classList.remove('hidden');
             checkHistory();
@@ -190,7 +177,6 @@
                 checkHistory();
                 return;
             }
-            
             const roll = Math.floor(Math.random() * 100) + 1;
             const isLucky = roll <= config.luckyChance;
             const data = {
@@ -200,7 +186,6 @@
                 isLucky: isLucky,
                 date: today
             };
-
             if (!config.isTestMode) {
                 localStorage.setItem('lastDrawDate', today);
                 localStorage.setItem('drawData', JSON.stringify(data));
@@ -224,10 +209,8 @@
             document.getElementById('result-drink').innerText = `${data.drink} (${data.isLucky ? config.luckyDiscount : config.normalDiscount})`;
             document.getElementById('result-intro').innerText = data.isLucky ? config.luckyText : config.normalText;
             document.getElementById('date-info').innerText = `占卜日期：${data.date}`;
-            
             const expiry = new Date(); expiry.setDate(expiry.getDate() + 2);
             document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
-
             if (data.isLucky) {
                 document.getElementById('card-container').classList.add('prize-glow');
                 document.getElementById('lucky-tag').classList.remove('hidden');
@@ -244,7 +227,7 @@
             html2canvas(document.getElementById('final-capture-area'), { useCORS: true, scale: 3 }).then(canvas => {
                 document.getElementById('preview-image').src = canvas.toDataURL("image/png");
                 document.getElementById('screenshot-overlay').style.display = 'flex';
-                btn.innerText = "✨ 生成折扣憑證 (可下次使用)";
+                btn.innerText = "✨ 生成折扣憑證";
             });
         }
 
