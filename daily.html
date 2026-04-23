@@ -71,7 +71,7 @@
     <script>
         const config = {
             isTestMode: false, 
-            luckyChance: 50,
+            luckyChance: 15,
             normalText: "出示畫面享餐點推薦折扣",
             luckyText: "🎉 宇宙級好運！\n出示畫面享推薦餐點隱藏折扣",
             normalDiscount: "折 10 元",
@@ -135,7 +135,7 @@
             "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。",
             "有時候，不採取行動也是一種最有力的行動。",
             "每一滴萃取的苦澀，都是為了襯托後續的回甘。",
-            "心亂的時候，就把目光收回到眼前的這杯茶。",
+            "心亂的時候，就把目光收回到眼前的這杯飲品。",
             "暫時的迷路，是為了讓你遇見未曾看過的風景。",
             "生活不是為了趕路，而是為了感受路。",
             "把生活調成靜音，你才能聽見靈魂的耳語。",
@@ -160,7 +160,7 @@
             "宇宙從不辜負一個認真對待「現在」的人。",
             "所有的失去，最終都會以另一種形式歸來。",
             "保持開放的心態，好運才會找到入口。",
-            "練習把「為什麼發生在我身上」改成「這想教會我什麼」。",
+            "練習把「為什麼發生在我身上」改成「想教會我什麼」。",
             "穩定自己的頻率，世界自然會與你共振。",
             "當你開始愛自己，全宇宙都會為你讓路。",
             "今天的遺憾，是明天驚喜的伏筆。"
@@ -233,7 +233,7 @@
 
         function shareToLine() {
             const quote = document.getElementById('result-quote').innerText;
-            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n能量訊息：${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
+            const shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：【${cards}】\n能量訊息：${quote}\n\n想知道你的今日能量建議嗎？👇\nhttps://lin.ee/NBCScpf`;
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
     </script>
