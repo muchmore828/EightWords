@@ -16,7 +16,6 @@
             color: #5E503F;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        /* 截圖專用容器：確保高度自動撐開不裁切 */
         #final-capture-area {
             background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%);
             width: 100%;
@@ -33,10 +32,15 @@
             box-shadow: 0 10px 25px rgba(244, 162, 97, 0.15); 
             overflow: hidden;
             width: 100%;
+            position: relative;
+        }
+        /* 大獎發光特效 */
+        .prize-glow {
+            box-shadow: 0 0 25px #FFD700, 0 0 50px #FFA500 !important;
+            border: 8px solid #FFD700 !important;
         }
         #result-img { width: 100%; height: auto; display: block; }
         
-        /* 彈窗預覽層 */
         #screenshot-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
             z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px;
@@ -55,13 +59,14 @@
         <div class="w-64 h-96 bg-[#d4a373] rounded-2xl border-8 border-white shadow-2xl cursor-pointer flex items-center justify-center text-white" 
              style="background-image: url('https://muchmore828.github.io/EightWords/cardback.png'); background-size: cover; background-position: center;" 
              onclick="drawToday()">
-            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">點擊翻牌</span>
+            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">默數三秒點擊翻牌</span>
         </div>
     </div>
 
     <div id="result-wrapper" class="hidden w-full">
         <div id="final-capture-area">
-            <div class="card-front flex flex-col mb-6">
+            <div id="card-container" class="card-front flex flex-col mb-6">
+                <div id="lucky-tag" class="hidden absolute top-0 right-0 bg-yellow-400 text-white text-[10px] px-3 py-1 font-bold z-10 shadow-md">LUCKY!</div>
                 <img id="result-img" src="" crossOrigin="anonymous">
                 <div class="p-8 text-center">
                     <p id="result-quote" class="text-lg italic leading-relaxed" style="color: #8D6E63;"></p>
@@ -85,7 +90,7 @@
                 ✨ 生成分享憑證 (請長按儲存)
             </button>
             <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">
-                LINE 分享占卜結果給好友
+                LINE 分享占卜結果
             </button>
             <a href="https://lin.ee/NBCScpf" class="block text-center text-stone-400 text-sm underline pb-10">返回多肉咖啡官方帳號</a>
         </div>
@@ -100,7 +105,18 @@
 
     <script>
         // ==========================================
-        // 🃏 卡牌資料庫 (一行一筆，方便增減)
+        // 📊 抽獎機率設定 (目前設為 40% 中大獎)
+        // ==========================================
+        const prizeConfig = {
+            luckyChance: 40, // 中大獎的百分比 (0-100)
+            normalText: "出示畫面享推薦餐點折扣：",
+            luckyText: "🎉 宇宙級好運！出示畫面享隱藏驚喜：",
+            normalDiscount: "折 10 元",
+            luckyDiscount: "折 50 元 (驚喜限定)"
+        };
+
+        // ==========================================
+        // 🃏 卡牌資料庫
         // ==========================================
         const cards = [
             { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
@@ -112,23 +128,12 @@
             { name: "6. 戀人", img: "https://muchmore828.github.io/EightWords/6_The_Lovers.png" },
             { name: "7. 戰車", img: "https://muchmore828.github.io/EightWords/7_The_Chariot.png" },
             { name: "8. 力量", img: "https://muchmore828.github.io/EightWords/8_Strength.png" },
-            { name: "9. 隱士", img: "https://via.placeholder.com/400x600?text=9_Hermit" },
-            { name: "10. 命運之輪", img: "https://via.placeholder.com/400x600?text=10_Wheel" },
-            { name: "11. 正義", img: "https://via.placeholder.com/400x600?text=11_Justice" },
-            { name: "12. 吊人", img: "https://via.placeholder.com/400x600?text=12_HangedMan" },
-            { name: "13. 死神", img: "https://via.placeholder.com/400x600?text=13_Death" },
-            { name: "14. 節制", img: "https://via.placeholder.com/400x600?text=14_Temperance" },
-            { name: "15. 惡魔", img: "https://via.placeholder.com/400x600?text=15_Devil" },
-            { name: "16. 高塔", img: "https://via.placeholder.com/400x600?text=16_Tower" },
-            { name: "17. 星真", img: "https://via.placeholder.com/400x600?text=17_Star" },
-            { name: "18. 月亮", img: "https://via.placeholder.com/400x600?text=18_Moon" },
-            { name: "19. 太陽", img: "https://via.placeholder.com/400x600?text=19_Sun" },
-            { name: "20. 審判", img: "https://via.placeholder.com/400x600?text=20_Judgement" },
             { name: "21. 世界", img: "https://muchmore828.github.io/EightWords/21_World.png" }
+            // 往後可在此一行一行增加...
         ];
 
         // ==========================================
-        // ☕ 飲品點心清單 (一行一筆)
+        // ☕ 飲品點心清單
         // ==========================================
         const drinks = [
             "可爾必思",
@@ -156,7 +161,7 @@
         ];
 
         // ==========================================
-        // ✨ 能量金句清單 (一行一筆)
+        // ✨ 能量金句清單
         // ==========================================
         const quotes = [
             "當你放慢思緒，答案自然會浮現。",
@@ -197,45 +202,57 @@
         ];
 
         // ==========================================
-        // ⚙️ 核心邏輯 (抽牌與截圖)
+        // ⚙️ 核心邏輯 (大獎判定)
         // ==========================================
 
         function drawToday() {
+            // 判定大獎
+            const roll = Math.floor(Math.random() * 100) + 1;
+            const isLucky = roll <= prizeConfig.luckyChance;
+
             const randomCard = cards[Math.floor(Math.random() * cards.length)];
             const randomDrink = drinks[Math.floor(Math.random() * drinks.length)];
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
             
             const now = new Date();
             const expiry = new Date(); 
-            expiry.setDate(now.getDate() + 2); // 兌換期限 D+2
+            expiry.setDate(now.getDate() + 2);
 
-            // 切換畫面
             document.getElementById('init-draw-zone').classList.add('hidden');
             document.getElementById('result-wrapper').classList.remove('hidden');
             
-            // 填充內容
+            // 內容填充
             document.getElementById('result-img').src = randomCard.img;
             document.getElementById('result-quote').innerText = `「${randomQuote}」`;
-            document.getElementById('result-drink').innerText = randomDrink;
             document.getElementById('date-info').innerText = `占卜日期：${now.toLocaleDateString()}`;
             document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
-            document.getElementById('result-intro').innerText = "出示畫面即可享有推薦飲品折扣：";
+            
+            // 大獎與一般獎的差異邏輯
+            if (isLucky) {
+                document.getElementById('result-drink').innerText = `${randomDrink} (${prizeConfig.luckyDiscount})`;
+                document.getElementById('result-intro').innerText = prizeConfig.luckyText;
+                document.getElementById('card-container').classList.add('prize-glow');
+                document.getElementById('lucky-tag').classList.remove('hidden');
+            } else {
+                document.getElementById('result-drink').innerText = `${randomDrink} (${prizeConfig.normalDiscount})`;
+                document.getElementById('result-intro').innerText = prizeConfig.normalText;
+                document.getElementById('card-container').classList.remove('prize-glow');
+                document.getElementById('lucky-tag').classList.add('hidden');
+            }
         }
 
         async function captureTicket() {
             const btn = event.currentTarget;
-            btn.innerText = "⏳ 憑證生成中...";
+            btn.innerText = "⏳ 正在繪製能量憑證...";
             const area = document.getElementById('final-capture-area');
             
-            // 延後執行確保圖片完全渲染
             setTimeout(() => {
                 html2canvas(area, {
                     useCORS: true,
-                    scale: 3, // 提高清晰度
+                    scale: 3,
                     backgroundColor: "#FFE5D9"
                 }).then(canvas => {
-                    const imgData = canvas.toDataURL("image/png");
-                    document.getElementById('preview-image').src = imgData;
+                    document.getElementById('preview-image').src = canvas.toDataURL("image/png");
                     document.getElementById('screenshot-overlay').style.display = 'flex';
                     btn.innerText = "✨ 生成分享憑證 (請長按儲存)";
                 });
