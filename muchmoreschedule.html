@@ -19,7 +19,8 @@
             --off-red: #ffebeb;
             --off-text: #ff6b6b;
         }
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--pastel-cream); padding-bottom: 100px; }
+        /* 修正 1：增加 padding-bottom 確保捲動到底部時不會被點餐條遮住付款方式 */
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--pastel-cream); padding-bottom: 180px; }
         
         /* 視圖切換邏輯 */
         .view-section { display: none; animation: fadeIn 0.4s ease; }
@@ -292,12 +293,26 @@
                 const dayOfWeek = new Date(year, month, d).getDay();
                 let className = "cal-day", onClick = `showSlots('${d}', '', [])`;
 
+                // 修正 2：確保預約日期（藍色日期）能正確接收 Slots 陣列並觸發點擊
                 if (dayData) {
-                    const type = String(dayData.Type || ""), hours = String(dayData.Hours || ""), slots = String(dayData.Slots || "");
-                    if (type.includes("休") || hours.includes("休")) { className += " status-off"; onClick = `showSlots('${d}', '店休', [])`; }
-                    else if (slots) { className += " status-booked"; onClick = `showSlots('${d}', '${hours}', ${JSON.stringify(slots.split(','))})`; }
-                    else { onClick = `showSlots('${d}', '${hours}', [])`; }
-                } else if (dayOfWeek === 1) { className += " status-off"; onClick = `showSlots('${d}', '店休', [])`; }
+                    const type = String(dayData.Type || ""), hours = String(dayData.Hours || ""), slotsStr = String(dayData.Slots || "");
+                    if (type.includes("休") || hours.includes("休")) { 
+                        className += " status-off"; 
+                        onClick = `showSlots('${d}', '店休', [])`; 
+                    }
+                    else if (slotsStr && slotsStr.trim() !== "") { 
+                        className += " status-booked"; 
+                        // 將字串轉為陣列再序列化傳入
+                        const slotsArr = slotsStr.split(',').map(s => s.trim());
+                        onClick = `showSlots('${d}', '${hours}', ${JSON.stringify(slotsArr)})`; 
+                    }
+                    else { 
+                        onClick = `showSlots('${d}', '${hours}', [])`; 
+                    }
+                } else if (dayOfWeek === 1) { 
+                    className += " status-off"; 
+                    onClick = `showSlots('${d}', '店休', [])`; 
+                }
 
                 grid.innerHTML += `<div class="${className}" onclick="${onClick}">${d}</div>`;
             }
@@ -315,7 +330,8 @@
                 container.innerHTML = `<p class="text-xs text-gray-400">今日不營業喔！</p>`;
             } else {
                 info.innerText = `📅 ${day}日 營業時間: ${hours || '14:00-19:00'}`;
-                if (slots.length > 0) {
+                // 修正：檢查 slots 是否為有效陣列且有長度
+                if (Array.isArray(slots) && slots.length > 0) {
                     slots.forEach(s => container.innerHTML += `<span class="bg-white text-blue-500 text-[10px] px-2 py-1 rounded-lg border border-blue-100 font-bold">${s}</span>`);
                 } else {
                     container.innerHTML = `<p class="text-xs text-gray-400">目前無預約，歡迎詢問。</p>`;
