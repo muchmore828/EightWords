@@ -13,42 +13,43 @@
             --pastel-orange: #ffecd2;
             --pastel-cream: #fdfcf0;
             --accent-orange: #ff9a76;
-            --text-gray: #4a4a4a; /* 加深文字顏色提高對比 */
+            --text-gray: #4a4a4a;
             --booked-blue: #e3f2fd;
             --booked-text: #1565c0;
         }
         body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--pastel-cream); height: 100vh; overflow: hidden; color: var(--text-gray); }
         
-        /* 布局高度微調 */
         main { height: calc(100vh - 140px); overflow-y: auto; padding-bottom: 280px; }
         
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
 
-        /* 點餐按鈕加大 */
         .qty-btn { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; cursor: pointer; }
         .minus-btn { background-color: #f1f3f5; color: #495057; }
         .hot-theme { background-color: #E53935; color: white; } 
         .cold-theme { background-color: #1E88E5; color: white; } 
         .default-theme { background-color: #FB8C00; color: white; } 
 
-        /* 固定底部區塊 */
         .fixed-bottom-controls { position: fixed; bottom: 180px; left: 0; width: 100%; background: white; padding: 16px; border-top: 2px solid #f8f8f8; z-index: 40; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); }
 
-        /* 日曆字體加大 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         .cal-day { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 500; border-radius: 14px; background: white; border: 1px solid #f0f0f0; }
         .status-off { background-color: #ffebeb !important; color: #ff6b6b !important; }
         .status-booked { background-color: var(--booked-blue) !important; color: var(--booked-text) !important; font-weight: bold; }
         
-        /* 導航列文字 */
         .footer-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 14px 0; border-radius: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 100; border: 1px solid rgba(0,0,0,0.05); }
         .nav-item { border:none; background:none; color: #888; font-size: 14px; text-align: center; }
         .nav-item.active { color: var(--accent-orange); font-weight: bold; }
         .nav-icon { display: block; font-size: 20px; margin-bottom: 2px; }
 
-        /* 輸入框與選單字體 */
         input[type="text"], input[type="radio"] + div { font-size: 15px !important; }
+
+        /* 付款方式選取樣式 */
+        input[name="payment"]:checked + .pay-box {
+            background-color: #4a4a4a;
+            color: white;
+            border-color: #4a4a4a;
+        }
     </style>
 </head>
 <body>
@@ -88,13 +89,13 @@
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="orderType" value="內用(外桌)" class="hidden" checked>
                     <div class="border-2 border-gray-100 bg-white rounded-2xl py-3 text-center transition-all">
-                        <div class="text-xl mb-1"></div><div class="text-sm font-bold">外桌</div>
+                        <div class="text-xl mb-1"></div><div class="text-sm font-bold">內用(外桌)</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="orderType" value="內用(內桌)" class="hidden">
                     <div class="border-2 border-gray-100 bg-white rounded-2xl py-3 text-center transition-all">
-                        <div class="text-xl mb-1"></div><div class="text-sm font-bold">內桌</div>
+                        <div class="text-xl mb-1"></div><div class="text-sm font-bold">內用(內桌)</div>
                     </div>
                 </label>
                 <label class="option-card cursor-pointer">
@@ -116,11 +117,11 @@
             <div class="flex gap-1">
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="payment" value="現金" class="hidden" checked onchange="updatePaymentHint()">
-                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[12px] font-bold text-gray-500 bg-white">現金</div>
+                    <div class="pay-box border border-gray-200 rounded-xl px-3 py-2 text-[12px] font-bold text-gray-500 bg-white transition-all">現金</div>
                 </label>
                 <label class="option-card cursor-pointer">
                     <input type="radio" name="payment" value="LINE Pay" class="hidden" onchange="updatePaymentHint()">
-                    <div class="border border-gray-200 rounded-xl px-2 py-2 text-[12px] font-bold text-gray-500 bg-white">LinePay</div>
+                    <div class="pay-box border border-gray-200 rounded-xl px-3 py-2 text-[12px] font-bold text-gray-500 bg-white transition-all">LinePay</div>
                 </label>
             </div>
         </div>
@@ -139,12 +140,11 @@
             <span class="nav-icon">🏠</span>行事曆
         </button>
         <button onclick="switchView('order')" id="nav-order" class="nav-item">
-            <span class="nav-icon">☕</span>我要點餐
+            <span class="nav-icon">☕</span>菜單 / 點餐
         </button>
     </nav>
 
     <script>
-        // 腳本部分保持與上次逻辑一致，但 UI 渲染部分的 HTML 字級已對應加大
         const YOUR_LIFF_ID = "2008538785-jQ0Wm6px";
         const API_URL = "https://script.google.com/macros/s/AKfycbylNOUexoQZKY3EH4iWAft82GjH0aPMBOEUzmmHe5GpSbJPhdSZU4KbyFFiPRU70Ri8/exec";
         
@@ -355,7 +355,7 @@
             const type = document.querySelector('input[name="orderType"]:checked').value;
             const note = document.getElementById('customerNote').value.trim();
             const pay = document.querySelector('input[name="payment"]:checked').value;
-            let details = "", total = 0;
+            let details = ""; let total = 0;
             for (const [key, qty] of Object.entries(cart)) {
                 if (qty > 0) {
                     const [id, variant] = key.split('-');
