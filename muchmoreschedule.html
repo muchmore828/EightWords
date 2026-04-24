@@ -149,23 +149,28 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbylNOUexoQZKY3EH4iWAft82GjH0aPMBOEUzmmHe5GpSbJPhdSZU4KbyFFiPRU70Ri8/exec";
         
         const menuItems = [
-            { id: 'c1', name: '美式咖啡', price: 80, type: 2, desc: '經典黑咖啡', img: 'https://placehold.co/120x120/3e2723/fff?text=Americano' },
-            { id: 'c2', name: '拿鐵咖啡', price: 120, type: 2, desc: '濃縮咖啡與無乳糖牛奶', img: 'https://placehold.co/120x120/5d4037/fff?text=Latte' },
-            { id: 'c3', name: '摩卡咖啡', price: 130, type: 2, desc: '巧克力風味拿鐵', img: 'https://placehold.co/120x120/4e342e/fff?text=Mocha' },
-            { id: 't1', name: '可可牛奶', price: 70, type: 2, desc: '香濃巧克力與無乳糖牛奶', img: 'https://placehold.co/120x120/b71c1c/fff?text=Cocoa' },
-            { id: 't2', name: '紅茶拿鐵', price: 90, type: 2, desc: '精選紅茶與無乳糖牛奶', img: 'https://placehold.co/120x120/a1887f/fff?text=TeaLatte' },
-            { id: 'd1', name: '綠茶拿鐵', price: 90, type: 2, desc: '精選綠茶與無乳糖牛奶', img: 'https://placehold.co/120x120/3e2723/fff?text=GreenTeaLatte' },
-            { id: 'h1', name: '高山冬片茶', price: 100, type: 1, desc: '現泡熱茶', img: 'https://placehold.co/120x120/689f38/fff?text=Tea' },
-            { id: 'h2', name: '草莓風味果茶', price: 120, type: 1, desc: '酸甜莓果香氣', img: 'https://placehold.co/120x120/e91e63/fff?text=StrawberryTea' },
-            { id: 'h3', name: '麝香葡萄風味茶', price: 150, type: 1, desc: '濃郁葡萄果香', img: 'https://placehold.co/120x120/8e24aa/fff?text=GrapeTea' },
-            { id: 'ice1', name: '可爾必思', price: 60, type: 0, desc: '乳酸氣泡飲', img: 'https://placehold.co/120x120/039be5/fff?text=Calpis' },
-            { id: 'ice2', name: '春梅', price: 100, type: 0, desc: '青梅醋氣泡飲', img: 'https://placehold.co/120x120/039be5/fff?text=Plum' },
-            { id: 'ice3', name: '夏戀', price: 100, type: 0, desc: '石榴醋氣泡飲', img: 'https://placehold.co/120x120/039be5/fff?text=Pomegranate' },
-            { id: 'ice4', name: '阿尼亞', price: 150, type: 0, desc: '咖啡基底特調', img: 'https://placehold.co/120x120/ff6f00/fff?text=Anya' },
-            { id: 'f1', name: '原味鬆餅', price: 50, type: null, desc: ' ', img: 'https://placehold.co/120x120/ffb74d/fff?text=Waffle' },
-            { id: 'f2', name: '榛果巧克力鬆餅', price: 70, type: null, desc: ' ', img: 'https://placehold.co/120x120/5d4037/fff?text=Choco' },
-            { id: 'f4', name: 'Ｑ心麻糬鬆餅', price: 100, type: null, desc: ' ', img: 'https://placehold.co/120x120/fff9c4/333?text=Mochi' },
-            { id: 's4', name: '多肉布丁', price: 70, type: null, desc: '手工焦糖', img: 'https://placehold.co/120x120/ef5350/fff?text=Pudding' }
+            { id: 'c1', name: '美式咖啡', price: 80, type: 2, desc: '經典黑咖啡', img: 'https://placehold.co/100x100/3e2723/fff?text=Americano' },
+            { id: 'c2', name: '拿鐵咖啡', price: 120, type: 2, desc: '濃縮咖啡與無乳糖牛奶', img: 'https://placehold.co/100x100/5d4037/fff?text=Latte' },
+            { id: 'c3', name: '摩卡咖啡', price: 130, type: 2, desc: '巧克力風味拿鐵', img: 'https://placehold.co/100x100/4e342e/fff?text=Mocha' },
+            { id: 't1', name: '可可牛奶', price: 70, type: 2, desc: '香濃巧克力與無乳糖牛奶', img: 'https://placehold.co/100x100/b71c1c/fff?text=Cocoa' },
+            { id: 't2', name: '紅茶拿鐵', price: 90, type: 2, desc: '精選紅茶與無乳糖牛奶', img: 'https://placehold.co/100x100/a1887f/fff?text=TeaLatte' },
+            { id: 'd1', name: '綠茶拿鐵(new)', price: 90, type: 2, desc: '精選綠茶與無乳糖牛奶', img: 'https://placehold.co/100x100/3e2723/fff?text=GreenTeaLatte' },
+            { id: 'h1', name: '高山冬片茶', price: 100, type: 1, desc: '現泡熱茶', img: 'https://placehold.co/100x100/689f38/fff?text=Tea' },
+            { id: 'h2', name: '草莓風味果茶', price: 120, type: 1, desc: '酸甜莓果香氣', img: 'https://placehold.co/100x100/e91e63/fff?text=StrawberryTea' },
+            { id: 'h3', name: '麝香葡萄風味茶', price: 150, type: 1, desc: '濃郁葡萄果香', img: 'https://placehold.co/100x100/8e24aa/fff?text=GrapeTea' },
+            { id: 'ice1', name: '可爾必思', price: 60, type: 0, desc: '乳酸氣泡飲', img: 'https://placehold.co/100x100/039be5/fff?text=Calpis' },
+            { id: 'ice2', name: '春梅(new)', price: 100, type: 0, desc: '青梅醋氣泡飲', img: 'https://placehold.co/100x100/039be5/fff?text=Plum' },
+            { id: 'ice3', name: '夏戀', price: 100, type: 0, desc: '石榴醋氣泡飲', img: 'https://placehold.co/100x100/039be5/fff?text=Pomegranate' },
+            { id: 'ice4', name: '阿尼亞', price: 150, type: 0, desc: '咖啡基底乳酸氣泡特調', img: 'https://placehold.co/100x100/ff6f00/fff?text=Anya' },
+            { id: 'f1', name: '原味鬆餅', price: 50, type: null, desc: '現烤原味鬆餅', img: 'https://placehold.co/100x100/ffb74d/fff?text=Waffle' },
+            { id: 'f2', name: '榛果巧克力鬆餅', price: 70, type: null, desc: '榛果巧克力醬', img: 'https://placehold.co/100x100/5d4037/fff?text=ChocoWaffle' },
+            { id: 'f3', name: '草莓果醬鬆餅', price: 70, type: null, desc: '草莓果醬', img: 'https://placehold.co/100x100/e91e63/fff?text=StrawberryWaffle' },
+            { id: 'f4', name: 'Ｑ心麻糬鬆餅', price: 100, type: null, desc: '內餡Q彈麻糬', img: 'https://placehold.co/100x100/fff9c4/333?text=MochiWaffle' },
+            { id: 'f5', name: '嘉年華鬆餅', price: 120, type: null, desc: '三種味道一次滿足', img: 'https://placehold.co/100x100/f48fb1/fff?text=Carnival' },
+            { id: 's1', name: '香絲(小)', price: 30, type: null, desc: '烘烤鱈魚香絲', img: 'https://placehold.co/100x100/ffecb3/333?text=Codfish' },
+            { id: 's2', name: '香絲(大)', price: 60, type: null, desc: '烘烤鱈魚香絲', img: 'https://placehold.co/100x100/ffecb3/333?text=Codfish' },
+            { id: 's3', name: '香魚片', price: 60, type: null, desc: '涮嘴小零食', img: 'https://placehold.co/100x100/ffecb3/333?text=Fish' },
+            { id: 's4', name: '多肉布丁', price: 70, type: null, desc: '手工焦糖布丁', img: 'https://placehold.co/100x100/ef5350/fff?text=Pudding' }
         ];
 
         let cart = {};
@@ -217,12 +222,22 @@
                         <span class="mx-4 text-base font-bold" id="qty-${item.id}-${variant}">0</span>
                         <div class="qty-btn plus-btn ${theme}" onclick="updateCart('${item.id}', '${variant}', 1)">+</div></div>`;
                 }
-                return `<div class="bg-white p-4 rounded-3xl flex shadow-sm border border-gray-100 items-center">
-                    <img src="${item.img}" class="w-20 h-20 rounded-2xl object-cover mr-4 shadow-sm">
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start"><h3 class="font-bold text-base text-gray-800">${item.name}</h3><span class="text-base font-black text-orange-500">$${item.price}</span></div>
+                return `
+                <div class="bg-white p-3 rounded-2xl flex shadow-sm border border-gray-100">
+                    <img src="${item.img}" class="w-20 h-20 rounded-xl object-cover mr-3 flex-shrink-0">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm">${item.name}</h3>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">${item.desc}</p> 
+                                </div>
+                                <span class="text-stone-700 font-bold">$${item.price}</span>
+                            </div>
+                        </div>
                         ${controls}
-                    </div></div>`;
+                    </div>
+                </div>`;
             }).join('');
         }
 
