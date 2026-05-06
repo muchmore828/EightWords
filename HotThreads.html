@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多多老師｜辛辣文案產生器</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f1ea; color: #4a3728; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #8b5a2b; text-align: center; }
+        textarea { width: 100%; border: 1px solid #d2b48c; border-radius: 8px; padding: 10px; box-sizing: border-box; }
+        button { width: 100%; background: #5d4037; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        button:hover { background: #3e2723; }
+        #output { margin-top: 20px; white-space: pre-wrap; background: #fafafa; padding: 15px; border-left: 5px solid #8b5a2b; font-size: 15px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>多多老師 🌶️</h1>
+    <p>輸入你想教育讀者的主題（例如：正緣、改運、想離職）：</p>
+    <textarea id="topicInput" rows="3" placeholder="例如：為什麼一直遇到爛桃花？"></textarea>
+    <button onclick="generateContent()">產生辛辣文案</button>
+    
+    <div id="output">文案將生成在此...</div>
+</div>
+
+<script>
+    async function generateContent() {
+        const topic = document.getElementById('topicInput').value;
+        const output = document.getElementById('output');
+        
+        if (!topic) { alert('老師，請先輸入主題！'); return; }
+        
+        output.innerText = "多多老師正在看盤並煮咖啡中...";
+
+        // 這裡未來會串接 API (例如 OpenAI 或 Gemini API)
+        // 為了展示，我們先寫一個模擬的邏輯
+        const systemPrompt = `你是多多老師，語氣辛辣、結合命理與咖啡廳日常。針對「${topic}」寫一段Threads文案。`;
+        
+        // 這裡會是你串接 API 的 fetch 代碼
+        // ...
+        
+        // 模擬回傳
+        setTimeout(() => {
+            output.innerText = `【多多老師真心話】\n\n別再問「${topic}」了，這問題就像你要求我用生鏽的磨豆機磨出精品豆一樣，本質不對，求什麼都沒用。\n\n在命盤裡，這種執著通常只是在逃避現實。如果你不先看清自己的命格，再多的補償都是浪費。來多肉咖啡喝杯濃縮吧，苦一點，你才會清醒。\n\n#多多老師 #多肉咖啡 #命理真相`;
+        }, 1500);
+    }
+</script>
+
+</body>
+</html>
