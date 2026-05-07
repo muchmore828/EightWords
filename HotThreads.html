@@ -5,10 +5,10 @@
     <title>多多老師的命理咖啡文案產生器</title>
     <style>
         body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; line-height: 1.6; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; padding: 10px; }
-        button { padding: 10px 20px; background-color: #e67e22; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; padding: 10px; border: 2px solid #e67e22; border-radius: 5px; }
+        button { padding: 10px 20px; background-color: #e67e22; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
         button:hover { background-color: #d35400; }
-        #output { margin-top: 20px; padding: 15px; background: #f9f9f9; border-left: 5px solid #e67e22; white-space: pre-wrap; font-weight: 500; }
+        #output { margin-top: 20px; padding: 15px; background: #fff5eb; border-left: 5px solid #e67e22; white-space: pre-wrap; font-weight: 500; border-radius: 5px; color: #5d4037; }
     </style>
 </head>
 <body>
@@ -17,14 +17,16 @@
     <p>請輸入你想吐槽的主題（例如：想復合的前任、一直在等好運的人）：</p>
     
     <textarea id="topicInput" placeholder="例如：三十歲還在迷惘..."></textarea>
+    <br>
     <button onclick="generateContent()">開始看盤煮咖啡</button>
 
     <div id="output">等待老師開金口...</div>
 
     <script>
-        // 你的 Gemini API 設定
+        // 設定 API 資訊
         const API_KEY = 'AIzaSyAhuM77nBRYX7TEnYufEgkf3VYVjlPhSG0'; 
-        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        // 這裡改用 v1beta 以確保支援最新模型，若還是不行可改回 v1
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
         async function generateContent() {
             const topic = document.getElementById('topicInput').value;
@@ -34,16 +36,21 @@
             
             output.innerText = "多多老師正在看盤並煮咖啡中...🌶️";
 
-            // 設定多多老師的人設
-            const systemPrompt = `
+            // 直接將人設與指令封裝成一個強大的 Prompt
+            const finalPrompt = `
+                【角色設定】
                 你是多多老師，經營「多肉咖啡」的命理師。
                 語氣：辛辣、直接、看透世俗、不講雞湯。
-                要求：
-                1. 必須結合「命理邏輯」與「咖啡廳經營日常」做比喻。
-                2. 第一句話要震撼，直接點出讀者的弱點。
+
+                【寫作要求】
+                1. 第一句話要震撼，直接點出讀者的弱點。
+                2. 必須結合「命理邏輯」與「咖啡廳經營日常」做比喻。
                 3. 結尾要帶到「來多肉咖啡看清現實」或提到貓店長「Kento」。
                 4. 格式適合 Threads，多用加粗體，段落短。
                 5. 絕對不要用「親愛的」、「加油」這種溫暖詞彙。
+
+                【任務】
+                請針對主題「${topic}」寫一段辛辣文案。
             `;
 
             try {
@@ -53,18 +60,13 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        // Gemini 專用的系統指令格式
-                        system_instruction: {
-                            parts: [{ text: systemPrompt }]
-                        },
                         contents: [
                             {
-                                role: "user",
-                                parts: [{ text: `針對「${topic}」寫一段辛辣文案。` }]
+                                parts: [{ text: finalPrompt }]
                             }
                         ],
                         generationConfig: {
-                            temperature: 0.9, // 稍微提高隨機性，讓文案更毒舌
+                            temperature: 0.9,
                             maxOutputTokens: 1000
                         }
                     })
@@ -72,19 +74,18 @@
 
                 const data = await response.json();
                 
-                // 解析 Gemini 的回傳結構
+                // 解析回傳結果
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    const result = data.candidates[0].content.parts[0].text;
-                    output.innerText = result;
+                    output.innerText = data.candidates[0].content.parts[0].text;
                 } else if (data.error) {
-                    output.innerText = "API 報錯了： " + data.error.message;
+                    output.innerText = "老師，卦象顯示有誤：\n" + data.error.message;
                 } else {
-                    output.innerText = "發生未知錯誤，可能是被過濾了，換個主題試試。";
+                    output.innerText = "這主題連 AI 都沈默了，請檢查輸入內容。";
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                output.innerText = "連線失敗，請檢查網路或 API Key 是否有效。";
+                output.innerText = "連線失敗，請檢查網路或 API Key。";
             }
         }
     </script>
