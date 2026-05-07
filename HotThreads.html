@@ -2,47 +2,44 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>多多老師的命理咖啡文案產生器</title>
+    <title>多肉咖啡文案產生器</title>
     <style>
-        body { font-family: 'PingFang TC', sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; line-height: 1.6; background-color: #fafafa; }
-        textarea { width: 100%; height: 100px; margin-bottom: 15px; padding: 12px; border: 2px solid #d35400; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #d35400; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px; }
-        button:hover { background-color: #a04000; }
-        #output { margin-top: 25px; padding: 20px; background: #ffffff; border: 1px solid #eee; border-left: 6px solid #d35400; white-space: pre-wrap; color: #333; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background-color: #fafafa; }
+        textarea { width: 100%; height: 100px; margin-bottom: 15px; padding: 10px; border: 2px solid #d35400; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background-color: #d35400; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        #output { margin-top: 20px; padding: 15px; background: white; border-left: 5px solid #d35400; white-space: pre-wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <h2 style="color: #d35400;">🌶️ 多多老師的 Threads 辛辣文案產生器</h2>
-    <p>老師，請輸入今日想吐槽的眾生相：</p>
-    
-    <textarea id="topicInput" placeholder="例如：三十歲還在等真愛、只會抱怨不行動的人..."></textarea>
-    <button onclick="generateContent()">撥動星盤，煮杯咖啡</button>
-
+    <h2>🌶️ 多多老師的 Threads 辛辣文案產生器</h2>
+    <textarea id="topicInput" placeholder="輸入主題，讓老師幫你撥開迷霧..."></textarea>
+    <button onclick="generateContent()">煮咖啡、看星盤</button>
     <div id="output">等待老師開金口...</div>
 
     <script>
-        // 更新為 2026 年最新的 Gemini 3 模型與 URL
+        // 1. 在這裡填入你剛剛生成的那把「新鑰匙」
         const API_KEY = 'AIzaSyCl4ONip0tciT0NTSoWT9IB0aLNdvCr924'; 
+
+        // 2. 使用 v1beta 搭配 gemini-1.5-flash 是目前最穩定的萬能路徑
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
         async function generateContent() {
             const topic = document.getElementById('topicInput').value;
             const output = document.getElementById('output');
-            
             if (!topic) { alert('老師，請先輸入主題！'); return; }
             
-            output.innerText = "多多老師正冷眼看盤中...🌶️";
+            output.innerText = "多多老師冷笑一聲，正在磨豆子...🌶️";
 
-            const systemPrompt = `
+            const promptText = `
                 你是多多老師，經營「多肉咖啡」的命理師。
                 語氣：辛辣、直接、看透世俗、不講雞湯。
                 要求：
                 1. 第一句話要震撼，直接點出讀者的弱點。
                 2. 必須結合「命理邏輯」與「咖啡廳經營日常」做比喻。
-                3. 結尾要帶到「來多肉咖啡看清現實」或提到貓店長「Kento」。
-                4. 格式適合 Threads，多用加粗體，段落短。
-                5. 絕對不要用「親愛的」、「加油」這種虛偽的詞。
+                3. 結尾要提到貓店長「Kento」或「多肉咖啡」。
+                4. 格式適合 Threads，多用加粗體。
+                5. 針對主題：「${topic}」寫一段辛辣文案。
             `;
 
             try {
@@ -50,29 +47,22 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: `${systemPrompt}\n\n任務：針對「${topic}」寫一段辛辣文案。` }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.9,
-                            maxOutputTokens: 1000
-                        }
+                        contents: [{ parts: [{ text: promptText }] }]
                     })
                 });
 
                 const data = await response.json();
-                
+
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     output.innerText = data.candidates[0].content.parts[0].text;
                 } else if (data.error) {
-                    output.innerText = "老師，卦象還是不對：\n" + data.error.message + "\n(提示：請確認您的 API Key 是否已啟用 Gemini 3 權限)";
+                    // 如果還是報錯，我們會在這裡看到原因
+                    output.innerText = "卦象訊息：" + data.error.message;
                 } else {
-                    output.innerText = "這主題連 Kento 都懶得理你，請換個主題。";
+                    output.innerText = "這主題連 AI 都想翻白眼，請換個主題。";
                 }
-
             } catch (error) {
-                console.error('Error:', error);
-                output.innerText = "連線失敗！可能是苗栗的訊號被干擾了，請檢查網路。";
+                output.innerText = "連線失敗，可能是苗栗的網路在鬧脾氣。";
             }
         }
     </script>
