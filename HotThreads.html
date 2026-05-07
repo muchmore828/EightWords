@@ -24,7 +24,7 @@
     <script>
         // 更新為 2026 年最新的 Gemini 3 模型與 URL
         const API_KEY = 'AIzaSyAhuM77nBRYX7TEnYufEgkf3VYVjlPhSG0'; 
-        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-3-flash:generateContent?key=${API_KEY}`;
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
         async function generateContent() {
             const topic = document.getElementById('topicInput').value;
