@@ -22,7 +22,7 @@
         const API_KEY = 'AIzaSyCl4ONip0tciT0NTSoWT9IB0aLNdvCr924'; 
 
         // 2. 使用 v1beta 搭配 gemini-1.5-flash 是目前最穩定的萬能路徑
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=${API_KEY}`;
 
         async function generateContent() {
             const topic = document.getElementById('topicInput').value;
