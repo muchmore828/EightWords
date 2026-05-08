@@ -23,7 +23,7 @@
     
     <div class="setting-box">
         <label>🔑 老師的 Gemini API Key：</label>
-        <input type="password" id="apiKey" placeholder="AIzaSyBbS7Dzi4CYvTD5a0sg5VeuivzvAuZTK3c" />
+        <input type="password" id="apiKey" placeholder="API Key" />
     </div>
 
     <label>🔮 今天的吐槽主題：</label>
@@ -46,7 +46,7 @@
         output.innerText = "多多老師正在看盤，這鍋咖啡肯定很辣...🌶️";
 
         // 2026 最穩定的模型路徑與精確 ID
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
         const systemPrompt = `
             你是多多老師，經營「多肉咖啡」的命理師。
