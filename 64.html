@@ -69,7 +69,13 @@
             animation: pulse 1s infinite alternate;
         }
 
-        /* 陽爻：一整條 */
+        /* 爻的基礎外框（確保陽爻、陰爻的外框寬度一模一樣） */
+        .line-container {
+            width: 100%; /* 或者你設定的固定寬度，例如 200px */
+            height: 14px; /* 依你的設計調整高度 */
+        }
+
+        /* 陽爻：一整條直接填滿 */
         .yang-line {
             width: 100%;
             height: 100%;
@@ -77,9 +83,18 @@
             border-radius: 4px;
         }
 
-        /* 陰爻：中間斷開 */
+        /* 陰爻：外框變成 Flex 容器 */
+    .yin-line-container {
+            display: flex;
+            justify-content: space-between; /* 讓左右各貼齊邊緣 */
+            gap: 16px; /* 關鍵：直接指定中間斷開的距離（例如 16px 或 10%） */
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 陰爻的左右兩條：平分剩餘的空間 */
         .yin-line-left, .yin-line-right {
-            width: 30%;
+            flex: 1; /* 自動平分空間，寬度絕對會對齊陽爻！ */
             height: 100%;
             background-color: #8c7662;
             border-radius: 4px;
@@ -321,6 +336,7 @@ function resetOracle() {
     btn.classList.remove('dice-mode');
 }
 </script>
+    
 <script>
 const eChingDatabase = {
     "111111": {"guaName": "乾為天","overallPrompt": "大吉。天行健，自強不息。象徵純陽與剛健前進的力量。","yaos": {"1": "初爻（初九）：潛龍勿用。時機未到，宜韜光養晦，此時不宜急於表現或盲目投資。","2": "二爻（九二）：見龍在田。貴人顯現，才華開始受到注意，適合積極建立人脈與合作。","3": "三爻（九三）：終日乾乾。今日工作極度忙碌，心理壓力較大，只要行事警惕便無大礙。","4": "四爻（九四）：或躍在淵。正面臨事業或生活的轉折期，進退全看自身直覺，大膽嘗試。","5": "五爻（九五）：飛龍在天。運勢極旺！此時身處高位或能力被完全認可，宜大展身手。","6": "上爻（上九）：亢龍有悔。盛極必反之象。今日待人切勿過於強勢，留有餘地才能免於後悔。"}},
