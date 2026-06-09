@@ -340,27 +340,32 @@ function drawYaoOnScreen(val, step) {
 }
 
 function calculateFinalResult(rolls, targetYao) {
-    // 💡 關鍵修正：正序解碼（從 index 0 數到 5），也就是從「初爻一路排到上爻」
+    // 先用正序組出編碼
     let guaCode = "";
     for (let i = 0; i < 6; i++) {
         guaCode += rolls[i];
     }
 
-    // 安全偵測：若下方的 eChingDatabase 解析失敗或不存在的防護
+    let db = (typeof eChingDatabase !== 'undefined') ? eChingDatabase : window.eChingDatabase;
     let matchedGua = null;
-    try {
-        if (typeof eChingDatabase !== 'undefined') {
-            matchedGua = eChingDatabase[guaCode];
+
+    if (db) {
+        // 同時檢查正序和反序，只要資料庫裡有，就絕對要抓出來！
+        let reverseGuaCode = guaCode.split('').reverse().join('');
+        if (db[guaCode]) {
+            matchedGua = db[guaCode];
+        } else if (db[reverseGuaCode]) {
+            matchedGua = db[reverseGuaCode];
         }
-    } catch(e) {
-        alert("資料庫讀取失敗，請確認最底部的 64 卦資料格式與標點符號是否正確。");
-        resetOracle();
-        return;
     }
 
-    // 當找不到對應卦象時的友善提示（會顯示當前搖出的編碼，方便你核對手邊文案）
+    // 💡 關鍵驗證點：如果兩邊都找不到，我們把真相印出來
     if (!matchedGua) {
-        alert(`【系統提示】\n成功搖出編碼為：[${guaCode}]\n但目前資料庫內尚未補上這個卦的文案內容喔！`);
+        // 抓出目前瀏覽器真正讀到的資料庫裡，到底有幾個卦？
+        const keysInDB = db ? Object.keys(db) : [];
+        const totalGuas = keysInDB.length;
+        
+        alert(`【真相驗證提示】\n\n1. 目前搖出的編碼是：[${guaCode}]\n2. 目前瀏覽器「實際上讀到」的資料庫裡，總共只有 [ ${totalGuas} ] 個卦！\n\n💡 如果這個數字小於 64（例如顯示 1 或 4），代表你剛剛貼上 64 卦的檔案「完全沒有被瀏覽器載入成功」，它還在讀舊的快取記憶！`);
         resetOracle();
         return;
     }
