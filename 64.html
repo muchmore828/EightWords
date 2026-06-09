@@ -55,22 +55,23 @@
             border: 2px dashed #ebdcc7;
         }
 
-        /* 爻的視覺樣式 */
+        /* 爻的視覺樣式（限制總寬度為 160px） */
         .yao-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             width: 160px;
             height: 14px;
             margin: 4px 0;
             transition: all 0.3s ease;
         }
         
-        /* 修正：讓動爻整列亮起時的效果，針對裡面的線條進行發光 */
+        /* 當該爻被選為動爻時，內部的線條觸發發光與變色特效 */
         .yao-row.active-change .yang-line,
         .yao-row.active-change .yin-line-left,
         .yao-row.active-change .yin-line-right {
             animation: pulse 1s infinite alternate;
-            background-color: #deab80; /* 動爻變成溫暖的橘金色 */
+            background-color: #deab80; /* 動爻轉為溫暖的橘金色 */
         }
 
         /* 陽爻：一整條直接填滿 */
@@ -81,23 +82,24 @@
             border-radius: 4px;
         }
 
-        /* 陰爻：外框變成 Flex 容器 */
+        /* 陰爻：外框變成 Flex 容器，寬度跟陽爻 100% 一致 */
         .yin-line-container {
             display: flex;
-            justify-content: space-between; /* 讓左右各貼齊邊緣 */
-            gap: 16px; /* 關鍵：直接指定中間斷開的距離 */
+            justify-content: space-between; /* 讓左右兩段貼齊兩端 */
+            gap: 16px; /* 中間自然斷開的黃金比例間距 */
             width: 100%;
             height: 100%;
         }
 
-        /* 陰爻的左右兩條：平分剩餘的空間 */
+        /* 陰爻的左右兩條線：自動平分扣除 gap 後的剩餘空間 */
         .yin-line-left, .yin-line-right {
-            flex: 1; /* 自動平分空間，寬度絕對會對齊陽爻！ */
+            flex: 1; 
             height: 100%;
             background-color: #8c7662;
             border-radius: 4px;
         }
 
+        /* 爻位標籤文字（初爻、二爻...） */
         .yao-label {
             font-size: 11px;
             color: #bfa895;
@@ -105,6 +107,7 @@
             width: 40px;
             text-align: left;
             line-height: 14px;
+            flex-shrink: 0; /* 防止文字擠壓變形 */
         }
 
         /* 按鈕視覺 */
@@ -122,16 +125,23 @@
             width: 80%;
         }
 
-        .action-btn:hover {
+        .action-btn:hover:not(:disabled) {
             background-color: #cbb39c;
             transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            background-color: #e0dcd5;
+            color: #bfa895;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .action-btn.dice-mode {
             background-color: #b5c7bc;
             box-shadow: 0 4px 10px rgba(181, 199, 188, 0.4);
         }
-        .action-btn.dice-mode:hover {
+        .action-btn.dice-mode:hover:not(:disabled) {
             background-color: #a2b7aa;
         }
 
@@ -155,24 +165,38 @@
             max-width: 400px;
             width: 100%;
             text-align: center;
-            border: 4px solid #e1eedb;
+            border: 4px solid #f1e9db;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .modal-title {
             font-size: 22px;
-            color: #6b8c76;
+            color: #8c7662;
             margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .res-overall-box {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #8c7662;
+            background: #faf8f5;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: justify;
+            border-left: 4px solid #ebdcc7;
         }
 
         .modal-yao {
-            font-size: 14px;
+            font-size: 13px;
             color: #bfa895;
             margin-bottom: 15px;
             background: #f5f8f6;
             padding: 5px 15px;
             border-radius: 20px;
             display: inline-block;
+            font-weight: bold;
         }
 
         .modal-advice {
@@ -180,22 +204,30 @@
             line-height: 1.6;
             color: #5a4b41;
             text-align: justify;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            white-space: pre-line; /* 支援文案內部的換行 */
         }
 
         .close-btn {
             background: #ebdcc7;
             color: #5a4b41;
             border: none;
-            padding: 10px 30px;
+            padding: 12px 40px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
+            transition: background 0.2s;
+            font-size: 16px;
+        }
+        
+        .close-btn:hover {
+            background: #d9c5b2;
         }
 
+        /* 動爻呼吸燈動畫 */
         @keyframes pulse {
-            from { transform: scale(1); filter: drop-shadow(0 0 2px #deab80); }
-            to { transform: scale(1.02); filter: drop-shadow(0 0 8px #deab80); }
+            from { transform: scale(1); filter: drop-shadow(0 0 2px rgba(222,171,128,0.5)); }
+            to { transform: scale(1.02); filter: drop-shadow(0 0 10px rgba(222,171,128,0.9)); }
         }
     </style>
 </head>
@@ -215,7 +247,7 @@
 <div class="modal" id="resultModal">
     <div class="modal-content">
         <div class="modal-title" id="resGuaName">卦名</div>
-        <div id="resOverall" style="font-size:13px; color:#a69382; margin-bottom:10px;">大局意象</div>
+        <div class="res-overall-box" id="resOverall">大局意象</div>
         <div class="modal-yao" id="resYaoName">動爻位置</div>
         <div class="modal-advice" id="resAdvice">今日指引文案</div>
         <button class="close-btn" onclick="resetOracle()">重新占卜</button>
@@ -237,6 +269,7 @@ function rollThreeCoins() {
     const coin2 = Math.random() < 0.5;
     const coin3 = Math.random() < 0.5;
     const headsCount = (coin1 ? 1 : 0) + (coin2 ? 1 : 0) + (coin3 ? 1 : 0);
+    // 兩正一反(2)、三反(0) -> 陰(0) ｜ 一正兩反(1)、三正(3) -> 陽(1)
     return (headsCount === 3 || headsCount === 1) ? 1 : 0;
 }
 
@@ -257,7 +290,7 @@ function handleActionClick() {
             btn.innerHTML = `🪙 繼續投擲硬幣 (${currentStep}/6)`;
             currentStep++;
         } else {
-            // 正好滿六次，切換到第七步（骰子模式）
+            // 精準切換：滿六次，立刻轉換為第七步的骰子狀態
             btn.innerHTML = `🎲 擲骰子決定今日動爻`;
             btn.classList.add('dice-mode');
             currentStep = 7; 
@@ -267,9 +300,9 @@ function handleActionClick() {
 
     // 2. 第七次擲骰子
     if (currentStep === 7) {
-        // 防止重複點擊，先禁用按鈕
+        // 安全機制：進入結算，立即停用按鈕防止連點打亂邏輯
         btn.disabled = true;
-        btn.innerHTML = `🎲 正在計算今日動爻...`;
+        btn.innerHTML = `🎲 正在解讀今日卦象...`;
 
         diceResult = Math.floor(Math.random() * 6) + 1;
         
@@ -279,10 +312,10 @@ function handleActionClick() {
             targetRow.classList.add('active-change');
         }
         
-        // 結算答案
+        // 留給呼吸燈運作的視覺時間，隨後彈出結果
         setTimeout(() => {
             calculateFinalResult(coinRolls, diceResult);
-        }, 800);
+        }, 1000);
     }
 }
 
@@ -292,7 +325,7 @@ function drawYaoOnScreen(val, step) {
     row.className = 'yao-row';
     row.id = `yao-${step}`;
     
-    // 修正：補上陰爻外層的 .yin-line-container 確保 Flexbox 生效對齊寬度
+    // 補上完整的 Flex 結構，確保陰陽爻的寬度完美對齊
     if (val === 1) {
         row.innerHTML = `<div class="yang-line"></div><div class="yao-label">${yaoNames[step]}</div>`;
     } else {
@@ -307,26 +340,32 @@ function drawYaoOnScreen(val, step) {
 }
 
 function calculateFinalResult(rolls, targetYao) {
+    // 💡 關鍵修正：正序解碼（從 index 0 數到 5），也就是從「初爻一路排到上爻」
     let guaCode = "";
-    for (let i = 5; i >= 0; i--) {
+    for (let i = 0; i < 6; i++) {
         guaCode += rolls[i];
     }
 
-    // 確保資料庫有載入，否則給予安全提示
-    if (typeof eChingDatabase === 'undefined') {
-        alert("資料庫尚未建立，請確認 eChingDatabase 內容。");
+    // 安全偵測：若下方的 eChingDatabase 解析失敗或不存在的防護
+    let matchedGua = null;
+    try {
+        if (typeof eChingDatabase !== 'undefined') {
+            matchedGua = eChingDatabase[guaCode];
+        }
+    } catch(e) {
+        alert("資料庫讀取失敗，請確認最底部的 64 卦資料格式與標點符號是否正確。");
         resetOracle();
         return;
     }
 
-    const matchedGua = eChingDatabase[guaCode];
+    // 當找不到對應卦象時的友善提示（會顯示當前搖出的編碼，方便你核對手邊文案）
     if (!matchedGua) {
-        alert("求卦結果超出了目前資料庫範圍，請重新試試！");
+        alert(`【系統提示】\n成功搖出編碼為：[${guaCode}]\n但目前資料庫內尚未補上這個卦的文案內容喔！`);
         resetOracle();
         return;
     }
 
-    // 顯示結果
+    // 順利對齊資料庫，渲染彈出視窗內容
     document.getElementById('resGuaName').innerText = `今日求得：${matchedGua.guaName}`;
     document.getElementById('resOverall').innerText = matchedGua.overallPrompt;
     document.getElementById('resYaoName').innerText = `🎯 本卦動在：${yaoNames[targetYao]}`;
@@ -353,7 +392,10 @@ function resetOracle() {
 </script>
     
 <script>
-// 測試用資料庫（多多老師可以自由替換成完整的 64 卦資料）
+// =========================================================================
+// ⚠️ 多多老師請將整理好的 64 卦資料庫完整貼在下方的花括號 { } 內
+// 編碼請維持原本設定的「初爻到上爻（正序）」即可，不需再反轉。
+// =========================================================================
 const eChingDatabase = {
     "111111": {"guaName": "乾為天","overallPrompt": "大吉。天行健，自強不息。象徵純陽與剛健前進的力量。","yaos": {"1": "初爻（初九）：潛龍勿用。時機未到，宜韜光養晦，此時不宜急於表現或盲目投資。","2": "二爻（九二）：見龍在田。貴人顯現，才華開始受到注意，適合積極建立人脈與合作。","3": "三爻（九三）：終日乾乾。今日工作極度忙碌，心理壓力較大，只要行事警惕便無大礙。","4": "四爻（九四）：或躍在淵。正面臨事業或生活的轉折期，進退全看自身直覺，大膽嘗試。","5": "五爻（九五）：飛龍在天。運勢極旺！此時身處高位或能力被完全認可，宜大展身手。","6": "上爻（上九）：亢龍有悔。盛極必反之象。今日待人切勿過於強勢，留有餘地才能免於後悔。"}},
     "000000": {"guaName": "坤為地","overallPrompt": "大吉。地勢坤，君子以厚德載物。象徵包容、柔順與腳踏實地的承載力。","yaos": {"1": "初爻（初六）：履霜堅冰至。見微知著，留意身邊微小的變化或危機前兆，防微杜漸。","2": "二爻（六二）：直方大，不習無不利。保持內心正直與坦蕩，順應自然發展便能順利。","3": "三爻（六三）：含章可貞。含蓄地展現才華，保持低調，功勞歸於團隊，時機成熟自得好運。","4": "四爻（六四）：括囊，無咎無譽。今日宜謹言慎行，像扎緊口袋一樣，不求有功、但求無過。","5": "五爻（六五）：黃裳元吉。居於尊位卻保持謙遜美德，行事中庸、不偏不倚，大吉之象。","6": "上爻（上六）：龍戰於野，其血玄黃。陰氣盛極而與陽氣相爭。今日容易發生激烈衝突，切忌硬碰硬。"}},
@@ -424,3 +466,4 @@ const eChingDatabase = {
 </script>
 </body>
 </html>
+
