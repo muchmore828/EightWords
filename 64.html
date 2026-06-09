@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>東方易經每日占卜</title>
+    <title>易經每日占卜</title>
     
     <script src="database.js"></script>
 
@@ -87,8 +87,8 @@
 <body>
 
 <div class="container">
-    <h1>東方易經每日占卜</h1>
-    <div class="subtitle">連續投擲 6 次硬幣奠定卦體，再擲 1 次骰子定出今日動爻</div>
+    <h1>易經每日占卜</h1>
+    <div class="subtitle">連續投擲 6 次硬幣，再擲 1 次骰子決定動爻</div>
     <div class="gua-display" id="guaDisplay">
         <div style="color: #d1c4b6; font-size: 14px; line-height: 140px;" id="placeholderText">請按下按鈕開始卜卦</div>
     </div>
@@ -100,7 +100,7 @@
         <div class="modal-title" id="resGuaName">卦名</div>
         <div class="res-overall-box" id="resOverall">大局意象</div>
         <div class="modal-yao" id="resYaoName">動爻位置</div>
-        <div class="modal-advice" id="resAdvice">今日指引文案</div>
+        <div class="modal-advice" id="resAdvice">宇宙的指引</div>
         <button class="close-btn" onclick="resetOracle()">重新占卜</button>
     </div>
 </div>
@@ -132,7 +132,7 @@ function handleActionClick() {
             btn.innerHTML = `🪙 繼續投擲硬幣 (${currentStep}/6)`;
             currentStep++;
         } else {
-            btn.innerHTML = `🎲 擲骰子決定今日動爻`;
+            btn.innerHTML = `🎲 擲骰子決定動爻`;
             btn.classList.add('dice-mode');
             currentStep = 7; 
         }
