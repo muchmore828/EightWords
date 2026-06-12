@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多多萬事屋 | 每日能量占卜</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- 引入多多老師測試成功的東方易經 64 卦資料庫 -->
+    <script src="database.js"></script>
+
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #5E503F; padding-bottom: env(safe-area-inset-bottom); }
+        #final-capture-area { background: linear-gradient(135deg, #FFE5D9 0%, #FFF9F5 100%); width: 100%; max-width: 380px; padding: 30px 20px; margin: 0 auto; display: flex; flex-direction: column; }
+        .card-front { background: white; border-radius: 20px; border: 8px solid white; box-shadow: 0 10px 25px rgba(244, 162, 97, 0.15); overflow: hidden; width: 100%; position: relative; }
+        .prize-glow { box-shadow: 0 0 25px #FFD700, 0 0 50px #FFA500 !important; border: 8px solid #FFD700 !important; }
+        #result-img { width: 100%; height: auto; display: block; }
+        #screenshot-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #preview-image { max-width: 95%; max-height: 80%; border-radius: 12px; border: 3px solid white; }
+        #result-intro { white-space: pre-line; }
+
+        /* ================= 易經動態視覺效果 ================= */
+        .gua-visual-box { display: flex; flex-direction: column-reverse; align-items: center; justify-content: center; width: 100%; height: 240px; background: #FAF5F0; border-bottom: 2px dashed #E6D5C3; padding: 20px; box-sizing: border-box; }
+        .yao-row { display: flex; justify-content: space-between; align-items: center; width: 180px; height: 16px; margin: 6px 0; transition: all 0.3s ease; }
+        .yao-row.active-change .yang-line, .yao-row.active-change .yin-line-left, .yao-row.active-change .yin-line-right { animation: pulse 1s infinite alternate; background-color: #E29578 !important; }
+        .yang-line { width: 100%; height: 100%; background-color: #8D6E63; border-radius: 4px; }
+        .yin-line-container { display: flex; justify-content: space-between; gap: 20px; width: 100%; height: 100%; }
+        .yin-line-left, .yin-line-right { flex: 1; height: 100%; background-color: #8D6E63; border-radius: 4px; }
+        .yao-label { font-size: 11px; color: #BCAAA4; margin-left: 12px; width: 35px; text-shrink: 0; text-align: left; }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.04); } }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- 頂部精緻店名標題 -->
+    <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold" style="color: #8D6E63;">☕ 多肉咖啡</h1>
+        <p class="opacity-60 text-xs mt-1" style="color: #BCAAA4;">領取你的今日能量建議</p>
+    </div>
+
+    <!-- ================= 核心：一開始的東/西通道選擇區 ================= -->
+    <div id="channel-zone" class="w-full max-w-sm mx-auto my-auto flex flex-col items-center space-y-6 px-6">
+        <div class="text-center mb-2">
+            <p class="text-stone-500 font-bold text-sm tracking-widest">請選擇今日能量指引系統</p>
+        </div>
+        <button onclick="selectChannel('eastern')" class="w-full py-6 bg-gradient-to-r from-[#D4A373] to-[#E29578] text-white rounded-2xl font-bold shadow-xl transition active:scale-95 text-lg tracking-wider">
+            🪙 東方易經 · 六爻金錢占
+        </button>
+        <button onclick="selectChannel('western')" class="w-full py-6 bg-gradient-to-r from-[#A2A9B8] to-[#8D6E63] text-white rounded-2xl font-bold shadow-xl transition active:scale-95 text-lg tracking-wider">
+            🔮 西方塔羅 · 每日能量翻牌
+        </button>
+    </div>
+
+    <!-- ================= 易經占卜進行區（預設隱藏） ================= -->
+    <div id="iching-draw-zone" class="hidden flex flex-col items-center mt-6 w-full max-w-sm">
+        <div id="iching-screen" class="w-64 h-80 bg-[#FFF9F5] rounded-2xl border-4 border-dashed border-[#E6D5C3] shadow-lg flex flex-col-reverse justify-center items-center p-6 mb-6">
+            <span id="iching-hint" class="text-sm font-bold text-stone-400">請點擊下方投擲硬幣</span>
+        </div>
+        <button id="iching-btn" onclick="handleIchingRoll()" class="w-64 py-4 bg-[#E29578] text-white rounded-full font-bold shadow-md active:scale-95 tracking-wide">
+            🪙 開始投擲硬幣 (0/6)
+        </button>
+    </div>
+
+    <!-- ================= 西方塔羅占卜區（預設隱藏） ================= -->
+    <div id="init-draw-zone" class="hidden mt-6">
+        <div class="w-64 h-96 bg-[#d4a373] rounded-2xl border-8 border-white shadow-2xl cursor-pointer flex items-center justify-center text-white" 
+             style="background-image: url('https://muchmore828.github.io/EightWords/cardback.png'); background-size: cover; background-position: center;" 
+             onclick="handleDraw()">
+            <span class="bg-black/30 px-6 py-3 rounded-full font-bold tracking-widest backdrop-blur-sm">默數三秒點擊翻牌</span>
+        </div>
+    </div>
+
+    <!-- ================= 占卜結果與憑證區（通用，不管是東方或西方都用這張卡印出成果） ================= -->
+    <div id="result-wrapper" class="hidden w-full">
+        <div id="final-capture-area">
+            <div id="card-container" class="card-front flex flex-col mb-6">
+                <div id="lucky-tag" class="hidden absolute top-0 right-0 bg-yellow-400 text-white text-[10px] px-3 py-1 font-bold z-10 shadow-md">LUCKY!</div>
+                
+                <!-- 西方塔羅圖片位 -->
+                <img id="result-img" class="hidden" src="" crossOrigin="anonymous">
+                
+                <!-- 東方易經專用：會把剛剛搖出來的完整卦象圖，完美畫進截圖卡片上方 -->
+                <div id="result-gua-visual" class="hidden gua-visual-box"></div>
+
+                <div class="p-8 text-center">
+                    <p id="result-quote" class="text-base font-medium leading-relaxed" style="color: #8D6E63;"></p>
+                </div>
+            </div>
+            <div class="bg-white/95 p-8 rounded-3xl text-center shadow-lg border border-white">
+                <h3 class="text-stone-400 text-xs font-bold tracking-widest mb-2">今日宇宙推薦</h3>
+                <p id="result-drink" class="text-stone-800 font-bold text-2xl mb-6"></p>
+                <p id="result-intro" class="text-sm text-stone-500 mb-2"></p>
+                <div class="border-t border-dashed border-stone-200 pt-6">
+                    <p id="date-info" class="text-xs text-stone-400 font-mono"></p>
+                    <p id="expiry-info" class="text-sm text-orange-500 font-bold mt-1"></p>
+                    <p class="text-[10px] text-stone-300 mt-6 font-bold">苗栗縣頭份市 | 多肉咖啡 Muchmore Cafe</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-10 space-y-4 w-full max-w-sm mx-auto px-6 pb-10 text-center">
+            <button onclick="captureTicket(event)" class="w-full py-5 bg-stone-800 text-white rounded-2xl font-bold shadow-xl active:scale-95">✨ 生成折扣憑證</button>
+            <button onclick="shareToLine()" class="w-full py-4 bg-[#06C755] text-white rounded-xl font-bold">LINE 分享占卜結果</button>
+            
+            <a href="https://lin.ee/NBCScpf" class="inline-block mt-4 text-stone-400 text-sm underline">返回多肉咖啡官方帳號</a>
+            
+            <button onclick="resetForTest()" id="test-reset-btn" class="hidden w-full mt-6 py-2 border border-dashed border-stone-300 text-stone-400 text-xs rounded-lg">測試模式：清除今日紀錄</button>
+        </div>
+    </div>
+
+    <div id="screenshot-overlay" onclick="this.style.display='none'">
+        <img id="preview-image" src=""><p class="text-white mt-4">長按圖片儲存至相簿</p>
+    </div>
+
+    <script>
+        let currentCardName = "";
+        let selectedSystem = ""; // 紀錄粉絲選了 "eastern" 還是 "western"
+
+        // 東方易經演算用變數
+        let coinRolls = [];
+        let diceResult = 0;
+        let ichingStep = 1;
+        const yaoNames = ["", "初爻", "二爻", "三爻", "四爻", "五爻", "上爻"];
+
+        const config = {
+            isTestMode: false, 
+            luckyChance: 15,
+            normalText: "出示畫面享推薦餐點折扣",
+            luckyText: "🎉 宇宙級好運！\n出示畫面享推薦餐點隱藏折扣",
+            normalDiscount: "折 5 元",
+            luckyDiscount: "折 50 元"
+        };
+
+        const cards = [
+            { name: "0. 愚者", img: "https://muchmore828.github.io/EightWords/0_The_Fool.png" },
+            { name: "1. 魔術師", img: "https://muchmore828.github.io/EightWords/1_The_Magician.png" },
+            { name: "2. 女教皇", img: "https://muchmore828.github.io/EightWords/2_The_High_Priestess.png" },
+            { name: "3. 皇后", img: "https://muchmore828.github.io/EightWords/3_The_Empress.png" },
+            { name: "4. 皇帝", img: "https://muchmore828.github.io/EightWords/4_The_Emperor.png" },
+            { name: "5. 教皇", img: "https://muchmore828.github.io/EightWords/5_The_Hierophant.png" },
+            { name: "6. 戀人", img: "https://muchmore828.github.io/EightWords/6_The_Lovers.png" },
+            { name: "7. 戰車", img: "https://muchmore828.github.io/EightWords/7_The_Chariot.png" },
+            { name: "8. 力量", img: "https://muchmore828.github.io/EightWords/8_Strength.png" },
+            { name: "9. 隱士", img: "https://muchmore828.github.io/EightWords/9_The_Hermit.png" },
+            { name: "10. 命運之輪", img: "https://muchmore828.github.io/EightWords/10_The_Wheel_of_Fortune.png" },
+            { name: "11. 正義", img: "https://muchmore828.github.io/EightWords/11_Justice.png" },
+            { name: "12. 吊人", img: "https://muchmore828.github.io/EightWords/12_The_Hanged_Man.png" },
+            { name: "13. 死神", img: "https://muchmore828.github.io/EightWords/13_Death.png" },
+            { name: "14. 節制", img: "https://muchmore828.github.io/EightWords/14_Temperance.png" },
+            { name: "15. 惡魔", img: "https://muchmore828.github.io/EightWords/15_The_Devil.png" },
+            { name: "16. 高塔", img: "https://muchmore828.github.io/EightWords/16_The_Tower.png" },
+            { name: "17. 星星", img: "https://muchmore828.github.io/EightWords/17_The_Star.png" },
+            { name: "18. 月亮", img: "https://muchmore828.github.io/EightWords/18_The_Moon.png" },
+            { name: "19. 太陽", img: "https://muchmore828.github.io/EightWords/19_The_Sun.png" },
+            { name: "20. 審判", img: "https://muchmore828.github.io/EightWords/20_Judgement.png" },
+            { name: "21. 世界", img: "https://muchmore828.github.io/EightWords/21_The_World.png" }
+        ];
+
+        const drinks = [
+            "可爾必思", "嘉年華鬆餅", "麝香葡萄", "草莓果醬鬆餅", "美式咖啡", 
+            "高山冬片", "紅茶拿鐵", "夏戀", "多肉布丁", "單品咖啡", 
+            "阿尼亞", "拿鐵咖啡", "香魚片", "春梅", "綠茶拿鐵", 
+            "榛果巧克力鬆餅", "摩卡咖啡", "草莓果茶", "香絲", "原味鬆餅", 
+            "可可牛奶", "Ｑ心麻糬鬆餅"
+        ];
+
+        const quotes = [
+            "當你放慢思緒，答案自然會浮現。", "今日適合在忙碌中，為自己留出十分鐘的空白。", "宇宙的安排總有其美意，即便是暫時的停留。",
+            "你的才華就像剛研磨的咖啡豆，需要熱情來沖開。", "有時候，不採取行動也是一種最有力的行動。", "每一滴萃取的苦澀，都是為了襯托後續的回甘。",
+            "心亂的時候，就把目光收回到眼前的這杯飲品。", "暫時的迷路，是為了讓你遇見未曾看過的風景。", "生活不是為了趕路，而是為了感受路。",
+            "把生活調成靜音，你才能聽見靈魂的耳語。", "所有的「來不及」，其實都是另一種「剛剛好」。", "練習對外界的雜音微笑，然後優雅地轉身。",
+            "像貓一樣，在陽光最好的地方，專心地虛度光陰。", "既然無法控制風的方向，那就調整帆的角度。", "最好的狀態，是心裡有事，但臉上無痕。",
+            "你的價值，不需要透過別人的肯定來「定義」。", "偶爾的脆弱並不可恥，它是靈魂在提醒你該休息了。", "成長是一場與自己的對話，不必急著給世界答案。",
+            "保持一點「必要的任性」，是愛自己最直觀的方式。", "那些觀察平淡的重複，正是支撐夢想的骨架。", "與其追逐光，不如讓自己成為發光的人。",
+            "你的善良必須帶點鋒芒，才不至於在溫柔中迷失。", "完美的包裝或許迷人，但真實的靈魂更有飽足感。", "允許自己有不開心的權利，這也是一種自由。",
+            "把期待調低，快樂自然就會溢出來。", "命運的劇本雖然寫好，但演出的語氣由你決定。", "順著流走，你會發現阻力其實是另一種推力。",
+            "每一場相遇都有其保存期限，所以請在當下盡興。", "宇宙從不辜負一個認真對待「現在」的人。", "所有的失去，最終都會以另一種形式歸來。",
+            "保持開放的心態，好運才會找到入口。", "練習把「為什麼發生在我身上」改成「想教會我什麼」。", "穩定自己的頻率，世界自然會與你共振。",
+            "當你開始愛自己，全宇宙都會為你讓路。", "今天的遺憾，是明天驚喜的伏筆。"
+        ];
+
+        window.onload = function() {
+            if (config.isTestMode) document.getElementById('test-reset-btn').classList.remove('hidden');
+            checkHistory();
+        };
+
+        // 【通道開關控制】
+        function selectChannel(system) {
+            selectedSystem = system;
+            document.getElementById('channel-zone').classList.add('hidden');
+            
+            if (system === 'eastern') {
+                document.getElementById('iching-draw-zone').classList.remove('hidden');
+            } else {
+                document.getElementById('init-draw-zone').classList.remove('hidden');
+            }
+        }
+
+        function checkHistory() {
+            const savedData = localStorage.getItem('drawData');
+            if (!config.isTestMode && savedData) {
+                const data = JSON.parse(savedData);
+                if (data.date === new Date().toLocaleDateString()) {
+                    selectedSystem = data.system || "western"; // 讀取歷史記錄的占卜種類
+                    document.getElementById('channel-zone').classList.add('hidden');
+                    renderResult(data);
+                }
+            }
+        }
+
+        // ==========================================
+        // 易經核心運作邏輯
+        // ==========================================
+        function rollThreeCoins() {
+            const coin1 = Math.random() < 0.5; const coin2 = Math.random() < 0.5; const coin3 = Math.random() < 0.5;
+            const headsCount = (coin1 ? 1 : 0) + (coin2 ? 1 : 0) + (coin3 ? 1 : 0);
+            return (headsCount === 3 || headsCount === 1) ? 1 : 0;
+        }
+
+        function handleIchingRoll() {
+            const btn = document.getElementById('iching-btn');
+            const hint = document.getElementById('iching-hint');
+            if (hint) hint.remove();
+
+            if (ichingStep <= 6) {
+                const val = rollThreeCoins();
+                coinRolls.push(val);
+                drawYaoOnIchingScreen(val, ichingStep);
+                if (ichingStep < 6) {
+                    btn.innerHTML = `🪙 繼續投擲硬幣 (${ichingStep}/6)`;
+                    ichingStep++;
+                } else {
+                    btn.innerHTML = `🎲 擲骰子定今日動爻`;
+                    btn.className = "w-64 py-4 bg-amber-700 text-white rounded-full font-bold shadow-md active:scale-95 tracking-wide";
+                    ichingStep = 7;
+                }
+                return;
+            }
+
+            if (ichingStep === 7) {
+                btn.disabled = true;
+                btn.innerHTML = `🎲 正在解讀今日卦象...`;
+                diceResult = Math.floor(Math.random() * 6) + 1;
+                
+                const targetRow = document.getElementById(`iching-yao-${diceResult}`);
+                if (targetRow) targetRow.classList.add('active-change');
+
+                setTimeout(() => {
+                    executeIchingResult();
+                }, 1200);
+            }
+        }
+
+        function drawYaoOnIchingScreen(val, step) {
+            const screen = document.getElementById('iching-screen');
+            const row = document.createElement('div');
+            row.className = 'yao-row';
+            row.id = `iching-yao-${step}`;
+            if (val === 1) {
+                row.innerHTML = `<div class="yang-line"></div><div class="yao-label">${yaoNames[step]}</div>`;
+            } else {
+                row.innerHTML = `<div class="yin-line-container"><div class="yin-line-left"></div><div class="yin-line-right"></div></div><div class="yao-label">${yaoNames[step]}</div>`;
+            }
+            screen.appendChild(row);
+        }
+
+        function executeIchingResult() {
+            let guaCode = coinRolls.join('');
+            let db = window.eChingDatabase;
+            let matchedGua = null;
+            if (db) {
+                let reverseGuaCode = guaCode.split('').reverse().join('');
+                if (db[guaCode]) { matchedGua = db[guaCode]; } 
+                else if (db[reverseGuaCode]) { matchedGua = db[reverseGuaCode]; }
+            }
+
+            if (!matchedGua) {
+                alert(`【解卦提示】\n目前搖出編碼：[${guaCode}]\n資料庫無此卦，請重新測試。`);
+                resetForTest();
+                return;
+            }
+
+            const today = new Date().toLocaleDateString();
+            const roll = Math.floor(Math.random() * 100) + 1;
+            const isLucky = roll <= config.luckyChance;
+
+            // 封裝成多肉咖啡專用格式
+            const data = {
+                system: "eastern",
+                guaName: matchedGua.guaName,
+                overallPrompt: matchedGua.overallPrompt,
+                advice: matchedGua.yaos[diceResult.toString()],
+                targetYaoName: yaoNames[diceResult],
+                rolls: coinRolls,
+                dice: diceResult,
+                drink: drinks[Math.floor(Math.random() * drinks.length)],
+                isLucky: isLucky,
+                date: today
+            };
+
+            if (!config.isTestMode) {
+                localStorage.setItem('lastDrawDate', today);
+                localStorage.setItem('drawData', JSON.stringify(data));
+            }
+            renderResult(data);
+        }
+
+        // ==========================================
+        // 西方塔羅占卜核心
+        // ==========================================
+        function handleDraw() {
+            const today = new Date().toLocaleDateString();
+            if (!config.isTestMode && localStorage.getItem('lastDrawDate') === today) {
+                checkHistory();
+                return;
+            }
+            const roll = Math.floor(Math.random() * 100) + 1;
+            const isLucky = roll <= config.luckyChance;
+            const data = {
+                system: "western",
+                card: cards[Math.floor(Math.random() * cards.length)],
+                drink: drinks[Math.floor(Math.random() * drinks.length)],
+                quote: quotes[Math.floor(Math.random() * quotes.length)],
+                isLucky: isLucky,
+                date: today
+            };
+            if (!config.isTestMode) {
+                localStorage.setItem('lastDrawDate', today);
+                localStorage.setItem('drawData', JSON.stringify(data));
+            }
+            renderResult(data);
+        }
+
+        // ==========================================
+        // 核心渲染：完美的東/西結果分流
+        // ==========================================
+        function renderResult(data) {
+            document.getElementById('iching-draw-zone').classList.add('hidden');
+            document.getElementById('init-draw-zone').classList.add('hidden');
+            document.getElementById('result-wrapper').classList.remove('hidden');
+
+            const imgEl = document.getElementById('result-img');
+            const guaVisualEl = document.getElementById('result-gua-visual');
+            const quoteEl = document.getElementById('result-quote');
+
+            if (selectedSystem === "eastern" || data.system === "eastern") {
+                // 【東方易經渲染】
+                currentCardName = `易經 · ${data.guaName}`;
+                imgEl.classList.add('hidden');
+                guaVisualEl.classList.remove('hidden');
+
+                // 在憑證卡片上方重繪剛剛搖出的神聖卦象圖
+                guaVisualEl.innerHTML = "";
+                for (let i = 1; i <= 6; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'yao-row';
+                    if (i === data.dice) row.classList.add('active-change'); // 標示動爻
+                    let val = data.rolls[i-1];
+                    if (val === 1) {
+                        row.innerHTML = `<div class="yang-line"></div><div class="yao-label">${yaoNames[i]}</div>`;
+                    } else {
+                        row.innerHTML = `<div class="yin-line-container"><div class="yin-line-left"></div><div class="yin-line-right"></div></div><div class="yao-label">${yaoNames[i]}</div>`;
+                    }
+                    guaVisualEl.appendChild(row);
+                }
+
+                quoteEl.innerHTML = `<span class="block font-bold text-lg mb-1" style="color:#A4715A;">求得：${data.guaName} (${data.targetYaoName}動)</span><span class="block text-xs text-stone-400 mb-3">${data.overallPrompt}</span><span class="text-sm block text-left bg-stone-50 p-3 rounded-xl border border-stone-100 text-stone-600 leading-relaxed">${data.advice}</span>`;
+
+            } else {
+                // 【西方塔羅渲染】
+                currentCardName = data.card.name;
+                guaVisualEl.classList.add('hidden');
+                imgEl.classList.remove('hidden');
+                imgEl.src = data.card.img;
+                quoteEl.innerText = `「${data.quote}」`;
+            }
+
+            // 公用折扣憑證欄位填入
+            document.getElementById('result-drink').innerText = `${data.drink} (${data.isLucky ? config.luckyDiscount : config.normalDiscount})`;
+            document.getElementById('result-intro').innerText = data.isLucky ? config.luckyText : config.normalText;
+            document.getElementById('date-info').innerText = `占卜日期：${data.date}`;
+            
+            const expiry = new Date(); 
+            expiry.setDate(expiry.getDate() + 2);
+            document.getElementById('expiry-info').innerText = `兌換期限至：${expiry.toLocaleDateString()}`;
+            
+            if (data.isLucky) {
+                document.getElementById('card-container').classList.add('prize-glow');
+                document.getElementById('lucky-tag').classList.remove('hidden');
+            }
+        }
+
+        function resetForTest() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        async function captureTicket(event) {
+            const btn = event.currentTarget; 
+            btn.innerText = "⏳ 繪製中...";
+            html2canvas(document.getElementById('final-capture-area'), { useCORS: true, scale: 3 }).then(canvas => {
+                document.getElementById('preview-image').src = canvas.toDataURL("image/png");
+                document.getElementById('screenshot-overlay').style.display = 'flex';
+                btn.innerText = "✨ 生成折扣憑證";
+            });
+        }
+
+        function shareToLine() {
+            let shareText = "";
+            if (selectedSystem === "eastern") {
+                const guaTitle = document.querySelector("#result-quote span").innerText;
+                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天求得了東方神聖智慧：\n【${guaTitle}】\n\n想知道你的今日能量建議與咖啡優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
+            } else {
+                const quote = document.getElementById('result-quote').innerText;
+                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${currentCardName}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議與咖啡優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
+            }
+            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
+        }
+    </script>
+</body>
+</html>
