@@ -46,7 +46,7 @@
             <p class="text-stone-500 font-bold text-sm tracking-widest">請選擇今日能量指引系統</p>
         </div>
         <button onclick="selectChannel('eastern')" class="w-full py-6 bg-gradient-to-r from-[#D4A373] to-[#E29578] text-white rounded-2xl font-bold shadow-xl transition active:scale-95 text-lg tracking-wider">
-            🪙 東方易經 · 六爻金錢占
+            🪙 東方易經 · 六爻金錢占卜
         </button>
         <button onclick="selectChannel('western')" class="w-full py-6 bg-gradient-to-r from-[#A2A9B8] to-[#8D6E63] text-white rounded-2xl font-bold shadow-xl transition active:scale-95 text-lg tracking-wider">
             🔮 西方塔羅 · 每日能量翻牌
@@ -56,10 +56,10 @@
     <!-- ================= 易經占卜進行區（預設隱藏） ================= -->
     <div id="iching-draw-zone" class="hidden flex flex-col items-center mt-6 w-full max-w-sm">
         <div id="iching-screen" class="w-64 h-80 bg-[#FFF9F5] rounded-2xl border-4 border-dashed border-[#E6D5C3] shadow-lg flex flex-col-reverse justify-center items-center p-6 mb-6">
-            <span id="iching-hint" class="text-sm font-bold text-stone-400">請點擊下方投擲硬幣</span>
+            <span id="iching-hint" class="text-sm font-bold text-stone-400">默數三秒點擊開始擲幣</span>
         </div>
         <button id="iching-btn" onclick="handleIchingRoll()" class="w-64 py-4 bg-[#E29578] text-white rounded-full font-bold shadow-md active:scale-95 tracking-wide">
-            🪙 開始投擲硬幣 (0/6)
+            🪙 投擲六次硬幣 (0/6)
         </button>
     </div>
 
@@ -411,10 +411,10 @@
             let shareText = "";
             if (selectedSystem === "eastern") {
                 const guaTitle = document.querySelector("#result-quote span").innerText;
-                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天求得了東方神聖智慧：\n【${guaTitle}】\n\n想知道你的今日能量建議與咖啡優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
+                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天求得易經智慧：\n【${guaTitle}】\n\n想知道你的今日能量建議與優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
             } else {
                 const quote = document.getElementById('result-quote').innerText;
-                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到了：\n【${currentCardName}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議與咖啡優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
+                shareText = `🔮 多多萬事屋 | 今日能量占卜\n\n我今天抽到塔羅卡牌：\n【${currentCardName}】\n能量訊息：\n${quote}\n\n想知道你的今日能量建議與優惠嗎？👇\nhttps://lin.ee/NBCScpf`;
             }
             window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(shareText)}`;
         }
