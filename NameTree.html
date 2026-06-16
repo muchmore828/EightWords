@@ -2,66 +2,76 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>知識查詢系統</title>
+    <title>命理演算系統</title>
     <style>
-        .container { max-width: 600px; margin: auto; padding: 20px; }
-        .section { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; font-family: sans-serif; }
+        .section { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; }
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .display-area { background-color: #f9f9f9; min-height: 100px; }
+        .result-box { background: #f0f8ff; padding: 15px; border-radius: 5px; border-left: 5px solid #007bff; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- 上方輸入區 -->
     <div class="section" id="input-section">
-        <h2>資料輸入區</h2>
+        <h2>參數輸入區</h2>
         <div class="input-grid">
-            <label>父親姓氏: <input type="text" id="fatherName"></label>
-            <label>母親姓氏: <input type="text" id="motherName"></label>
-            <label>性別: 
-                <select id="gender">
-                    <option value="男">男</option>
-                    <option value="女">女</option>
-                </select>
-            </label>
-            <label>出生順序: <input type="text" id="birthOrder"></label>
-            <label>家中排行: <input type="number" id="familyRank"></label>
             <label>出生民國年: <input type="number" id="birthYear"></label>
-            <label>名: <input type="text" id="firstName"></label>
-            <label>字: <input type="text" id="middleName"></label>
+            <label>性別: <select id="gender"><option value="男">男</option><option value="女">女</option></select></label>
+            <label>出生順序: <input type="number" id="birthOrder"></label>
+            <label>是否獨生: <input type="checkbox" id="isOnlyChild"></label>
             <label>名的筆劃數: <input type="number" id="firstStrokes"></label>
             <label>字的筆劃數: <input type="number" id="middleStrokes"></label>
         </div>
-        <button onclick="displayData()">查詢/顯示</button>
+        <button onclick="calculateAll()" style="margin-top: 15px;">執行演算</button>
     </div>
 
-    <!-- 下方顯示區 -->
-    <div class="section display-area" id="display-section">
-        <h2>資料顯示區</h2>
-        <div id="output">尚未輸入資料...</div>
+    <div class="section" id="display-section">
+        <h2>演算結果</h2>
+        <div id="output" class="result-box">等待輸入與計算...</div>
     </div>
 </div>
 
 <script>
-    function displayData() {
-        const fields = [
-            {id: 'fatherName', label: '父親姓氏'}, {id: 'motherName', label: '母親姓氏'},
-            {id: 'gender', label: '性別'}, {id: 'birthOrder', label: '出生順序'},
-            {id: 'familyRank', label: '家中排行'}, {id: 'birthYear', label: '出生民國年'},
-            {id: 'firstName', label: '名'}, {id: 'middleName', label: '字'},
-            {id: 'firstStrokes', label: '名的筆劃數'}, {id: 'middleStrokes', label: '字的筆劃數'}
-        ];
+    // 輔助函式：加總至個位數
+    function sumToSingleDigit(num) {
+        let n = Math.abs(num);
+        while (n > 9) {
+            n = n.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+        }
+        return n;
+    }
+
+    // 核心邏輯轉換
+    function calculateAll() {
+        const birthYear = document.getElementById('birthYear').value;
+        const gender = document.getElementById('gender').value;
+        const birthOrder = parseInt(document.getElementById('birthOrder').value);
+        const isOnlyChild = document.getElementById('isOnlyChild').checked;
+        const firstStrokes = parseInt(document.getElementById('firstStrokes').value);
+        const middleStrokes = parseInt(document.getElementById('middleStrokes').value);
+
+        // 1. 計算個序
+        const westYear = parseInt(birthYear) + 1911;
+        const personalSeq = sumToSingleDigit(sumToSingleDigit(westYear));
+
+        // 2. 計算筆劃數值 (簡化邏輯)
+        const nameSeq1 = sumToSingleDigit(firstStrokes);
+        const nameSeq2 = sumToSingleDigit(middleStrokes);
         
-        let html = "<ul>";
-        fields.forEach(f => {
-            const val = document.getElementById(f.id).value;
-            html += `<li><strong>${f.label}:</strong> ${val}</li>`;
-        });
-        html += "</ul>";
-        document.getElementById('output').innerHTML = html;
+        // 3. 取得數值 (假設 good_name 邏輯)
+        const valA = 90; // 這裡可根據你的邏輯調整起始值
+        const valB = 75; // 這裡可根據你的邏輯調整起始值
+
+        // 顯示結果
+        document.getElementById('output').innerHTML = `
+            <p><strong>個序 (出生年):</strong> ${personalSeq}</p>
+            <p><strong>名筆劃演算:</strong> ${nameSeq1}</p>
+            <p><strong>字筆劃演算:</strong> ${nameSeq2}</p>
+            <hr>
+            <p>演算完成，系統已根據輸入的 ${birthYear} 年與筆劃數進行換算。</p>
+        `;
     }
 </script>
-
 </body>
 </html>
