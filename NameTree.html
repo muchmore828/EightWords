@@ -2,18 +2,18 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>命理演算查詢系統 - 全宮位邏輯版</title>
+    <title>命理演算查詢系統 - 驗證版</title>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; font-size: 14px; color: #333; background: #f4f7f6; padding: 20px; }
-        .container { max-width: 650px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        .full-width { grid-column: span 3; }
         h2 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 10px; }
         label { font-size: 13px; font-weight: bold; }
         input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
         .result-area { margin-top: 20px; padding: 15px; background: #eef2f3; border-radius: 8px; border: 1px solid #dcdcdc; }
-        .grid-results { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-size: 13px; }
+        .grid-results { margin-top: 10px; }
+        .row-item { margin-bottom: 5px; font-size: 15px; }
         .highlight { color: #d35400; font-weight: bold; }
     </style>
 </head>
@@ -39,7 +39,7 @@
     <div class="input-row">
         <label>名: <input type="text" id="firstName"></label>
         <label>字: <input type="text" id="middleName"></label>
-    </div>
+        <label>&nbsp;</label> </div>
     
     <button onclick="calculate()">進行驗算</button>
 
@@ -60,7 +60,6 @@
         return val;
     }
 
-    // 邏輯輔助函式
     function getIntersection(strA, strB) {
         let setA = new Set(strA.split(''));
         let intersection = [...new Set(strB.split('').filter(x => setA.has(x)))].sort().join('');
@@ -78,7 +77,6 @@
     }
 
     function calculate() {
-        // --- 基礎計算 ---
         const fName = document.getElementById('fatherName').value;
         const mName = document.getElementById('motherName').value;
         const gender = document.getElementById('gender').value;
@@ -107,30 +105,26 @@
         const vaultNumber = (fortuneRoot * 10) + lifeRoot;
         const vaultRoot = sumToSingleDigit(vaultNumber);
 
-        // --- 宮位運算邏輯 ---
-        const v7 = lookupTable[lifeRoot];
-        const v9 = lookupTable[fortuneRoot];
-        const v3 = lookupTable[vaultRoot];
-        
-        const v6 = getIntersection(v9, v3); // 九宮與三宮『同有』
-        const v5 = getMissing([v9, v3]);    // 九宮與三宮『同缺』
-        const v2 = getIntersection(v9, v7); // 九宮與七宮『同有』
-        const v4 = getIntersection(v7, v3); // 七宮與三宮『同有』
-        const v1 = getIntersection(v2, v4); // 二宮與四宮『同有』
-        const v8 = getMissing([v7, v9, v3]); // 七九三宮『同缺』
+        const v7 = lookupTable[lifeRoot], v9 = lookupTable[fortuneRoot], v3 = lookupTable[vaultRoot];
+        const v6 = getIntersection(v9, v3), v5 = getMissing([v9, v3]), v2 = getIntersection(v9, v7);
+        const v4 = getIntersection(v7, v3), v1 = getIntersection(v2, v4), v8 = getMissing([v7, v9, v3]);
 
         document.getElementById('output').innerHTML = `
-            <p><strong>數列：</strong> 7宮(${v7}) / 9宮(${v9}) / 3宮(${v3})</p>
+            <div style="border-bottom:1px solid #ccc; margin-bottom:10px; padding-bottom:5px;">
+                <strong>演算參數：</strong><br>
+                ${gender} | 民國${birthYear}年 | 卦象:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot}<br>
+                財數:${fortuneNumber} | 財根:${fortuneRoot} | 庫數:${vaultNumber} | 庫根:${vaultRoot}
+            </div>
             <div class="grid-results">
-                <div>七宮(命)：<span class="highlight">${v7}</span></div>
-                <div>九宮(財)：<span class="highlight">${v9}</span></div>
-                <div>三宮(庫)：<span class="highlight">${v3}</span></div>
-                <div>六宮(9∩3)：<span class="highlight">${v6}</span></div>
-                <div>五宮(9∪3缺)：<span class="highlight">${v5}</span></div>
-                <div>二宮(9∩7)：<span class="highlight">${v2}</span></div>
-                <div>四宮(7∩3)：<span class="highlight">${v4}</span></div>
-                <div>一宮(2∩4)：<span class="highlight">${v1}</span></div>
-                <div>八宮(7∪9∪3缺)：<span class="highlight">${v8}</span></div>
+                <div class="row-item">七宮: <span class="highlight">${v7}</span></div>
+                <div class="row-item">九宮: <span class="highlight">${v9}</span></div>
+                <div class="row-item">三宮: <span class="highlight">${v3}</span></div>
+                <div class="row-item">六宮: <span class="highlight">${v6}</span></div>
+                <div class="row-item">五宮: <span class="highlight">${v5}</span></div>
+                <div class="row-item">二宮: <span class="highlight">${v2}</span></div>
+                <div class="row-item">四宮: <span class="highlight">${v4}</span></div>
+                <div class="row-item">一宮: <span class="highlight">${v1}</span></div>
+                <div class="row-item">八宮: <span class="highlight">${v8}</span></div>
             </div>
         `;
     }
