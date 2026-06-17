@@ -115,8 +115,8 @@
         const v2Mapped = v2 === "0" ? "無" : v2.split('').map(n => mapping[n] || n).join('、');
 
         document.getElementById('output').innerHTML = `
-            <div class="divider"><strong>基礎：</strong> 卦:${卦} | 命:${lifeRoot} | 財:${fortuneRoot} | 庫:${vaultRoot}</div>
-            <div class="divider"><strong>狀態：</strong> 名:${stateMap[sumToSingleDigit(rawFirst) - fortuneRoot]} | 字:${stateMap[sumToSingleDigit(rawMiddle) - vaultRoot]}</div>
+            <div class="divider"><strong>基礎演算：</strong> 卦:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot} | 財數:${fortuneNumber} | 財根:${fortuneRoot} | 庫數:${vaultNumber} | 庫根:${vaultRoot}</div>
+            <div class="divider"><strong>名字狀態：</strong> 名:${stateMap[sumToSingleDigit(rawFirst) - fortuneRoot]} | 字:${stateMap[sumToSingleDigit(rawMiddle) - vaultRoot]}</div>
             <div class="divider"><strong>適合城市：</strong>(${v2Mapped})</div>
             <div class="row-item">七宮: <span class="highlight">${v7}</span></div>
             <div class="row-item">九宮: <span class="highlight">${v9}</span></div>
