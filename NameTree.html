@@ -42,7 +42,7 @@
         <label>&nbsp;</label>
     </div>
     
-    <button onclick="calculate()">進行驗算</button>
+    <button onclick="calculate()">開始計算</button>
 
     <div class="result-area" id="output">結果顯示區...</div>
 </div>
@@ -106,7 +106,9 @@
         // 命財庫運算
         const lifeNumber = fStrokes + mStrokes + 1 - birthOrder;
         const lifeRoot = sumToSingleDigit(lifeNumber);
+        const fortuneNumber = (lifeRoot * 10) + 卦;
         const fortuneRoot = sumToSingleDigit((lifeRoot * 10) + 卦);
+        const vaultNumber= (fortuneRoot * 10) + lifeRoot;
         const vaultRoot = sumToSingleDigit((fortuneRoot * 10) + lifeRoot);
 
         // 宮位
@@ -119,7 +121,7 @@
         const wordState = stateMap[sumToSingleDigit(rawMiddle) - vaultRoot] || "未知";
 
         document.getElementById('output').innerHTML = `
-            <div class="divider"><strong>基礎演算：</strong> 卦:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot} | 財根:${fortuneRoot} | 庫根:${vaultRoot}</div>
+            <div class="divider"><strong>基礎演算：</strong> 卦:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot} | 財數:${fortuneNumber} | 財根:${fortuneRoot} | 庫數:${vaultNumber} | 庫根:${vaultRoot}</div>
             <div class="divider"><strong>名字狀態：</strong> 名(${sumToSingleDigit(rawFirst)}):<span class="highlight">${nameState}</span> | 字(${sumToSingleDigit(rawMiddle)}):<span class="highlight">${wordState}</span></div>
             <div class="grid-results">
                 <div class="row-item">七宮: <span class="highlight">${v7}</span></div>
