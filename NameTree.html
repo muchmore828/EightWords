@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>命理演算查詢系統 - 驗證版</title>
+    <title>命理演算系統 - 完整功能定稿版</title>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; font-size: 14px; color: #333; background: #f4f7f6; padding: 20px; }
         .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -12,9 +12,9 @@
         input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
         .result-area { margin-top: 20px; padding: 15px; background: #eef2f3; border-radius: 8px; border: 1px solid #dcdcdc; }
-        .grid-results { margin-top: 10px; }
         .row-item { margin-bottom: 5px; font-size: 15px; }
         .highlight { color: #d35400; font-weight: bold; }
+        .divider { border-bottom: 1px solid #ccc; margin: 10px 0; padding-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -27,8 +27,8 @@
         <label>性別: <select id="gender"><option value="男">男</option><option value="女">女</option></select></label>
     </div>
     <div class="input-row">
-        <label>順序: <input type="number" id="birthOrder"></label>
-        <label>排行: <input type="number" id="familyRank"></label>
+        <label>第幾胎: <input type="number" id="birthOrder"></label>
+        <label>排行(次男、三女等等): <input type="number" id="familyRank"></label>
         <label>獨生: <select id="isOnlyChild"><option value="否">否</option><option value="是">是</option></select></label>
     </div>
     <div class="input-row">
@@ -39,7 +39,8 @@
     <div class="input-row">
         <label>名: <input type="text" id="firstName"></label>
         <label>字: <input type="text" id="middleName"></label>
-        <label>&nbsp;</label> </div>
+        <label>&nbsp;</label>
+    </div>
     
     <button onclick="calculate()">進行驗算</button>
 
@@ -47,10 +48,15 @@
 </div>
 
 <script>
+    // 資料初始化
     let surnameDB = JSON.parse(localStorage.getItem('mySurnameDB')) || { "陳": 16, "林": 8, "黃": 12, "李": 7, "王": 4 };
     const lookupTable = {
         1: "14682", 2: "21357", 3: "34692", 4: "41583", 
         5: "54927", 6: "61438", 7: "72359", 8: "82164", 9: "91357"
+    };
+    const stateMap = {
+        "-8": "老", "-7": "病", "-6": "死", "-5": "劫", "-4": "安", "-3": "生", "-2": "老", "-1": "病",
+        "0": "生", "1": "老", "2": "病", "3": "死", "4": "劫", "5": "安", "6": "生", "7": "老", "8": "病"
     };
 
     function saveDB() { localStorage.setItem('mySurnameDB', JSON.stringify(surnameDB)); }
@@ -59,20 +65,16 @@
         while (val > 9) val = val.toString().split('').reduce((a, b) => parseInt(a) + parseInt(b), 0);
         return val;
     }
-
     function getIntersection(strA, strB) {
         let setA = new Set(strA.split(''));
         let intersection = [...new Set(strB.split('').filter(x => setA.has(x)))].sort().join('');
         return intersection.length > 0 ? intersection : "0";
     }
-
     function getMissing(strArr) {
         let union = new Set();
         strArr.forEach(s => s.split('').forEach(char => union.add(char)));
         let missing = [];
-        for (let i = 1; i <= 9; i++) {
-            if (!union.has(i.toString())) missing.push(i);
-        }
+        for (let i = 1; i <= 9; i++) { if (!union.has(i.toString())) missing.push(i); }
         return missing.length > 0 ? missing.join('') : "0";
     }
 
@@ -82,6 +84,8 @@
         const gender = document.getElementById('gender').value;
         const birthOrder = parseInt(document.getElementById('birthOrder').value) || 0;
         const birthYear = parseInt(document.getElementById('birthYear').value) || 0;
+        const rawFirst = parseInt(document.getElementById('firstStrokes').value) || 0;
+        const rawMiddle = parseInt(document.getElementById('middleStrokes').value) || 0;
 
         const checkSurname = (name) => {
             if (name === "") return 0;
@@ -94,27 +98,29 @@
         const fStrokes = checkSurname(fName);
         const mStrokes = checkSurname(mName);
 
+        // 卦象
         const yearSum = sumToSingleDigit(birthYear);
         const map = {1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2, 7: 1, 8: 9, 9: 8};
         let 卦 = (gender === "女") ? yearSum : (map[yearSum] || 0);
         
+        // 命財庫運算
         const lifeNumber = fStrokes + mStrokes + 1 - birthOrder;
         const lifeRoot = sumToSingleDigit(lifeNumber);
-        const fortuneNumber = (lifeRoot * 10) + 卦;
-        const fortuneRoot = sumToSingleDigit(fortuneNumber);
-        const vaultNumber = (fortuneRoot * 10) + lifeRoot;
-        const vaultRoot = sumToSingleDigit(vaultNumber);
+        const fortuneRoot = sumToSingleDigit((lifeRoot * 10) + 卦);
+        const vaultRoot = sumToSingleDigit((fortuneRoot * 10) + lifeRoot);
 
+        // 宮位
         const v7 = lookupTable[lifeRoot], v9 = lookupTable[fortuneRoot], v3 = lookupTable[vaultRoot];
         const v6 = getIntersection(v9, v3), v5 = getMissing([v9, v3]), v2 = getIntersection(v9, v7);
         const v4 = getIntersection(v7, v3), v1 = getIntersection(v2, v4), v8 = getMissing([v7, v9, v3]);
 
+        // 狀態比對
+        const nameState = stateMap[sumToSingleDigit(rawFirst) - fortuneRoot] || "未知";
+        const wordState = stateMap[sumToSingleDigit(rawMiddle) - vaultRoot] || "未知";
+
         document.getElementById('output').innerHTML = `
-            <div style="border-bottom:1px solid #ccc; margin-bottom:10px; padding-bottom:5px;">
-                <strong>演算參數：</strong><br>
-                ${gender} | 民國${birthYear}年 | 卦象:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot}<br>
-                財數:${fortuneNumber} | 財根:${fortuneRoot} | 庫數:${vaultNumber} | 庫根:${vaultRoot}
-            </div>
+            <div class="divider"><strong>基礎演算：</strong> 卦:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot} | 財根:${fortuneRoot} | 庫根:${vaultRoot}</div>
+            <div class="divider"><strong>名字狀態：</strong> 名(${sumToSingleDigit(rawFirst)}):<span class="highlight">${nameState}</span> | 字(${sumToSingleDigit(rawMiddle)}):<span class="highlight">${wordState}</span></div>
             <div class="grid-results">
                 <div class="row-item">七宮: <span class="highlight">${v7}</span></div>
                 <div class="row-item">九宮: <span class="highlight">${v9}</span></div>
