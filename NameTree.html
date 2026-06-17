@@ -83,12 +83,21 @@
         const mStrokes = checkSurname(mName);
 
         // 卦象與命數/命根計算
-        const yearSum = sumToSingleDigit(birthYear);
+        const yearSum = sumToSingleDigit(birthYear); // 民國年加總至個位數
         const map = {1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2, 7: 1, 8: 9, 9: 8};
-        const 卦 = map[yearSum] || 0;
-        const labelName = (gender === "女") ? "天卦" : "命卦";
-        const lifeNumber = fStrokes + mStrokes + 1 - birthOrder;
-        const lifeRoot = sumToSingleDigit(lifeNumber);
+        
+        let 卦 = 0;
+        let labelName = "";
+
+        if (gender === "女") {
+            // 女生：天卦 = 民國年加總
+            卦 = yearSum;
+            labelName = "天卦";
+        } else {
+            // 男生：命卦 = map 對應值
+            卦 = map[yearSum] || 0;
+            labelName = "命卦";
+        }
 
         // --- 新增：財數/財根 與 庫數/庫根 ---
         // 財數：命根(十位) + 卦象(個位)
