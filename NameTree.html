@@ -97,20 +97,25 @@
         const map = {1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2, 7: 1, 8: 9, 9: 8};
         let 卦 = (gender === "女") ? yearSum : (map[yearSum] || 0);
         
+        // 計算邏輯修正
         const lifeNumber = fStrokes + mStrokes + 1 - birthOrder;
         const lifeRoot = sumToSingleDigit(lifeNumber);
-        const fortuneRoot = sumToSingleDigit((lifeRoot * 10) + 卦);
-        const vaultRoot = sumToSingleDigit((fortuneRoot * 10) + lifeRoot);
+        
+        const fortuneNumber = (lifeRoot * 10) + 卦;
+        const fortuneRoot = sumToSingleDigit(fortuneNumber);
+        
+        const vaultNumber = (fortuneRoot * 10) + lifeRoot;
+        const vaultRoot = sumToSingleDigit(vaultNumber);
 
+        // 宮位
         const v7 = lookupTable[lifeRoot], v9 = lookupTable[fortuneRoot], v3 = lookupTable[vaultRoot];
         const v6 = getIntersection(v9, v3), v5 = getMissing([v9, v3]), v2 = getIntersection(v9, v7);
         const v4 = getIntersection(v7, v3), v1 = getIntersection(v2, v4), v8 = getMissing([v7, v9, v3]);
 
-        // 轉換二宮對應地名
         const v2Mapped = v2 === "0" ? "無" : v2.split('').map(n => mapping[n] || n).join('、');
 
         document.getElementById('output').innerHTML = `
-            <div class="divider"><strong>基礎演算：</strong> 根:${卦} | 命數:${lifeNumber} | 命根:${lifeRoot} | 財數:${fortuneNumber} | 財根:${fortuneRoot} | 庫數:${vaultNumber} | 庫根:${vaultRoot}</div>
+            <div class="divider"><strong>基礎演算：</strong> 根:${卦} | 命根:${lifeRoot} | 財根:${fortuneRoot} | 庫根:${vaultRoot}</div>
             <div class="divider"><strong>名字狀態：</strong> 名:${stateMap[sumToSingleDigit(rawFirst) - fortuneRoot]} | 字:${stateMap[sumToSingleDigit(rawMiddle) - vaultRoot]}</div>
             <div class="divider"><strong>適合城市：</strong>(${v2Mapped})</div>
             <div class="row-item">七宮: <span class="highlight">${v7}</span></div>
