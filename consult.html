@@ -188,13 +188,14 @@
         <div class="nav-item" onclick="switchTab('pricing')">諮詢價目 / 預約</div>
         <div class="nav-item" onclick="switchTab('bazi')">八字速查</div>
         <div class="nav-item" onclick="switchTab('courses')">線上課程</div>
+        <div class="nav-item" onclick="switchTab('sport')">運動刮痧</div>
     </nav>
 
     <!-- Tab 1: 首頁 -->
     <div id="home" class="tab-content active">
         <div class="text-center mb-6 mt-4">
             <h1 class="text-2xl font-bold tracking-widest text-gray-800">多多萬事屋</h1>
-            <p class="text-sm text-gray-500 mt-2">命理諮詢 • 運勢解析 • 心靈療癒</p>
+            <p class="text-sm text-gray-500 mt-2">命理諮詢 • 運勢解析 • 身心靈療癒</p>
         </div>
 
         <div class="card">
@@ -203,6 +204,13 @@
                 服務項目
             </div>
             <ul class="space-y-4 pl-2">
+                <li class="flex items-start">
+                    <span class="font-bold mr-2 text-yellow-700">0.</span>
+                    <div>
+                        <strong class="block text-gray-800">運動刮痧</strong>
+                        <span class="text-sm text-gray-500">放鬆、恢復、提升</span>
+                    </div>
+                </li>
                 <li class="flex items-start">
                     <span class="font-bold mr-2 text-yellow-700">A.</span>
                     <div>
@@ -237,6 +245,36 @@
 
     <!-- Tab 2: 價目表 -->
     <div id="pricing" class="tab-content">
+        <!-- 0. 運動刮痧 -->
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                0. 運動刮痧
+            </div>
+            <p class="text-sm text-gray-500 mb-3">你是否正在健身，但無法達到預期表現？還是因為某次的動作拉傷，找不到方法復原？<br>—— 透過運動刮痧，從背部全面調理，理解身體狀況；局部加強，改善提升表現。<br>1.背部調理(從枕骨至骨盆全面刮痧，暢通全身)【45mins】<br>2.胸、肩(上軀、胸部、肩膀)【15mins】<br>3.上肢(二頭、三頭、手腕)【15mins】<br>4.下肢(大腿、小腿、膝蓋)【15mins】</p>
+            <div class="space-y-2">
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="sport-option" value="0" data-name="無" data-price="0" checked onchange="calcTotal()" class="mr-3">
+                    <span class="text-gray-400">不進行調理</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="sport-option" value="200" data-name="背部調理" data-price="1500" onchange="calcTotal()" class="mr-3">
+                    <span>背部調理 $1500</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="sport-option" value="500" data-name="背部調理+上軀" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <span>背部調理+上軀 $2200</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="sport-option" value="500" data-name="背部調理+上肢" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <span>背部調理+上肢 $2200</span>
+                </label>
+                <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+                    <input type="radio" name="sport-option" value="500" data-name="背部調理+下肢" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <span>背部調理+下肢 $2200</span>
+                </label>
+            </div>
+        </div>
         <!-- A. 紫微斗數 -->
         <div class="card">
             <div class="card-title">
