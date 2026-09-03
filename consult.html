@@ -15,8 +15,8 @@
     <style>
         /* --- 全域設定 --- */
         :root {
-            --bg-base: #fdfbf7;       /* 米白宣紙底 */
-            --primary: #5D4037;       /* 深棕主色 */
+            --bg-base: #fdfbf7;      /* 米白宣紙底 */
+            --primary: #5D4037;      /* 深棕主色 */
             --accent-light: #FFECB3;  /* 淺橘黃 */
             --accent-pink: #FFCCBC;   /* 淺粉橘 */
             --active-tab: #FFE0B2;    /* 選中頁籤 */
@@ -207,7 +207,7 @@
                 <li class="flex items-start">
                     <span class="font-bold mr-2 text-yellow-700">0.</span>
                     <div>
-                        <strong class="block text-gray-800">運動刮痧</strong>
+                        <strong class="block text-gray-800">運動刮痧(新服務上線偷跑中～)</strong>
                         <span class="text-sm text-gray-500">放鬆、恢復、提升</span>
                     </div>
                 </li>
@@ -258,23 +258,25 @@
                     <span class="text-gray-400">不進行調理</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="sport-option" value="200" data-name="背部調理" data-price="1500" onchange="calcTotal()" class="mr-3">
+                    <input type="radio" name="sport-option" value="1500" data-name="背部調理" data-price="1500" onchange="calcTotal()" class="mr-3">
                     <span>背部調理 $1500</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="sport-option" value="500" data-name="背部調理+上軀" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <input type="radio" name="sport-option" value="2200" data-name="背部調理+上軀" data-price="2200" onchange="calcTotal()" class="mr-3">
                     <span>背部調理+上軀 $2200</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="sport-option" value="500" data-name="背部調理+上肢" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <input type="radio" name="sport-option" value="2200" data-name="背部調理+上肢" data-price="2200" onchange="calcTotal()" class="mr-3">
                     <span>背部調理+上肢 $2200</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="sport-option" value="500" data-name="背部調理+下肢" data-price="2200" onchange="calcTotal()" class="mr-3">
+                    <input type="radio" name="sport-option" value="2200" data-name="背部調理+下肢" data-price="2200" onchange="calcTotal()" class="mr-3">
                     <span>背部調理+下肢 $2200</span>
                 </label>
             </div>
+            <div class="text-right text-gray-600 text-sm mt-3">運動刮痧小計：$<span id="sport-price">0</span></div>
         </div>
+        
         <!-- A. 紫微斗數 -->
         <div class="card">
             <div class="card-title">
@@ -331,14 +333,15 @@
                     <span class="text-gray-400">不進行占卜</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="card-option" value="200" data-name="塔羅一刻 (4+張)" data-price="200" onchange="calcTotal()" class="mr-3">
-                    <span>塔羅一刻 (4+張) $200</span>
+                    <input type="radio" name="card-option" value="200" data-name="塔羅一刻" data-price="200" onchange="calcTotal()" class="mr-3">
+                    <span>塔羅一刻 (3張+課題卡) $200</span>
                 </label>
                 <label class="flex items-center p-2 border rounded hover:bg-gray-50">
-                    <input type="radio" name="card-option" value="500" data-name="卡牌鐘點 (9+張)" data-price="500" onchange="calcTotal()" class="mr-3">
-                    <span>卡牌鐘點 (9+張) $500</span>
+                    <input type="radio" name="card-option" value="500" data-name="卡牌鐘點" data-price="500" onchange="calcTotal()" class="mr-3">
+                    <span>卡牌鐘點 (9張) $500</span>
                 </label>
             </div>
+            <div class="text-right text-gray-600 text-sm mt-3">卡牌小計：$<span id="card-price">0</span></div>
         </div>
 
         <div class="price-display">
@@ -467,7 +470,7 @@
             document.getElementById(tabId).classList.add('active');
             
             const navItems = document.querySelectorAll('.nav-item');
-            const map = { 'home': 0, 'pricing': 1, 'bazi': 2, 'courses': 3 };
+            const map = { 'home': 0, 'pricing': 1, 'bazi': 2, 'courses': 3, 'sport': 4 };
             if (map[tabId] !== undefined) navItems[map[tabId]].classList.add('active');
             window.scrollTo(0, 0);
         }
@@ -506,25 +509,25 @@
         }
 
         function calcTotal() {
-            // 紫微計算: 基礎600 + (其餘*600)
-            let ziweiPrice = 0;
-            if (selectedItems.ziwei.length > 0) {
-                ziweiPrice = selectedItems.ziwei.length * 600;
-            }
+            // 運動刮痧計算
+            const sportOption = document.querySelector('input[name="sport-option"]:checked');
+            let sportPrice = parseInt(sportOption ? sportOption.value : 0);
+            document.getElementById('sport-price').innerText = sportPrice;
+
+            // 紫微計算: 每項600
+            let ziweiPrice = selectedItems.ziwei.length > 0 ? selectedItems.ziwei.length * 600 : 0;
             document.getElementById('ziwei-price').innerText = ziweiPrice;
 
-            // 八字計算: 基礎600 + (其餘*600)
-            let baziPrice = 0;
-            if (selectedItems.bazi.length > 0) {
-                baziPrice = selectedItems.bazi.length * 600;
-            }
+            // 八字計算: 每項600
+            let baziPrice = selectedItems.bazi.length > 0 ? selectedItems.bazi.length * 600 : 0;
             document.getElementById('bazi-price').innerText = baziPrice;
 
-            // 卡牌
+            // 卡牌占卜計算
             const cardOption = document.querySelector('input[name="card-option"]:checked');
-            let cardPrice = parseInt(cardOption.value || 0);
+            let cardPrice = parseInt(cardOption ? cardOption.value : 0);
+            document.getElementById('card-price').innerText = cardPrice;
 
-            let total = ziweiPrice + baziPrice + cardPrice;
+            let total = sportPrice + ziweiPrice + baziPrice + cardPrice;
             document.getElementById('final-total').innerText = total;
         }
 
@@ -533,8 +536,12 @@
             const custName = document.getElementById('custName').value.trim();
             const reservationTime = document.getElementById('reservationTime').value;
             const custNote = document.getElementById('custNote').value.trim();
+            
+            const sportOption = document.querySelector('input[name="sport-option"]:checked');
+            const sportName = sportOption ? sportOption.dataset.name : "無";
+
             const cardOption = document.querySelector('input[name="card-option"]:checked');
-            const cardName = cardOption.dataset.name;
+            const cardName = cardOption ? cardOption.dataset.name : "無";
 
             if (total === "0") {
                 alert("請至少選擇一項服務喔！");
@@ -548,6 +555,7 @@
             const timeStr = new Date(reservationTime).toLocaleString('zh-TW', { hour12: false, month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
             let details = "";
+            if (sportName !== "無") details += `💆 運動刮痧：${sportName}\n`;
             if (selectedItems.ziwei.length > 0) details += `🟣 紫微斗數：${selectedItems.ziwei.join(', ')}\n`;
             if (selectedItems.bazi.length > 0) details += `🟡 八字解析：${selectedItems.bazi.join(', ')}\n`;
             if (cardName !== "無") details += `🃏 卡牌占卜：${cardName}\n`;
@@ -616,7 +624,6 @@
                     options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
 
-                // 您的專屬建議文字邏輯
                 let summary = [];
                 if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
                 if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
