@@ -209,12 +209,12 @@
             const memo = document.getElementById('sur-memo').value.trim();
 
             const msg = `【📝 運動刮痧問卷調查回報】\n\n` +
-                        `👤 姓名：${name}\n` +
-                        `🌱 身體狀態：${states.length > 0 ? states.join(', ') : '無特別勾選'}\n` +
-                        `🎯 重點部位：${selectedSurveyParts.length > 0 ? selectedSurveyParts.join(', ') : '未指定'}\n` +
-                        `⚠️ 安全風險注意：${risks.length > 0 ? risks.join(', ') : '無勾選特殊狀況'}\n` +
-                        `💪 力道偏好：${pressure}\n` +
-                        `📝 補充備註：${memo || '無'}\n\n` +
+                        `👤 姓名：\n${name}\n\n` +
+                        `🌱 身體狀態：\n${states.length > 0 ? states.join(',\n ') : '無特別勾選'}\n` +
+                        `🎯 重點部位：\n${selectedSurveyParts.length > 0 ? selectedSurveyParts.join(',\n ') : '未指定'}\n` +
+                        `⚠️ 安全風險注意：\n${risks.length > 0 ? risks.join(',\n ') : '無勾選特殊狀況'}\n` +
+                        `💪 力道偏好：\n${pressure}\n` +
+                        `📝 補充備註：\n${memo || '無'}\n\n` +
                         `已完成填寫，請老師參閱！`;
 
             if (typeof liff !== 'undefined' && liff.isInClient()) {
