@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>多多萬事屋｜運動刮痧身心調查</title>
+    
+    <!-- 核心函式庫 -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base: #fdfbf7;      /* 米白宣紙底 */
+            --primary: #5D4037;      /* 深棕主色 */
+            --accent-light: #FFECB3;  /* 淺橘黃 */
+            --accent-pink: #FFCCBC;   /* 淺粉橘 */
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--primary);
+            padding: 20px 15px 40px 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-pink);
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title svg { margin-right: 8px; width: 24px; height: 24px; stroke: var(--primary); }
+
+        .option-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
+        
+        .check-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            font-size: 14px;
+            background-color: #fff;
+        }
+        
+        .check-btn.selected {
+            background-color: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .action-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: #fff;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(93, 64, 55, 0.3);
+            transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="text-center mb-6 mt-2">
+        <h1 class="text-2xl font-bold tracking-widest text-gray-800">多多萬事屋</h1>
+        <p class="text-sm text-gray-500 mt-1">運動刮痧 • 身心狀況與需求調查</p>
+    </div>
+
+    <div class="card">
+        <div class="card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            填寫前台問卷
+        </div>
+        <p class="text-sm text-gray-500 mb-4">為了提供您最安全且高質量的放鬆體驗，請協助填寫以下調查。這能幫助老師在動手調理前，更精準掌握您的身體狀況！</p>
+
+        <!-- 1. 基本資訊 -->
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-1">1. 您的姓名 / 暱稱</label>
+            <input type="text" id="survey-name" class="form-input" placeholder="請輸入您的姓名或暱稱">
+        </div>
+
+        <!-- 2. 當日身體狀態 -->
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-1">2. 您目前身體的狀態如何？（可複選）</label>
+            <div class="space-y-2 mt-2">
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-state" value="近期有規律運動習慣" class="mr-2 h-4 w-4"> 近期有規律運動習慣</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-state" value="感覺身體沉重、莫名疲勞" class="mr-2 h-4 w-4"> 感覺身體沉重、莫名疲勞</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-state" value="有特定部位長期慢性痠痛" class="mr-2 h-4 w-4"> 有特定部位長期慢性痠痛</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-state" value="剛結束高強度訓練不久" class="mr-2 h-4 w-4"> 剛結束高強度訓練不久</label>
+            </div>
+        </div>
+
+        <!-- 3. 最想加強的部位 -->
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-1">3. 本次希望重點調理的部位（可複選）</label>
+            <div class="option-group mt-2">
+                <div class="check-btn" onclick="toggleSurveyOpt(this, '背部（基礎調理）')">背部（基礎調理）</div>
+                <div class="check-btn" onclick="toggleSurveyOpt(this, '上軀（胸部、肩膀）')">上軀（胸部、肩膀）</div>
+                <div class="check-btn" onclick="toggleSurveyOpt(this, '上肢（手腕、手肘、二頭）')">上肢（手腕、手肘、二頭）</div>
+                <div class="check-btn" onclick="toggleSurveyOpt(this, '下肢（大腿、小腿、膝蓋）')">下肢（大腿、小腿、膝蓋）</div>
+            </div>
+        </div>
+
+        <!-- 4. 安全與禁忌症篩檢 -->
+        <div class="mb-4 bg-orange-50 p-3 rounded-lg border border-orange-200">
+            <label class="block text-sm font-bold text-amber-900 mb-1">4. 安全把關確認（若有以下狀況請務必勾選）</label>
+            <p class="text-xs text-amber-700 mb-2">如有以下情形，老師將會為您評估是否調整手法或暫緩施作：</p>
+            <div class="space-y-2">
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-risk" value="皮膚有傷口、嚴重過敏或發炎" class="mr-2 h-4 w-4"> 皮膚有傷口、嚴重過敏或發炎</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-risk" value="近期有急性拉傷、骨折或開刀史" class="mr-2 h-4 w-4"> 近期有急性拉傷、骨折或開刀史</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-risk" value="長期服用抗凝血藥物 / 凝血功能異常" class="mr-2 h-4 w-4"> 長期服用抗凝血藥物 / 凝血功能異常</label>
+                <label class="flex items-center text-sm text-gray-700"><input type="checkbox" name="sur-risk" value="目前為懷孕期間" class="mr-2 h-4 w-4"> 目前為懷孕期間</label>
+            </div>
+        </div>
+
+        <!-- 5. 力道偏好 -->
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-1">5. 您對刮痧力道的接受度</label>
+            <select id="sur-pressure" class="form-input">
+                <option value="喜歡輕柔放鬆、怕痛">喜歡輕柔放鬆、怕痛（以舒服出痧為主）</option>
+                <option value="中等力道、有感即可" selected>中等力道、有感即可（標準體感）</option>
+                <option value="重度深層、越痛越爽（耐痛力高）">重度深層、越痛越爽（耐痛力高）</option>
+            </select>
+        </div>
+
+        <!-- 6. 其他補充 -->
+        <div class="mb-4">
+            <label class="block text-sm font-bold text-gray-700 mb-1">6. 其他想特別提醒老師的事（例如：某處特別怕癢或曾受傷）</label>
+            <textarea id="sur-memo" class="form-input" rows="2" placeholder="在此輸入補充說明..."></textarea>
+        </div>
+
+        <button class="action-btn" onclick="submitSurvey()">送出問卷調查</button>
+    </div>
+
+    <script>
+        const YOUR_LIFF_ID = "2008538785-7DvjVKw5"; // 請確認是否為您的 LIFF ID
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof liff !== 'undefined') {
+                liff.init({ liffId: YOUR_LIFF_ID })
+                    .then(() => {
+                        if (!liff.isLoggedIn()) {
+                            liff.login();
+                        }
+                    })
+                    .catch(err => console.error('LIFF Init failed', err));
+            }
+        });
+
+        let selectedSurveyParts = [];
+
+        function toggleSurveyOpt(btn, item) {
+            if (selectedSurveyParts.includes(item)) {
+                selectedSurveyParts = selectedSurveyParts.filter(i => i !== item);
+                btn.classList.remove('selected');
+            } else {
+                selectedSurveyParts.push(item);
+                btn.classList.add('selected');
+            }
+        }
+
+        function submitSurvey() {
+            const name = document.getElementById('survey-name').value.trim();
+            if (!name) {
+                alert("請填寫您的姓名或暱稱！");
+                return;
+            }
+
+            const states = [];
+            document.querySelectorAll('input[name="sur-state"]:checked').forEach(el => states.push(el.value));
+
+            const risks = [];
+            document.querySelectorAll('input[name="sur-risk"]:checked').forEach(el => risks.push(el.value));
+
+            const pressure = document.getElementById('sur-pressure').value;
+            const memo = document.getElementById('sur-memo').value.trim();
+
+            const msg = `【📝 運動刮痧問卷調查回報】\n\n` +
+                        `👤 姓名：${name}\n` +
+                        `🌱 身體狀態：${states.length > 0 ? states.join(', ') : '無特別勾選'}\n` +
+                        `🎯 重點部位：${selectedSurveyParts.length > 0 ? selectedSurveyParts.join(', ') : '未指定'}\n` +
+                        `⚠️ 安全風險注意：${risks.length > 0 ? risks.join(', ') : '無勾選特殊狀況'}\n` +
+                        `💪 力道偏好：${pressure}\n` +
+                        `📝 補充備註：${memo || '無'}\n\n` +
+                        `已完成填寫，請老師參閱！`;
+
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                liff.sendMessages([{ type: 'text', text: msg }])
+                    .then(() => {
+                        alert("問卷已成功送出！感謝您的填寫。");
+                        liff.closeWindow();
+                    })
+                    .catch(err => alert('發送失敗：' + err));
+            } else {
+                alert("【預覽問卷結果】\n\n" + msg);
+            }
+        }
+    </script>
+</body>
+</html>
