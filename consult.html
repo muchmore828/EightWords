@@ -178,7 +178,6 @@
             margin-bottom: 10px;
             background-color: #fff;
         }
-
     </style>
 </head>
 <body>
@@ -188,7 +187,7 @@
         <div class="nav-item" onclick="switchTab('pricing')">諮詢價目 / 預約</div>
         <div class="nav-item" onclick="switchTab('bazi')">八字速查</div>
         <div class="nav-item" onclick="switchTab('courses')">線上課程</div>
-        <div class="nav-item" onclick="switchTab('courses')">運動刮痧new</div>
+        <div class="nav-item" onclick="switchTab('sport')">運動刮痧new</div>
     </nav>
 
     <!-- Tab 1: 首頁 -->
@@ -449,17 +448,15 @@
         </div>
     </div>
 
-    <!-- Tab 5: 運動刮痧new -->
-    <div id="courses" class="tab-content">
+    <!-- Tab 5: 運動刮痧new (修正 ID 為 sport) -->
+    <div id="sport" class="tab-content">
         <div class="card">
             <div class="card-title">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 運動刮痧，預約與注意事項須知
             </div>
-            <!-- 建議放置圖片的位置 -->
             <div class="mb-4 text-center">
-                <img src="您的圖片網址.jpg" alt="運動刮痧示意圖" class="mx-auto rounded-lg shadow-sm" style="max-width: 100%; height: auto; max-height: 200px;">
-                <p class="text-xs text-gray-400 mt-1">（示意圖：溫馨放鬆的調理空間與專業器具）</p>
+                <p class="text-xs text-gray-400 mt-1">（溫馨放鬆的調理空間與專業器具）</p>
             </div>
 
             <div class="space-y-3 text-sm text-gray-700">
@@ -490,8 +487,6 @@
             </div>
         </div>        
     </div>
-
-    
 
     <script>
         const YOUR_LIFF_ID = "2008538785-7DvjVKw5";
@@ -634,6 +629,26 @@
         const DM_TRAITS = { "甲":"甲木參天，剛毅正直，有責任感，領導風範。", "乙":"乙木如藤，柔順堅韌，心思細膩，善隨機應變。", "丙":"丙火如陽，熱情開朗，不拘小節，情緒來去快。", "丁":"丁火如燭，溫和細膩，洞察力強，富有奉獻精神。", "戊":"戊土如山，沈穩厚重，講信用，包容力強。", "己":"己土如園，柔和多才，通情達理，善溝通。", "庚":"庚金如鐵，剛毅果決，講義氣，執行力強。", "辛":"辛金如珠，溫潤秀氣，自尊強，外柔內剛。", "壬":"壬水如海，聰明機智，寬宏大量，喜自由。", "癸":"癸水如露，內斂平靜，溫柔細心，以柔克剛。" };
         let myChart = null;
 
+        function getWuXingClass(char) {
+            const wx = WUXING[char];
+            if (wx === "木") return "w-wood";
+            if (wx === "火") return "w-fire";
+            if (wx === "土") return "w-earth";
+            if (wx === "金") return "w-metal";
+            if (wx === "水") return "w-water";
+            return "";
+        }
+
+        function renderStem(elementId, char, dm, isDayMaster = false) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = `<span class="char-main ${getWuXingClass(char)}">${char}</span>`;
+        }
+
+        function renderBranch(elementId, char, dm) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = `<span class="char-main ${getWuXingClass(char)}">${char}</span>`;
+        }
+
         function calculateBazi() {
             try {
                 if (typeof Solar === 'undefined') { alert("系統載入中..."); return; }
@@ -648,60 +663,48 @@
                 const Zhi = [bazi.getYearZhi(), bazi.getMonthZhi(), bazi.getDayZhi(), bazi.getTimeZhi()];
                 const DM = Gan[2];
 
-                renderStem("year-gan", Gan[0], DM); renderStem("month-gan", Gan[1], DM); renderStem("day-gan", Gan[2], DM, true); renderStem("time-gan", Gan[3], DM);
-                renderBranch("year-zhi", Zhi[0], DM); renderBranch("month-zhi", Zhi[1], DM); renderBranch("day-zhi", Zhi[2], DM); renderBranch("time-zhi", Zhi[3], DM);
+                renderStem("year-gan", Gan[0], DM); 
+                renderStem("month-gan", Gan[1], DM); 
+                renderStem("day-gan", Gan[2], DM, true); 
+                renderStem("time-gan", Gan[3], DM);
+                renderBranch("year-zhi", Zhi[0], DM); 
+                renderBranch("month-zhi", Zhi[1], DM); 
+                renderBranch("day-zhi", Zhi[2], DM); 
+                renderBranch("time-zhi", Zhi[3], DM);
 
                 document.getElementById('dm-label').innerText = `【${DM}】`;
                 document.getElementById('dm-desc').innerText = DM_TRAITS[DM];
 
                 const counts = { "金":0, "木":0, "水":0, "火":0, "土":0 };
-                [...Gan, ...Zhi].forEach(c => counts[WUXING[c]]++);
+                [...Gan, ...Zhi].forEach(c => { if(WUXING[c]) counts[WUXING[c]]++; });
                 
                 const ctx = document.getElementById('wuxingChart').getContext('2d');
                 if (myChart) myChart.destroy();
                 const dataVals = [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']];
+                
                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: ['木','火','土','金','水'],
-                        datasets: [{ label: '數量', data: [counts['木'], counts['火'], counts['土'], counts['金'], counts['水']], backgroundColor: ['#388E3C','#D32F2F','#795548','#FBC02D','#1976D2'] }]
+                        labels: ELEMENTS,
+                        datasets: [{
+                            label: '五行數量',
+                            data: dataVals,
+                            backgroundColor: ['#388E3C', '#D32F2F', '#795548', '#FBC02D', '#1976D2']
+                        }]
                     },
-                    options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
                 });
 
-                let summary = [];
-                if (counts['金'] < 1) summary.push("缺金, 要如何補足, 趕快詢問多多老師");
-                if (counts['木'] < 1) summary.push("缺木, 要如何補足, 趕快詢問多多老師");
-                if (counts['水'] < 1) summary.push("缺水, 要如何補足, 趕快詢問多多老師");
-                if (counts['火'] < 1) summary.push("缺火, 要如何補足, 趕快詢問多多老師");
-                if (counts['土'] < 1) summary.push("缺土, 要如何補足, 趕快詢問多多老師");
-                let maxVal = Math.max(...dataVals);
-                if (maxVal >= 4) summary.push("某行過旺, 要如何耗泄, 趕快詢問多多老師");
-                
-                document.getElementById('wuxing-text').innerText = summary.length > 0 ? summary.join("；") : "五行分佈相對平衡，時機在哪？趕快詢問多多老師";
-
                 document.getElementById('bazi-result').style.display = 'block';
-
-            } catch (e) { alert("錯誤：" + e.message); }
-        }
-
-        function getTenGod(dm, target) {
-            const relation = (ELEMENTS.indexOf(WUXING[target]) - ELEMENTS.indexOf(WUXING[dm]) + 5) % 5;
-            const same = YINYANG[dm] === YINYANG[target];
-            const gods = [same?"比肩":"劫財", same?"食神":"傷官", same?"偏財":"正財", same?"七殺":"正官", same?"偏印":"正印"];
-            return gods[relation];
-        }
-
-        function renderStem(id, char, dm, isDay=false) {
-            const god = isDay ? "" : getTenGod(dm, char);
-            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
-            document.getElementById(id).innerHTML = `<div class="ten-god-top">${god}</div><div class="char-main ${color}">${char}</div>`;
-        }
-
-        function renderBranch(id, char, dm) {
-            const color = `w-${WUXING[char] === '金' ? 'metal' : WUXING[char] === '木' ? 'wood' : WUXING[char] === '水' ? 'water' : WUXING[char] === '火' ? 'fire' : 'earth'}`;
-            const hidden = ZHI_CANG_GAN[char].map(g => `${g}(${getTenGod(dm, g)})`).join(' ');
-            document.getElementById(id).innerHTML = `<div class="char-main ${color}">${char}</div><div class="hidden-stems">${hidden}</div>`;
+            } catch (err) {
+                console.error(err);
+                alert("排盤計算發生錯誤，請確認輸入格式。");
+            }
         }
     </script>
 </body>
