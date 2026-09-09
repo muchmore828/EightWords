@@ -208,6 +208,26 @@
             const pressure = document.getElementById('sur-pressure').value;
             const memo = document.getElementById('sur-memo').value.trim();
 
+            // 準備要傳送到 Google Sheet 的資料物件
+            const formData = {
+                name: name,
+                states: states.length > 0 ? states.join(', ') : '無特別勾選',
+                parts: selectedSurveyParts.length > 0 ? selectedSurveyParts.join(', ') : '未指定',
+                risks: risks.length > 0 ? risks.join(', ') : '無勾選特殊狀況',
+                pressure: pressure,
+                memo: memo || '無'
+            };
+
+            // 1. 發送資料到 Google Sheet 後端
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbxgRGnx0cR3LAdqJv_G-LhM4YUCyi0yfutHacBO5fr5zYJfeEavppSuNkFWsDCPk0gQ5Q/exec"; // <-- 填入您的 Google Apps Script 網址
+    
+            fetch(GAS_URL, {
+                method: 'POST',
+                mode: 'no-cors', // 避免跨域阻擋
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            }).catch(err => console.error('Sheet save error:', err));
+
             const msg = `【📝 運動刮痧問卷調查回報】\n\n` +
                         `👤 姓名：\n${name}\n\n` +
                         `🌱 身體狀態：\n${states.length > 0 ? states.join(',\n ') : '無特別勾選'}\n\n` +
