@@ -75,32 +75,32 @@
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         
-        /* 縮小並最佳化十二宮輸入排版 (每行4個，緊湊排列) */
+        /* 🌟 左側十二宮輸入區塊改為 3 列（3x4 佈局），寬敞舒適不擁擠 */
         .palaces-grid-inputs {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 4px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
         }
         .palace-input-item {
             background: #fafafa;
             border: 1px solid #e1e4e8;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 6px;
+            border-radius: 6px;
             text-align: center;
         }
         .palace-input-item label {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #636e72;
-            margin-bottom: 1px;
+            margin-bottom: 2px;
             display: block;
         }
         .palace-input-item input {
             width: 100%;
-            padding: 3px;
+            padding: 4px;
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             border: 1px solid #dfe6e9;
-            border-radius: 3px;
+            border-radius: 4px;
             box-sizing: border-box;
         }
 
@@ -229,48 +229,48 @@
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
-            padding: 15mm 20mm;
+            padding: 12mm 20mm;
         }
 
         .sheet-header {
             text-align: center;
             border-bottom: 2px solid #b2bec3;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
         }
         .sheet-header h1 {
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #2d3436;
         }
         .sheet-header p {
-            margin: 3px 0 0 0;
+            margin: 2px 0 0 0;
             color: #636e72;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .top-astronomy-summary {
             display: flex;
             justify-content: space-between;
             background: rgba(255, 255, 255, 0.85);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
             border: 1px solid #dfe6e9;
         }
         .astro-block div, .bazi-block div {
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
-        /* 九宮格命盤排版 */
+        /* 預覽區紫微斗數盤面 (3x4 佈局) */
         .ziwei-grid-container {
             position: relative;
             width: 100%;
-            height: 380px;
+            height: 310px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             gap: 2px;
             background: #2d3436;
             border: 2px solid #2d3436;
@@ -290,7 +290,7 @@
             text-align: center;
             color: #2d3436;
             white-space: pre-line;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             margin-top: auto;
             margin-bottom: auto;
@@ -298,19 +298,19 @@
         .palace-name {
             font-weight: bold;
             color: #e17055;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             align-self: flex-end;
         }
 
         .palace-center {
             grid-column: 2 / span 2;
-            grid-row: 2 / span 2;
+            grid-row: 2 / span 1;
             background: #f8f9fa;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 6px;
             z-index: 2;
         }
 
@@ -325,16 +325,16 @@
         }
 
         .section-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: #2d3436;
             border-left: 4px solid #6c5ce7;
             padding-left: 6px;
-            margin: 10px 0 6px 0;
+            margin: 8px 0 4px 0;
         }
         .preview-content {
-            font-size: 0.85rem;
-            line-height: 1.4;
+            font-size: 0.82rem;
+            line-height: 1.35;
             color: #2d3436;
             white-space: pre-wrap;
         }
@@ -401,6 +401,7 @@
             </div>
         </div>
 
+        <!-- 🌟 左側十二宮輸入區塊 (已改為 3 列佈局) -->
         <h3>🏛️ 十二地支宮位主星設定</h3>
         <div class="sub-box palaces-grid-inputs" id="palaces-inputs-container"></div>
 
@@ -443,11 +444,11 @@
                     </div>
                 </div>
 
-                <!-- 盤面與三方四正連線 (九宮格) -->
+                <!-- 盤面與三方四正連線 -->
                 <div class="ziwei-grid-container" id="ziwei-grid">
-                    <svg class="ziwei-svg-overlay" viewBox="0 0 400 380">
-                        <polygon points="250,45 350,335 50,200" fill="rgba(108, 92, 231, 0.12)" stroke="#6c5ce7" stroke-width="2" stroke-dasharray="4" />
-                        <line x1="250" y1="45" x2="125" y2="335" stroke="#e17055" stroke-width="2" />
+                    <svg class="ziwei-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <polygon points="37.5,16.67 87.5,83.33 12.5,83.33" fill="rgba(108, 92, 231, 0.12)" stroke="#6c5ce7" stroke-width="1.2" stroke-dasharray="2" />
+                        <line x1="37.5" y1="16.67" x2="62.5" y2="83.33" stroke="#e17055" stroke-width="1.2" />
                     </svg>
 
                     <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">廉貞/天相</span><span class="palace-name">巳</span></div>
@@ -457,18 +458,15 @@
 
                     <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">巨門</span><span class="palace-name">辰</span></div>
                     <div class="palace-center">
-                        <div style="font-weight:bold; color:#6c5ce7; font-size:0.9rem;">2027 丁未年</div>
-                        <div style="font-size:0.75rem; color:#636e72;">三方四正命盤</div>
+                        <div style="font-weight:bold; color:#6c5ce7; font-size:0.85rem;">2027 丁未年</div>
+                        <div style="font-size:0.7rem; color:#636e72;">三方四正命盤</div>
                     </div>
                     <div class="palace-cell" style="grid-column:4; grid-row:2;" data-branch="酉"><span class="palace-stars" id="star-酉">天同</span><span class="palace-name">酉</span></div>
 
                     <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-stars" id="star-卯">貪狼</span><span class="palace-name">卯 (財帛)</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:3;" data-branch="戌"><span class="palace-stars" id="star-戌">武曲</span><span class="palace-name">戌</span></div>
-
-                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-stars" id="star-寅">太陰</span><span class="palace-name">寅</span></div>
-                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">丑 (遷移)</span></div>
-                    <div class="palace-cell" style="grid-column:3; grid-row:4;" data-branch="子"><span class="palace-stars" id="star-子">破軍</span><span class="palace-name">子</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-stars" id="star-亥">太陽</span><span class="palace-name">亥 (官祿)</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:3;" data-branch="寅"><span class="palace-stars" id="star-寅">太陰</span><span class="palace-name">寅</span></div>
+                    <div class="palace-cell" style="grid-column:3; grid-row:3;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">丑 (遷移)</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:3;" data-branch="子"><span class="palace-stars" id="star-子">破軍</span><span class="palace-name">子</span></div>
                 </div>
 
                 <div class="section-title">🌟 年度命盤總評</div>
@@ -570,7 +568,7 @@
             margin:       0,
             filename:     document.getElementById('input-id').value + '_2027流年解析.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().from(element).set(opt).save();
