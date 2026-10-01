@@ -34,6 +34,7 @@
             max-height: 90vh;
             overflow-y: auto;
             font-size: 0.9rem;
+            box-sizing: border-box;
         }
         .control-panel h2 {
             margin-top: 0;
@@ -104,18 +105,20 @@
             box-sizing: border-box;
         }
 
-        /* 八字 4+1+1 獨立排版網格 */
+        /* 🌟 修正：八字 4+1+1 獨立排版網格，強制 100% 寬度不溢出 */
         .bazi-input-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr) 4px 1fr 4px 1fr;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) 4px minmax(0, 1fr) 4px minmax(0, 1fr);
             gap: 3px;
             align-items: center;
+            width: 100%;
         }
         .bazi-input-grid input {
             text-align: center;
             padding: 6px 2px;
             font-size: 0.9rem;
             box-sizing: border-box;
+            width: 100%;
         }
         .bazi-line-divider {
             background: #b2bec3;
@@ -129,6 +132,7 @@
             padding: 8px 10px;
             border-radius: 8px;
             margin-bottom: 10px;
+            box-sizing: border-box;
         }
 
         .month-box {
@@ -264,7 +268,7 @@
             line-height: 1.3;
         }
 
-        /* 🌟 右側正確的 4x4 紫微斗數盤面佈局 */
+        /* 右側正確的 4x4 紫微斗數盤面佈局 */
         .ziwei-grid-container {
             position: relative;
             width: 100%;
@@ -303,7 +307,6 @@
             align-self: flex-end;
         }
 
-        /* 盤面正中央 2x2 區域 */
         .palace-center {
             grid-column: 2 / span 2;
             grid-row: 2 / span 2;
@@ -345,7 +348,7 @@
 <body>
 
 <div class="app-container">
-    <!-- 左側輸入控制台 (維持 3x4 舒適好點擊排版) -->
+    <!-- 左側輸入控制台 -->
     <div class="control-panel">
         <h2>✨ 2027 流年報告輸入介面</h2>
         
@@ -416,7 +419,7 @@
         <button class="btn-export" onclick="exportPDF()">📥 一鍵導出完整 PDF 報告</button>
     </div>
 
-    <!-- 右側即時預覽畫布 (維持完美的 4x4 標準紫微斗數盤面) -->
+    <!-- 右側即時預覽畫布 (完美的 4x4 標準紫微斗數盤面) -->
     <div class="preview-panel">
         <div id="pdf-target">
             
@@ -444,7 +447,7 @@
                     </div>
                 </div>
 
-                <!-- 🌟 右側正確的標準 4x4 紫微斗數盤面佈局 -->
+                <!-- 右側標準 4x4 紫微斗數盤面佈局 -->
                 <div class="ziwei-grid-container" id="ziwei-grid">
                     <svg class="ziwei-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
                         <polygon points="62.5,12.5 87.5,87.5 12.5,87.5" fill="rgba(108, 92, 231, 0.12)" stroke="#6c5ce7" stroke-width="1.2" stroke-dasharray="2" />
