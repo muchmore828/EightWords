@@ -26,97 +26,130 @@
         /* 左側控制面板 */
         .control-panel {
             flex: 1;
-            max-width: 450px;
+            max-width: 420px;
             background: white;
-            padding: 20px;
+            padding: 16px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             max-height: 90vh;
             overflow-y: auto;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         .control-panel h2 {
             margin-top: 0;
             color: #2d3436;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             border-bottom: 2px solid #dfe6e9;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
         .control-panel h3 {
-            font-size: 1.1rem;
+            font-size: 1.02rem;
             color: #2d3436;
-            margin-top: 15px;
+            margin-top: 14px;
             border-left: 4px solid var(--primary-color);
             padding-left: 6px;
         }
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .form-group label {
             display: block;
             font-weight: bold;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
+            margin-bottom: 3px;
+            font-size: 0.85rem;
             color: #2d3436;
         }
         .form-group input, .control-panel textarea {
             width: 100%;
-            padding: 8px 10px;
+            padding: 6px 8px;
             border: 1px solid #dfe6e9;
             border-radius: 6px;
             box-sizing: border-box;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
-        .form-group textarea {
+        .control-panel textarea {
             resize: vertical;
-            height: 80px;
+            height: 70px;
         }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        
+        /* 縮小並最佳化十二宮輸入排版 (每行4個，緊湊排列) */
+        .palaces-grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+        }
+        .palace-input-item {
+            background: #fafafa;
+            border: 1px solid #e1e4e8;
+            padding: 4px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .palace-input-item label {
+            font-size: 0.7rem;
+            color: #636e72;
+            margin-bottom: 1px;
+            display: block;
+        }
+        .palace-input-item input {
+            width: 100%;
+            padding: 3px;
+            text-align: center;
+            font-size: 0.8rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
 
         /* 八字 4+1+1 獨立排版網格 */
         .bazi-input-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr) 4px 1fr 4px 1fr;
-            gap: 4px;
+            gap: 3px;
             align-items: center;
+        }
+        .bazi-input-grid input {
+            text-align: center;
+            padding: 6px 2px;
+            font-size: 0.9rem;
         }
         .bazi-divider {
             background: #b2bec3;
             width: 2px;
-            height: 28px;
+            height: 26px;
             margin: 0 auto;
         }
 
         .sub-box {
             background: #f1f2f6;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .month-box {
             background: #f1f2f6;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .month-box h4 {
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
             color: #2f3640;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .scores-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .scores-item label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #636e72;
             margin-bottom: 2px;
             display: block;
@@ -126,16 +159,16 @@
             width: 100%;
             padding: 4px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border: 1px solid #dfe6e9;
             border-radius: 4px;
             box-sizing: border-box;
         }
         .month-box textarea {
             width: 100%;
-            height: 75px;
-            padding: 8px;
-            font-size: 0.95rem;
+            height: 65px;
+            padding: 6px;
+            font-size: 0.9rem;
             font-family: inherit;
             border: 1px solid #dfe6e9;
             border-radius: 6px;
@@ -148,13 +181,13 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 12px;
-            font-size: 1.1rem;
+            padding: 10px;
+            font-size: 1rem;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .btn-export:hover { background: #74b9ff; }
 
@@ -257,7 +290,7 @@
             text-align: center;
             color: #2d3436;
             white-space: pre-line;
-            font-size: 1.2rem; /* 主星字體再放大 */
+            font-size: 1.2rem;
             font-weight: bold;
             margin-top: auto;
             margin-bottom: auto;
@@ -266,7 +299,7 @@
             font-weight: bold;
             color: #e17055;
             font-size: 0.8rem;
-            align-self: flex-end; /* 地支固定在底部 */
+            align-self: flex-end;
         }
 
         .palace-center {
@@ -339,11 +372,11 @@
 
         <h3>☯️ 四柱八字與大運流年</h3>
         <div class="sub-box">
-            <label style="font-size:0.8rem; color:#636e72; margin-bottom:6px; display:block;">依序填入：四柱八字(年、月、日、時) ｜ 大運 ｜ 流年</label>
+            <label style="font-size:0.75rem; color:#636e72; margin-bottom:4px; display:block;">依序填入：四柱八字(年、月、日、時) ｜ 大運 ｜ 流年</label>
             
             <!-- 天干列 (4+1+1) -->
-            <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">天干 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
-            <div class="bazi-input-grid form-group" style="margin-bottom:8px;">
+            <div style="font-size:0.7rem; color:#636e72; margin-bottom:2px;">天干 (年 月 日 時 ｜ 大運 ｜ 流年)</div>
+            <div class="bazi-input-grid form-group" style="margin-bottom:6px;">
                 <input type="text" id="bazi-0" value="壬" oninput="updatePreview()">
                 <input type="text" id="bazi-1" value="己" oninput="updatePreview()">
                 <input type="text" id="bazi-2" value="癸" oninput="updatePreview()" style="color:#6c5ce7; font-weight:bold;" title="日干(命主)">
@@ -355,7 +388,7 @@
             </div>
 
             <!-- 地支列 (4+1+1) -->
-            <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">地支 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
+            <div style="font-size:0.7rem; color:#636e72; margin-bottom:2px;">地支 (年 月 日 時 ｜ 大運 ｜ 流年)</div>
             <div class="bazi-input-grid">
                 <input type="text" id="bazi-5" value="戌" oninput="updatePreview()">
                 <input type="text" id="bazi-6" value="酉" oninput="updatePreview()">
@@ -369,9 +402,9 @@
         </div>
 
         <h3>🏛️ 十二地支宮位主星設定</h3>
-        <div class="sub-box grid-4" id="palaces-inputs-container"></div>
+        <div class="sub-box palaces-grid-inputs" id="palaces-inputs-container"></div>
 
-        <div class="form-group" style="margin-top: 12px;">
+        <div class="form-group" style="margin-top: 10px;">
             <label>年度總評與命盤摘要</label>
             <textarea id="input-summary" oninput="updatePreview()">流年命宮天梁在未小限命宮天機在丑，流年丁干太陰化祿在流年財帛宮，天同化權在流年福德宮，天機化科在流年遷移宮、小限命宮，巨門化忌在本命命宮、大運財帛與流年夫妻宮。今年大環境變動多，宜保守穩健...</textarea>
         </div>
@@ -417,24 +450,25 @@
                         <line x1="250" y1="45" x2="125" y2="335" stroke="#e17055" stroke-width="2" />
                     </svg>
 
-                    <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">巨門</span><span class="palace-name">巳</span></div>
-                    <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">廉貞天相</span><span class="palace-name">午</span></div>
-                    <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-stars" id="star-未">天梁</span><span class="palace-name">(流年命宮)未</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:1;" data-branch="申"><span class="palace-stars" id="star-申">七殺</span><span class="palace-name">申</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">廉貞/天相</span><span class="palace-name">巳</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">天梁</span><span class="palace-name">午</span></div>
+                    <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-stars" id="star-未">七殺</span><span class="palace-name">未 (流年命)</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:1;" data-branch="申"><span class="palace-stars" id="star-申">-</span><span class="palace-name">申</span></div>
 
-                    <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">貪狼</span><span class="palace-name">辰</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">巨門</span><span class="palace-name">辰</span></div>
                     <div class="palace-center">
                         <div style="font-weight:bold; color:#6c5ce7; font-size:0.9rem;">2027 丁未年</div>
+                        <div style="font-size:0.75rem; color:#636e72;">三方四正命盤</div>
                     </div>
                     <div class="palace-cell" style="grid-column:4; grid-row:2;" data-branch="酉"><span class="palace-stars" id="star-酉">天同</span><span class="palace-name">酉</span></div>
 
-                    <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-stars" id="star-卯">太陰</span><span class="palace-name">(流年財帛)卯</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-stars" id="star-卯">貪狼</span><span class="palace-name">卯 (財帛)</span></div>
                     <div class="palace-cell" style="grid-column:4; grid-row:3;" data-branch="戌"><span class="palace-stars" id="star-戌">武曲</span><span class="palace-name">戌</span></div>
 
-                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-stars" id="star-寅">紫微天府</span><span class="palace-name">寅</span></div>
-                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">(流年遷移)丑</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-stars" id="star-寅">太陰</span><span class="palace-name">寅</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">丑 (遷移)</span></div>
                     <div class="palace-cell" style="grid-column:3; grid-row:4;" data-branch="子"><span class="palace-stars" id="star-子">破軍</span><span class="palace-name">子</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-stars" id="star-亥">太陽</span><span class="palace-name">(流年官祿)亥</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-stars" id="star-亥">太陽</span><span class="palace-name">亥 (官祿)</span></div>
                 </div>
 
                 <div class="section-title">🌟 年度命盤總評</div>
@@ -473,9 +507,9 @@
         palaceContainer.innerHTML = '';
         branches.forEach(b => {
             palaceContainer.innerHTML += `
-                <div>
-                    <label style="font-size:0.75rem;">${b}宮</label>
-                    <input type="text" id="star-input-${b}" value="${defaultStars[b]}" oninput="updatePreview()" style="font-size:0.85rem; padding:5px;">
+                <div class="palace-input-item">
+                    <label>${b}宮</label>
+                    <input type="text" id="star-input-${b}" value="${defaultStars[b]}" oninput="updatePreview()">
                 </div>
             `;
         });
@@ -520,7 +554,6 @@
         const b4 = document.getElementById('bazi-4').value; // 大運干
         const b9 = document.getElementById('bazi-9').value; // 大運支
 
-        // 即時預覽文字更新（日干特別上色加粗）
         document.getElementById('prev-bazi-text').innerHTML = 
             `${b0} ${b1} <span style="color:#6c5ce7; font-weight:bold;">${b2}</span> ${b3} ｜ ${b4} ｜ 丁<br>${b5} ${b6} ${b7} ${b8} ｜ ${b9} ｜ 未`;
 
