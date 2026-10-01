@@ -26,7 +26,7 @@
         /* 左側控制面板：限制寬度並讓輸入欄位精煉 */
         .control-panel {
             flex: 1;
-            max-width: 450px; /* 限制左側面板最大寬度，避免過寬 */
+            max-width: 450px;
             background: white;
             padding: 20px;
             border-radius: 12px;
@@ -73,10 +73,23 @@
             height: 80px;
         }
 
-        /* 更緊湊的輸入網格 */
+        /* 輸入網格群組 */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+        /* 八字 4+1+1 獨立排版網格 */
+        .bazi-input-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 4px 1fr 4px 1fr;
+            gap: 4px;
+            align-items: center;
+        }
+        .bazi-divider {
+            background: #b2bec3;
+            width: 2px;
+            height: 28px;
+            margin: 0 auto;
+        }
 
         .sub-box {
             background: #f1f2f6;
@@ -236,27 +249,25 @@
             padding: 6px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* 上下撐開：主星在上，地支在下 */
+            justify-content: space-between;
             align-items: center;
             position: relative;
             z-index: 2;
         }
-        /* 主星放大成為主角 */
         .palace-stars {
             text-align: center;
             color: #2d3436;
             white-space: pre-line;
-            font-size: 1.15rem; /* 字體放大 */
+            font-size: 1.15rem;
             font-weight: bold;
             margin-top: auto;
             margin-bottom: auto;
         }
-        /* 地支移至底部且字體精緻 */
         .palace-name {
             font-weight: bold;
             color: #e17055;
             font-size: 0.8rem;
-            align-self: flex-end; /* 靠右下或置中皆可，此處置右下符合傳統 */
+            align-self: flex-end;
         }
 
         .palace-center {
@@ -271,7 +282,6 @@
             z-index: 2;
         }
 
-        /* SVG 三方四正連線層：未宮(2,0) <-> 亥宮(3,3) <-> 卯宮(0,2) 三角形；對宮 丑宮(1,3) */
         .ziwei-svg-overlay {
             position: absolute;
             top: 0;
@@ -330,26 +340,37 @@
 
         <h3>☯️ 四柱八字與大運流年</h3>
         <div class="sub-box">
-            <label style="font-size:0.8rem; color:#636e72; margin-bottom:4px; display:block;">依序填入：年柱(干支)、月柱、日柱、時柱、大運(干支)</label>
-            <div class="grid-5">
+            <label style="font-size:0.8rem; color:#636e72; margin-bottom:6px; display:block;">依序填入：四柱八字(年、月、日、時) ｜ 大運 ｜ 流年</label>
+            
+            <!-- 4+1+1 獨立排版網格：天干列 -->
+            <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">天干 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
+            <div class="bazi-input-grid form-group" style="margin-bottom:8px;">
                 <input type="text" id="bazi-0" value="壬" oninput="updatePreview()">
                 <input type="text" id="bazi-1" value="己" oninput="updatePreview()">
                 <input type="text" id="bazi-2" value="癸" oninput="updatePreview()">
                 <input type="text" id="bazi-3" value="丙" oninput="updatePreview()">
+                <div class="bazi-divider"></div>
                 <input type="text" id="bazi-4" value="甲" oninput="updatePreview()">
+                <div class="bazi-divider"></div>
+                <input type="text" id="bazi-liunian-gan" value="丁" disabled style="background:#e2e8f0; text-align:center;">
+            </div>
+
+            <!-- 4+1+1 獨立排版網格：地支列 -->
+            <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">地支 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
+            <div class="bazi-input-grid">
                 <input type="text" id="bazi-5" value="戌" oninput="updatePreview()">
                 <input type="text" id="bazi-6" value="酉" oninput="updatePreview()">
                 <input type="text" id="bazi-7" value="亥" oninput="updatePreview()">
                 <input type="text" id="bazi-8" value="辰" oninput="updatePreview()">
+                <div class="bazi-divider"></div>
                 <input type="text" id="bazi-9" value="寅" oninput="updatePreview()">
+                <div class="bazi-divider"></div>
+                <input type="text" id="bazi-liunian-zhi" value="未" disabled style="background:#e2e8f0; text-align:center;">
             </div>
-            <div style="margin-top: 6px; font-size: 0.8rem; color: #e17055; font-weight: bold;">流年固定：丁未</div>
         </div>
 
         <h3>🏛️ 十二地支宮位主星設定</h3>
-        <div class="sub-box grid-4" id="palaces-inputs-container">
-            <!-- 透過 JS 產生十二地支輸入框 (改為 4 欄讓左側更精省) -->
-        </div>
+        <div class="sub-box grid-4" id="palaces-inputs-container"></div>
 
         <div class="form-group" style="margin-top: 12px;">
             <label>年度總評與命盤摘要</label>
@@ -377,7 +398,7 @@
                     <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
                 </div>
 
-                <!-- 頂部摘要 -->
+                <!-- 頂部摘要：改為 4+1+1 呈現方式 -->
                 <div class="top-astronomy-summary">
                     <div class="astro-block">
                         <strong>紫微斗數</strong><br>
@@ -386,26 +407,17 @@
                     </div>
                     <div class="bazi-block" style="text-align: right;">
                         <strong>四柱八字 / 大運 / 流年</strong><br>
-                        <span id="prev-bazi-text">壬 己 癸 丙 / 戌 酉 亥 辰 | 大運: 甲寅 | 流年: 丁未</span>
+                        <span id="prev-bazi-text">壬 己 癸 丙 ｜ 甲 ｜ 丁<br>戌 酉 亥 辰 ｜ 寅 ｜ 未</span>
                     </div>
                 </div>
 
                 <!-- 盤面與三方四正連線 (九宮格) -->
                 <div class="ziwei-grid-container" id="ziwei-grid">
-                    <!-- SVG 三方四正連線層：
-                         未宮中心點約 (250, 45)
-                         卯宮中心點約 (50, 200)
-                         亥宮中心點約 (350, 335)
-                         丑宮中心點約 (125, 335)
-                    -->
                     <svg class="ziwei-svg-overlay" viewBox="0 0 400 380">
-                        <!-- 三方三角形：未(250,45) -> 亥(350,335) -> 卯(50,200) -->
                         <polygon points="250,45 350,335 50,200" fill="rgba(108, 92, 231, 0.12)" stroke="#6c5ce7" stroke-width="2" stroke-dasharray="4" />
-                        <!-- 命宮與對宮連線：未(250,45) -> 丑(125,335) -->
                         <line x1="250" y1="45" x2="125" y2="335" stroke="#e17055" stroke-width="2" />
                     </svg>
 
-                    <!-- 各宮位格子 (主星放大在上，地支在下) -->
                     <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">廉貞/天相</span><span class="palace-name">巳</span></div>
                     <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">天梁</span><span class="palace-name">午</span></div>
                     <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-stars" id="star-未">七殺</span><span class="palace-name">未 (流年命)</span></div>
@@ -459,7 +471,6 @@
     ];
 
     function initApp() {
-        // 產生 12 地支宮位輸入框 (改用 4 欄以節省左側寬度)
         const palaceContainer = document.getElementById('palaces-inputs-container');
         palaceContainer.innerHTML = '';
         branches.forEach(b => {
@@ -471,7 +482,6 @@
             `;
         });
 
-        // 產生 12 月份輸入框
         const monthContainer = document.getElementById('months-inputs-container');
         monthContainer.innerHTML = '';
         monthsData.forEach((m, index) => {
@@ -505,14 +515,15 @@
         const b1 = document.getElementById('bazi-1').value;
         const b2 = document.getElementById('bazi-2').value;
         const b3 = document.getElementById('bazi-3').value;
-        const b4 = document.getElementById('bazi-4').value;
         const b5 = document.getElementById('bazi-5').value;
         const b6 = document.getElementById('bazi-6').value;
         const b7 = document.getElementById('bazi-7').value;
         const b8 = document.getElementById('bazi-8').value;
-        const b9 = document.getElementById('bazi-9').value;
+        const b4 = document.getElementById('bazi-4').value; // 大運干
+        const b9 = document.getElementById('bazi-9').value; // 大運支
+
         document.getElementById('prev-bazi-text').innerHTML = 
-            `${b0} ${b1} ${b2} ${b3} ${b4}<br>${b5} ${b6} ${b7} ${b8} ${b9} | 大運: ${b8}${b9} | 流年: 丁未`;
+            `${b0} ${b1} ${b2} ${b3} ｜ ${b4} ｜ 丁<br>${b5} ${b6} ${b7} ${b8} ｜ ${b9} ｜ 未`;
 
         branches.forEach(b => {
             const val = document.getElementById(`star-input-${b}`).value;
