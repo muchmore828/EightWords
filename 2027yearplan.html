@@ -118,15 +118,28 @@
         }
         .page-sheet {
             width: 210mm;
-            min-height: 297mm;
-            background: white;
-            padding: 20mm;
+            height: 297mm; /* 鎖死高度為 A4 標準 */
+            background-color: white;
             box-sizing: border-box;
             box-shadow: 0 0 15px rgba(0,0,0,0.15);
             margin-bottom: 20px;
             position: relative;
-            /* 這裡未來可替換為多多老師的粉彩蠟筆背景圖 */
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            overflow: hidden; /* 確保內容不溢出頁面 */
+            page-break-after: always; /* 列印或導出時強制換頁 */
+        }
+        /* 第一頁：純封面樣式 */
+        .page-cover {
+            background-image: url('https://muchmore828.github.io/EightWords/cover.jpg'); /* ⬅️ 貼上您的 GitHub 圖片網址 */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 第二頁以後的內文頁面樣式 */
+        .page-content-sheet {
+            background-image: url('https://muchmore828.github.io/EightWords/page1.jpg'); /* ⬅️ 內頁背景圖（如果有的話） */
+            background-size: cover;
+            background-position: center;
+            padding: 20mm; /* 內文才需要邊距 */
         }
         .sheet-header {
             text-align: center;
@@ -202,21 +215,29 @@
     </div>
 
     <!-- 右側即時預覽畫布 -->
+    <!-- 右側即時預覽畫布 -->
     <div class="preview-panel">
-        <div id="pdf-target" class="page-sheet">
-            <div class="sheet-header">
-                <p>多肉咖啡 MUCHMORE CAFE</p>
-                <h1>2027 丁未年個人年度運勢解析</h1>
-                <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
+        <div id="pdf-target">
+            
+            <!-- 📄 第一頁：純封面（無文字） -->
+            <div class="page-sheet page-cover">
+                <!-- 這裡故意留空，完全沒有任何文字，只有 GitHub 圖片背景 -->
             </div>
 
-            <div class="section-title">🌟 年度命盤總評</div>
-            <div id="prev-summary" class="preview-content">載入中...</div>
-
-            <div class="section-title">🌙 十二月份流年詳解</div>
-            <div id="prev-months-container">
-                <!-- 預覽月份區塊 -->
+            <!-- 📄 第二頁：基本資料與年度總評 -->
+            <div class="page-sheet page-content-sheet">
+                <div class="sheet-header">
+                    <p>多肉咖啡 MUCHMORE CAFE</p>
+                    <h1>2027 丁未年個人年度運勢解析</h1>
+                    <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
+                </div>
+                <div class="section-title">🌟 年度命盤總評</div>
+                <div id="prev-summary" class="preview-content">載入中...</div>
             </div>
+
+            <!-- 📄 第三頁之後：十二月份流年詳解 -->
+            <!-- (我們接下來可以把 12 個月份平均分配到後續的頁面中) -->
+
         </div>
     </div>
 </div>
