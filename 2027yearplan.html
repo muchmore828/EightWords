@@ -45,6 +45,8 @@
             font-size: 1.2rem;
             color: #2d3436;
             margin-top: 20px;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 8px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -63,11 +65,23 @@
             border-radius: 6px;
             box-sizing: border-box;
             font-family: inherit;
-            font-size: 1rem; /* 放大輸入框文字 */
+            font-size: 1rem;
         }
         .form-group textarea {
             resize: vertical;
-            height: 100px; /* 增加高度更好寫文案 */
+            height: 90px;
+        }
+
+        /* 雙欄或多欄輸入網格 */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+        .sub-box {
+            background: #f1f2f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
         .month-box {
@@ -82,7 +96,6 @@
             font-size: 1.1rem;
         }
 
-        /* 修正 1：評分欄位改回四欄緊湊網格，寬度適中不爆版 */
         .scores-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -105,8 +118,6 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-
-        /* 修正 2：每月文案輸入框（textarea）放大字體與高度 */
         .month-box textarea {
             width: 100%;
             height: 90px;
@@ -119,7 +130,6 @@
             resize: vertical;
         }
         
-        /* 輸出按鈕 */
         .btn-export {
             background: #0984e3;
             color: white;
@@ -133,11 +143,9 @@
             transition: background 0.2s;
             margin-top: 15px;
         }
-        .btn-export:hover {
-            background: #74b9ff;
-        }
+        .btn-export:hover { background: #74b9ff; }
 
-        /* 右側即時預覽畫布區塊 */
+        /* 右側預覽區塊 */
         .preview-panel {
             flex: 1.2;
             background: #ddd;
@@ -163,7 +171,6 @@
             flex-shrink: 0;
         }
 
-        /* 第一頁：純封面樣式 */
         .page-cover {
             background-image: url('https://muchmore828.github.io/EightWords/cover.jpg');
             background-size: 100% 100%;
@@ -171,42 +178,117 @@
             background-repeat: no-repeat;
         }
 
-        /* 第二頁以後的內文頁面樣式 */
         .page-content-sheet {
             background-image: url('https://muchmore828.github.io/EightWords/page1.jpg');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
-            padding: 20mm;
+            padding: 15mm 20mm;
         }
 
         .sheet-header {
             text-align: center;
             border-bottom: 2px solid #b2bec3;
-            padding-bottom: 12px;
-            margin-bottom: 15px;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
         }
         .sheet-header h1 {
             margin: 0;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: #2d3436;
         }
         .sheet-header p {
-            margin: 5px 0 0 0;
+            margin: 3px 0 0 0;
             color: #636e72;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
+
+        /* 頂部排盤資訊摘要區 */
+        .top-astronomy-summary {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            border: 1px solid #dfe6e9;
+        }
+        .astro-block div, .bazi-block div {
+            line-height: 1.4;
+        }
+
+        /* 九宮格命盤排版 */
+        .ziwei-grid-container {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 2px;
+            background: #2d3436;
+            border: 2px solid #2d3436;
+            box-sizing: border-box;
+        }
+        .palace-cell {
+            background: #ffffff;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 2;
+        }
+        .palace-name {
+            font-weight: bold;
+            color: #e17055;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        .palace-stars {
+            text-align: center;
+            color: #2d3436;
+            white-space: pre-line;
+            font-size: 0.85rem;
+        }
+        /* 中間空白區塊 (合併中央 4 格) */
+        .palace-center {
+            grid-column: 2 / span 2;
+            grid-row: 2 / span 2;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            z-index: 2;
+        }
+
+        /* SVG 三方四正連線層 */
+        .ziwei-svg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            pointer-events: none;
+        }
+
         .section-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #2d3436;
             border-left: 4px solid #6c5ce7;
-            padding-left: 8px;
-            margin: 12px 0 8px 0;
+            padding-left: 6px;
+            margin: 10px 0 6px 0;
         }
         .preview-content {
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            line-height: 1.4;
             color: #2d3436;
             white-space: pre-wrap;
         }
@@ -224,15 +306,54 @@
             <input type="text" id="input-id" value="丁未年專屬編號: 27A11 (VIP客戶)" oninput="updatePreview()">
         </div>
 
-        <div class="form-group">
+        <h3>🔮 紫微斗數設定</h3>
+        <div class="sub-box">
+            <div class="form-group">
+                <label>流年命宮 (未宮) 主星</label>
+                <input type="text" id="ziwei-year-star" value="天梁" oninput="updatePreview()">
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>小限命宮地支</label>
+                    <input type="text" id="ziwei-small-branch" value="丑" oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label>小限命宮主星</label>
+                    <input type="text" id="ziwei-small-star" value="天機" oninput="updatePreview()">
+                </div>
+            </div>
+        </div>
+
+        <h3>☯️ 四柱八字與大運流年</h3>
+        <div class="sub-box">
+            <label style="font-size:0.85rem; color:#636e72; margin-bottom:5px; display:block;">請依序填入：年干、年支、月干、月支、日干、日支、時干、時支、大運干、大運支</label>
+            <div class="grid-5">
+                <input type="text" id="bazi-0" value="壬" oninput="updatePreview()">
+                <input type="text" id="bazi-1" value="己" oninput="updatePreview()">
+                <input type="text" id="bazi-2" value="癸" oninput="updatePreview()">
+                <input type="text" id="bazi-3" value="丙" oninput="updatePreview()">
+                <input type="text" id="bazi-4" value="甲" oninput="updatePreview()">
+                <input type="text" id="bazi-5" value="戌" oninput="updatePreview()">
+                <input type="text" id="bazi-6" value="酉" oninput="updatePreview()">
+                <input type="text" id="bazi-7" value="亥" oninput="updatePreview()">
+                <input type="text" id="bazi-8" value="辰" oninput="updatePreview()">
+                <input type="text" id="bazi-9" value="寅" oninput="updatePreview()">
+            </div>
+            <div style="margin-top: 8px; font-size: 0.85rem; color: #e17055; font-weight: bold;">流年固定：丁未</div>
+        </div>
+
+        <h3>🏛️ 十二地支宮位主星設定</h3>
+        <div class="sub-box grid-3" id="palaces-inputs-container">
+            <!-- 透過 JS 產生十二地支輸入框 -->
+        </div>
+
+        <div class="form-group" style="margin-top: 15px;">
             <label>年度總評與命盤摘要</label>
             <textarea id="input-summary" oninput="updatePreview()">流年命宮天梁在未小限命宮天機在丑，流年丁干太陰化祿在流年財帛宮，天同化權在流年福德宮，天機化科在流年遷移宮、小限命宮，巨門化忌在本命命宮、大運財帛與流年夫妻宮。今年大環境變動多，宜保守穩健...</textarea>
         </div>
 
         <h3>📅 十二月份詳細運勢</h3>
-        <div id="months-inputs-container">
-            <!-- 透過 JS 動態產生 12 個月份輸入框 -->
-        </div>
+        <div id="months-inputs-container"></div>
 
         <button class="btn-export" onclick="exportPDF()">📥 一鍵導出完整 PDF 報告</button>
     </div>
@@ -241,16 +362,66 @@
     <div class="preview-panel">
         <div id="pdf-target">
             
-            <!-- 📄 第一頁：純封面（無文字） -->
+            <!-- 📄 第一頁：純封面 -->
             <div class="page-sheet page-cover"></div>
 
-            <!-- 📄 第二頁：基本資料與年度總評 -->
+            <!-- 📄 第二頁：基本資料、摘要與十二宮盤面 -->
             <div class="page-sheet page-content-sheet">
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年個人年度運勢解析</h1>
                     <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
                 </div>
+
+                <!-- 頂部摘要 -->
+                <div class="top-astronomy-summary">
+                    <div class="astro-block">
+                        <strong>紫微斗數</strong><br>
+                        <span id="prev-ziwei-year">流年命宮(未): 天梁</span><br>
+                        <span id="prev-ziwei-small">小限命宮(丑): 天機</span>
+                    </div>
+                    <div class="bazi-block" style="text-align: right;">
+                        <strong>四柱八字 / 大運 / 流年</strong><br>
+                        <span id="prev-bazi-text">壬 己 癸 丙 / 戌 酉 亥 辰 | 大運: 甲寅 | 流年: 丁未</span>
+                    </div>
+                </div>
+
+                <!-- 盤面與三方四正連線 (九宮格依傳統地支順序排列)
+                     順序：
+                     巳(0,0) 午(1,0) 未(2,0) 申(3,0)
+                     辰(0,1) 中央    中央    酉(3,1)
+                     卯(0,2) 中央    中央    戌(3,2)
+                     寅(0,3) 丑(1,3) 子(2,3) 亥(3,3)
+                -->
+                <div class="ziwei-grid-container" id="ziwei-grid">
+                    <!-- SVG 連線層：將未宮(2,0)與對宮丑宮(1,3)、三合亥宮(3,3)、卯宮(0,2)連線 -->
+                    <svg class="ziwei-svg-overlay" viewBox="0 0 400 380">
+                        <polygon points="250,45 125,335 50,200" fill="rgba(108, 92, 231, 0.12)" stroke="#6c5ce7" stroke-width="2" stroke-dasharray="4" />
+                        <line x1="250" y1="45" x2="125" y2="335" stroke="#e17055" stroke-width="2" />
+                    </svg>
+
+                    <!-- 各宮位格子 -->
+                    <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-name">巳</span><span class="palace-stars" id="star-巳">廉天<br>貞相</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-name">午</span><span class="palace-stars" id="star-午">天梁</span></div>
+                    <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-name">未 (流年)</span><span class="palace-stars" id="star-未">七殺</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:1;" data-branch="申"><span class="palace-name">申</span><span class="palace-stars" id="star-申">-</span></div>
+
+                    <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-name">辰</span><span class="palace-stars" id="star-辰">巨門</span></div>
+                    <div class="palace-center">
+                        <div style="font-weight:bold; color:#6c5ce7; font-size:0.9rem;">2027 丁未年</div>
+                        <div style="font-size:0.75rem; color:#636e72;">三方四正命盤</div>
+                    </div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:2;" data-branch="酉"><span class="palace-name">酉</span><span class="palace-stars" id="star-酉">天同</span></div>
+
+                    <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-name">卯</span><span class="palace-stars" id="star-卯">貪狼</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:3;" data-branch="戌"><span class="palace-name">戌</span><span class="palace-stars" id="star-戌">武曲</span></div>
+
+                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-name">寅</span><span class="palace-stars" id="star-寅">太陰</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-name">丑 (對宮)</span><span class="palace-stars" id="star-丑">天機</span></div>
+                    <div class="palace-cell" style="grid-column:3; grid-row:4;" data-branch="子"><span class="palace-name">子</span><span class="palace-stars" id="star-子">破軍</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-name">亥</span><span class="palace-stars" id="star-亥">太陽</span></div>
+                </div>
+
                 <div class="section-title">🌟 年度命盤總評</div>
                 <div id="prev-summary" class="preview-content">載入中...</div>
             </div>
@@ -260,6 +431,13 @@
 </div>
 
 <script>
+    const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+    const defaultStars = {
+        "子": "破軍", "丑": "天機", "寅": "太陰", "卯": "貪狼", 
+        "辰": "巨門", "巳": "廉貞/天相", "午": "天梁", "未": "七殺", 
+        "申": "-", "酉": "天同", "戌": "武曲", "亥": "太陽"
+    };
+
     const monthsData = [
         { name: "一月 (2/6 - 3/7)", work: 5, wealth: 5, love: 5, health: 5, text: "壬天干..." },
         { name: "二月 (3/8 - 4/6)", work: 5, wealth: 5, love: 5, health: 5, text: "癸天干..." },
@@ -276,20 +454,35 @@
     ];
 
     function initApp() {
-        const container = document.getElementById('months-inputs-container');
-        container.innerHTML = '';
-        
+        // 產生 12 地支宮位輸入框
+        const palaceContainer = document.getElementById('palaces-inputs-container');
+        palaceContainer.style.display = "grid";
+        palaceContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
+        palaceContainer.style.gap = "8px";
+        palaceContainer.innerHTML = '';
+        branches.forEach(b => {
+            palaceContainer.innerHTML += `
+                <div>
+                    <label style="font-size:0.8rem;">${b}宮主星</label>
+                    <input type="text" id="star-input-${b}" value="${defaultStars[b]}" oninput="updatePreview()" style="font-size:0.9rem; padding:6px;">
+                </div>
+            `;
+        });
+
+        // 產生 12 月份輸入框
+        const monthContainer = document.getElementById('months-inputs-container');
+        monthContainer.innerHTML = '';
         monthsData.forEach((m, index) => {
-            container.innerHTML += `
+            monthContainer.innerHTML += `
                 <div class="month-box">
                     <h4>${m.name}</h4>
                     <div class="scores-grid">
-                        <div class="scores-item"><label>工作</label><input type="number" id="work-${index}" value="${m.work}" oninput="updatePreview()"></div>
-                        <div class="scores-item"><label>財運</label><input type="number" id="wealth-${index}" value="${m.wealth}" oninput="updatePreview()"></div>
-                        <div class="scores-item"><label>感情</label><input type="number" id="love-${index}" value="${m.love}" oninput="updatePreview()"></div>
-                        <div class="scores-item"><label>健康</label><input type="number" id="health-${index}" value="${m.health}" oninput="updatePreview()"></div>
+                        <div class="scores-item"><label>工作</label><input type="number" id="work-${index}" value="${m.work}"></div>
+                        <div class="scores-item"><label>財運</label><input type="number" id="wealth-${index}" value="${m.wealth}"></div>
+                        <div class="scores-item"><label>感情</label><input type="number" id="love-${index}" value="${m.love}"></div>
+                        <div class="scores-item"><label>健康</label><input type="number" id="health-${index}" value="${m.health}"></div>
                     </div>
-                    <textarea id="text-${index}" placeholder="輸入${m.name}運勢解析..." oninput="updatePreview()">${m.text}</textarea>
+                    <textarea id="text-${index}" placeholder="輸入${m.name}運勢解析...">${m.text}</textarea>
                 </div>
             `;
         });
@@ -297,8 +490,37 @@
     }
 
     function updatePreview() {
+        // 基本資料
         document.getElementById('prev-id').innerText = document.getElementById('input-id').value;
         document.getElementById('prev-summary').innerText = document.getElementById('input-summary').value;
+
+        // 紫微摘要
+        const yStar = document.getElementById('ziwei-year-star').value;
+        const sBranch = document.getElementById('ziwei-small-branch').value;
+        const sStar = document.getElementById('ziwei-small-star').value;
+        document.getElementById('prev-ziwei-year').innerText = `流年命宮(未): ${yStar}`;
+        document.getElementById('prev-ziwei-small').innerText = `小限命宮(${sBranch}): ${sStar}`;
+
+        // 八字大運組合
+        const b0 = document.getElementById('bazi-0').value;
+        const b1 = document.getElementById('bazi-1').value;
+        const b2 = document.getElementById('bazi-2').value;
+        const b3 = document.getElementById('bazi-3').value;
+        const b4 = document.getElementById('bazi-4').value;
+        const b5 = document.getElementById('bazi-5').value;
+        const b6 = document.getElementById('bazi-6').value;
+        const b7 = document.getElementById('bazi-7').value;
+        const b8 = document.getElementById('bazi-8').value;
+        const b9 = document.getElementById('bazi-9').value;
+        document.getElementById('prev-bazi-text').innerHTML = 
+            `${b0} ${b1} ${b2} ${b3} ${b4}<br>${b5} ${b6} ${b7} ${b8} ${b9} | 大運: ${b8}${b9} | 流年: 丁未`;
+
+        // 更新 12 宮格主星
+        branches.forEach(b => {
+            const val = document.getElementById(`star-input-${b}`).value;
+            const target = document.getElementById(`star-${b}`);
+            if(target) target.innerText = val;
+        });
     }
 
     function exportPDF() {
