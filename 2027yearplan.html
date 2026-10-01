@@ -23,7 +23,7 @@
             margin: 0 auto;
         }
 
-        /* 左側控制面板：限制寬度並讓輸入欄位精煉 */
+        /* 左側控制面板 */
         .control-panel {
             flex: 1;
             max-width: 450px;
@@ -73,7 +73,6 @@
             height: 80px;
         }
 
-        /* 輸入網格群組 */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 
@@ -258,7 +257,7 @@
             text-align: center;
             color: #2d3436;
             white-space: pre-line;
-            font-size: 1.15rem;
+            font-size: 1.2rem; /* 主星字體再放大 */
             font-weight: bold;
             margin-top: auto;
             margin-bottom: auto;
@@ -267,7 +266,7 @@
             font-weight: bold;
             color: #e17055;
             font-size: 0.8rem;
-            align-self: flex-end;
+            align-self: flex-end; /* 地支固定在底部 */
         }
 
         .palace-center {
@@ -342,12 +341,12 @@
         <div class="sub-box">
             <label style="font-size:0.8rem; color:#636e72; margin-bottom:6px; display:block;">依序填入：四柱八字(年、月、日、時) ｜ 大運 ｜ 流年</label>
             
-            <!-- 4+1+1 獨立排版網格：天干列 -->
+            <!-- 天干列 (4+1+1) -->
             <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">天干 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
             <div class="bazi-input-grid form-group" style="margin-bottom:8px;">
                 <input type="text" id="bazi-0" value="壬" oninput="updatePreview()">
                 <input type="text" id="bazi-1" value="己" oninput="updatePreview()">
-                <input type="text" id="bazi-2" value="癸" oninput="updatePreview()">
+                <input type="text" id="bazi-2" value="癸" oninput="updatePreview()" style="color:#6c5ce7; font-weight:bold;" title="日干(命主)">
                 <input type="text" id="bazi-3" value="丙" oninput="updatePreview()">
                 <div class="bazi-divider"></div>
                 <input type="text" id="bazi-4" value="甲" oninput="updatePreview()">
@@ -355,7 +354,7 @@
                 <input type="text" id="bazi-liunian-gan" value="丁" disabled style="background:#e2e8f0; text-align:center;">
             </div>
 
-            <!-- 4+1+1 獨立排版網格：地支列 -->
+            <!-- 地支列 (4+1+1) -->
             <div style="font-size:0.75rem; color:#636e72; margin-bottom:2px;">地支 (年、月、日、時 ｜ 大運 ｜ 流年)</div>
             <div class="bazi-input-grid">
                 <input type="text" id="bazi-5" value="戌" oninput="updatePreview()">
@@ -398,7 +397,7 @@
                     <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
                 </div>
 
-                <!-- 頂部摘要：改為 4+1+1 呈現方式 -->
+                <!-- 頂部摘要 -->
                 <div class="top-astronomy-summary">
                     <div class="astro-block">
                         <strong>紫微斗數</strong><br>
@@ -407,7 +406,7 @@
                     </div>
                     <div class="bazi-block" style="text-align: right;">
                         <strong>四柱八字 / 大運 / 流年</strong><br>
-                        <span id="prev-bazi-text">壬 己 癸 丙 ｜ 甲 ｜ 丁<br>戌 酉 亥 辰 ｜ 寅 ｜ 未</span>
+                        <span id="prev-bazi-text">壬 己 <span style="color:#6c5ce7; font-weight:bold;">癸</span> 丙 ｜ 甲 ｜ 丁<br>戌 酉 亥 辰 ｜ 寅 ｜ 未</span>
                     </div>
                 </div>
 
@@ -513,7 +512,7 @@
 
         const b0 = document.getElementById('bazi-0').value;
         const b1 = document.getElementById('bazi-1').value;
-        const b2 = document.getElementById('bazi-2').value;
+        const b2 = document.getElementById('bazi-2').value; // 日干
         const b3 = document.getElementById('bazi-3').value;
         const b5 = document.getElementById('bazi-5').value;
         const b6 = document.getElementById('bazi-6').value;
@@ -522,8 +521,9 @@
         const b4 = document.getElementById('bazi-4').value; // 大運干
         const b9 = document.getElementById('bazi-9').value; // 大運支
 
+        // 即時預覽文字更新（日干特別上色加粗）
         document.getElementById('prev-bazi-text').innerHTML = 
-            `${b0} ${b1} ${b2} ${b3} ｜ ${b4} ｜ 丁<br>${b5} ${b6} ${b7} ${b8} ｜ ${b9} ｜ 未`;
+            `${b0} ${b1} <span style="color:#6c5ce7; font-weight:bold;">${b2}</span> ${b3} ｜ ${b4} ｜ 丁<br>${b5} ${b6} ${b7} ${b8} ｜ ${b9} ｜ 未`;
 
         branches.forEach(b => {
             const val = document.getElementById(`star-input-${b}`).value;
