@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>多肉咖啡 - 2027 丁未年個人年度運勢解析產生器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.85);
+        }
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .app-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        /* 左側控制面板 */
+        .control-panel {
+            flex: 1;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .control-panel h2 {
+            margin-top: 0;
+            color: #2d3436;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #dfe6e9;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-group textarea {
+            resize: vertical;
+            height: 70px;
+        }
+        .month-box {
+            background: #f1f2f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .month-box h4 {
+            margin: 0 0 10px 0;
+            color: #2f3640;
+        }
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .scores-grid label {
+            font-size: 0.8rem;
+        }
+        .scores-grid input {
+            padding: 4px;
+            text-align: center;
+        }
+        
+        /* 輸出按鈕 */
+        .btn-export {
+            background: #0984e3;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .btn-export:hover {
+            background: #74b9ff;
+        }
+
+        /* 右側即時預覽 / PDF 輸出專用畫布區塊 */
+        .preview-panel {
+            flex: 1.2;
+            background: #ddd;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .page-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 20mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            position: relative;
+            /* 這裡未來可替換為多多老師的粉彩蠟筆背景圖 */
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+        .sheet-header {
+            text-align: center;
+            border-bottom: 2px solid #b2bec3;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .sheet-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #2d3436;
+        }
+        .sheet-header p {
+            margin: 5px 0 0 0;
+            color: #636e72;
+            font-size: 0.95rem;
+        }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2d3436;
+            border-left: 4px solid #6c5ce7;
+            padding-left: 8px;
+            margin: 15px 0 10px 0;
+        }
+        .preview-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2d3436;
+            white-space: pre-wrap;
+        }
+        .month-preview-item {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #dfe6e9;
+        }
+        .month-preview-item h5 {
+            margin: 0 0 5px 0;
+            color: #0984e3;
+            font-size: 1rem;
+        }
+        .score-tags {
+            font-size: 0.85rem;
+            color: #e17055;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 左側輸入控制台 -->
+    <div class="control-panel">
+        <h2>✨ 2027 流年報告輸入介面</h2>
+        
+        <div class="form-group">
+            <label>客戶姓名 / 專屬編號</label>
+            <input type="text" id="input-id" value="丁未年專屬編號: 27A11 (VIP客戶)" oninput="updatePreview()">
+        </div>
+
+        <div class="form-group">
+            <label>年度總評與命盤摘要</label>
+            <textarea id="input-summary" oninput="updatePreview()">流年命宮天梁在未小限命宮天機在丑，流年丁干太陰化祿在流年財帛宮，天同化權在流年福德宮，天機化科在流年遷移宮、小限命宮，巨門化忌在本命命宮、大運財帛與流年夫妻宮。今年大環境變動多，宜保守穩健...</textarea>
+        </div>
+
+        <h3>📅 十二月份詳細運勢</h3>
+        <div id="months-inputs-container">
+            <!-- 透過 JS 動態產生 12 個月份輸入框 -->
+        </div>
+
+        <button class="btn-export" onclick="exportPDF()">📥 一鍵導出完整 PDF 報告</button>
+    </div>
+
+    <!-- 右側即時預覽畫布 -->
+    <div class="preview-panel">
+        <div id="pdf-target" class="page-sheet">
+            <div class="sheet-header">
+                <p>多肉咖啡 MUCHMORE CAFE</p>
+                <h1>2027 丁未年個人年度運勢解析</h1>
+                <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
+            </div>
+
+            <div class="section-title">🌟 年度命盤總評</div>
+            <div id="prev-summary" class="preview-content">載入中...</div>
+
+            <div class="section-title">🌙 十二月份流年詳解</div>
+            <div id="prev-months-container">
+                <!-- 預覽月份區塊 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const monthsData = [
+        { name: "十一月 (2/6 - 3/7)", work: 5, wealth: 5, love: 5, health: 5, text: "流年命宮天梁在未小限命宮天機在丑..." },
+        { name: "二月 (3/8 - 4/16)", work: 5, wealth: 5, love: 5, health: 5, text: "工作與財務狀況穩定，保持步調..." },
+        { name: "三月 (4/17 - 5/15)", work: 5, wealth: 5, love: 5, health: 5, text: "人際關係需多加留意，避免口舌..." },
+        { name: "四月 (5/16 - 6/14)", work: 5, wealth: 5, love: 5, health: 5, text: "迎來突破性進展，適合規劃新計畫..." },
+        { name: "五月 (6/5 - 7/3)", work: 5, wealth: 5, love: 5, health: 5, text: "健康狀況良好，注意作息調整..." },
+        { name: "六月 (7/4 - 8/1)", work: 5, wealth: 5, love: 5, health: 5, text: "投資理財宜保守，切勿投機冒進..." },
+        { name: "七月 (8/2 - 8/31)", work: 5, wealth: 5, love: 5, health: 5, text: "感情運勢升溫，多陪伴身邊重要的人..." },
+        { name: "八月 (9/1 - 9/29)", work: 5, wealth: 5, love: 5, health: 5, text: "職場上展現個人價值的好時機..." },
+        { name: "九月 (9/30 - 10/28)", work: 5, wealth: 5, love: 5, health: 5, text: "心態容易起伏，適時安排休閒放鬆..." },
+        { name: "十月 (10/29 - 11/27)", work: 5, wealth: 5, love: 5, health: 5, text: "合作運佳，有望達成重要共識..." },
+        { name: "十一月 (11/28 - 12/27)", work: 5, wealth: 5, love: 5, health: 5, text: "收穫季節，檢視整年度的成果與反思..." },
+        { name: "十二月 (12/28 - 1/25)", work: 5, wealth: 5, love: 5, health: 5, text: "為新的一年做好準備，穩健收尾..." }
+    ];
+
+    // 初始化輸入介面與預覽
+    function initApp() {
+        const container = document.getElementById('months-inputs-container');
+        container.innerHTML = '';
+        
+        monthsData.forEach((m, index) => {
+            container.innerHTML += `
+                <div class="month-box">
+                    <h4>${m.name}</h4>
+                    <div class="scores-grid">
+                        <div><label>工作</label><input type="number" id="work-${index}" value="${m.work}" oninput="updatePreview()"></div>
+                        <div><label>財運</label><input type="number" id="wealth-${index}" value="${m.wealth}" oninput="updatePreview()"></div>
+                        <div><label>感情</label><input type="number" id="love-${index}" value="${m.love}" oninput="updatePreview()"></div>
+                        <div><label>健康</label><input type="number" id="health-${index}" value="${m.health}" oninput="updatePreview()"></div>
+                    </div>
+                    <textarea id="text-${index}" placeholder="輸入${m.name}運勢解析..." oninput="updatePreview()">${m.text}</textarea>
+                </div>
+            `;
+        });
+        updatePreview();
+    }
+
+    // 更新右側預覽
+    function updatePreview() {
+        document.getElementById('prev-id').innerText = document.getElementById('input-id').value;
+        document.getElementById('prev-summary').innerText = document.getElementById('input-summary').value;
+
+        const monthsPrevContainer = document.getElementById('prev-months-container');
+        monthsPrevContainer.innerHTML = '';
+
+        monthsData.forEach((m, index) => {
+            const work = document.getElementById(`work-${index}`).value;
+            const wealth = document.getElementById(`wealth-${index}`).value;
+            const love = document.getElementById(`love-${index}`).value;
+            const health = document.getElementById(`health-${index}`).value;
+            const text = document.getElementById(`text-${index}`).value;
+
+            monthsPrevContainer.innerHTML += `
+                <div class="month-preview-item">
+                    <h5>${m.name}</h5>
+                    <div class="score-tags">工作: ${work}分 | 財運: ${wealth}分 | 感情: ${love}分 | 健康: ${health}分</div>
+                    <div class="preview-content">${text}</div>
+                </div>
+            `;
+        });
+    }
+
+    // 匯出 PDF 功能
+    function exportPDF() {
+        const element = document.getElementById('pdf-target');
+        const opt = {
+            margin:       5,
+            filename:     document.getElementById('input-id').value + '_2027流年解析.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
+    }
+
+    window.onload = initApp;
+</script>
+
+</body>
+</html>
