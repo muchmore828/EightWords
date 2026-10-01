@@ -8,7 +8,6 @@
         :root {
             --primary-color: #6c5ce7;
             --bg-color: #f8f9fa;
-            --card-bg: rgba(255, 255, 255, 0.85);
         }
         body {
             font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
@@ -23,7 +22,8 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-        /* 左側控制面板 */
+
+        /* 1. 【調整 1】左側控制面板字體放大、優化舒適度 */
         .control-panel {
             flex: 1;
             background: white;
@@ -32,13 +32,19 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             max-height: 90vh;
             overflow-y: auto;
+            font-size: 1rem; /* 放大整體字體 */
         }
         .control-panel h2 {
             margin-top: 0;
             color: #2d3436;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             border-bottom: 2px solid #dfe6e9;
             padding-bottom: 10px;
+        }
+        .control-panel h3 {
+            font-size: 1.2rem;
+            color: #2d3436;
+            margin-top: 20px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -47,43 +53,54 @@
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
-            font-size: 0.9rem;
-            color: #636e72;
+            font-size: 0.95rem;
+            color: #2d3436;
         }
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 8px 12px;
+            padding: 10px 12px;
             border: 1px solid #dfe6e9;
             border-radius: 6px;
             box-sizing: border-box;
             font-family: inherit;
+            font-size: 0.95rem;
         }
         .form-group textarea {
             resize: vertical;
-            height: 70px;
+            height: 80px;
         }
+
         .month-box {
             background: #f1f2f6;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
         }
         .month-box h4 {
             margin: 0 0 10px 0;
             color: #2f3640;
+            font-size: 1.05rem;
         }
+
+        /* 2. 【調整 2】評分格子改為更精煉、適中寬度的排版 */
         .scores-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 8px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-        .scores-grid label {
-            font-size: 0.8rem;
+        .scores-item {
+            flex: 1;
         }
-        .scores-grid input {
-            padding: 4px;
+        .scores-item label {
+            font-size: 0.85rem;
+            color: #636e72;
+            margin-bottom: 3px;
+            display: block;
+        }
+        .scores-item input {
+            padding: 6px;
             text-align: center;
+            font-size: 0.95rem;
         }
         
         /* 輸出按鈕 */
@@ -92,100 +109,107 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 12px;
-            font-size: 1.1rem;
+            padding: 14px;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         .btn-export:hover {
             background: #74b9ff;
         }
 
-        /* 右側即時預覽 / PDF 輸出專用畫布區塊 */
+        /* 右側即時預覽畫布區塊 */
         .preview-panel {
             flex: 1.2;
             background: #ddd;
             padding: 20px;
             border-radius: 12px;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            flex-direction: column;
+            align-items: center;
             max-height: 90vh;
             overflow-y: auto;
         }
+
+        /* 3. 【調整 3】精準鎖定 A4 尺寸並解決封面溢出變兩頁問題 */
         .page-sheet {
             width: 210mm;
-            height: 297mm; /* 鎖死高度為 A4 標準 */
+            height: 296mm; /* 微調高度避免小數點溢位 */
             background-color: white;
             box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             position: relative;
-            overflow: hidden; /* 確保內容不溢出頁面 */
-            page-break-after: always; /* 列印或導出時強制換頁 */
+            overflow: hidden;
+            page-break-after: always;
+            flex-shrink: 0;
         }
-        /* 第一頁：純封面樣式 */
+
+        /* 第一頁：純封面樣式（取消任何會增加高度的邊距與陰影） */
         .page-cover {
-            background-image: url('https://muchmore828.github.io/EightWords/cover.jpg'); /* ⬅️ 貼上您的 GitHub 圖片網址 */
-            background-size: cover;
+            background-image: url('https://muchmore828.github.io/EightWords/cover.jpg');
+            background-size: 100% 100%; /* 強制填滿整張 A4 畫布，不留白 */
             background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* 第二頁以後的內文頁面樣式 */
         .page-content-sheet {
-            background-image: url('https://muchmore828.github.io/EightWords/page1.jpg'); /* ⬅️ 內頁背景圖（如果有的話） */
-            background-size: cover;
+            background-image: url('https://muchmore828.github.io/EightWords/page1.jpg');
+            background-size: 100% 100%;
             background-position: center;
-            padding: 20mm; /* 內文才需要邊距 */
+            background-repeat: no-repeat;
+            padding: 20mm; /* 內文邊距 */
         }
+
         .sheet-header {
             text-align: center;
             border-bottom: 2px solid #b2bec3;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
         }
         .sheet-header h1 {
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #2d3436;
         }
         .sheet-header p {
             margin: 5px 0 0 0;
             color: #636e72;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #2d3436;
             border-left: 4px solid #6c5ce7;
             padding-left: 8px;
-            margin: 15px 0 10px 0;
+            margin: 12px 0 8px 0;
         }
         .preview-content {
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            line-height: 1.5;
             color: #2d3436;
             white-space: pre-wrap;
         }
         .month-preview-item {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px dashed #dfe6e9;
         }
         .month-preview-item h5 {
-            margin: 0 0 5px 0;
+            margin: 0 0 3px 0;
             color: #0984e3;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
         .score-tags {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #e17055;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
     </style>
 </head>
@@ -215,28 +239,22 @@
     </div>
 
     <!-- 右側即時預覽畫布 -->
-    <!-- 右側即時預覽畫布 -->
     <div class="preview-panel">
         <div id="pdf-target">
             
             <!-- 📄 第一頁：純封面（無文字） -->
-            <div class="page-sheet page-cover">
-                <!-- 這裡故意留空，完全沒有任何文字，只有 GitHub 圖片背景 -->
-            </div>
+            <div class="page-sheet page-cover"></div>
 
             <!-- 📄 第二頁：基本資料與年度總評 -->
             <div class="page-sheet page-content-sheet">
                 <div class="sheet-header">
-                    <p>多肉咖啡 muchmore cafe</p>
+                    <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年個人年度運勢解析</h1>
                     <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
                 </div>
                 <div class="section-title">🌟 年度命盤總評</div>
                 <div id="prev-summary" class="preview-content">載入中...</div>
             </div>
-
-            <!-- 📄 第三頁之後：十二月份流年詳解 -->
-            <!-- (我們接下來可以把 12 個月份平均分配到後續的頁面中) -->
 
         </div>
     </div>
@@ -258,7 +276,6 @@
         { name: "十二月 (12/28 - 1/25)", work: 5, wealth: 5, love: 5, health: 5, text: "癸天干..." }
     ];
 
-    // 初始化輸入介面與預覽
     function initApp() {
         const container = document.getElementById('months-inputs-container');
         container.innerHTML = '';
@@ -268,10 +285,10 @@
                 <div class="month-box">
                     <h4>${m.name}</h4>
                     <div class="scores-grid">
-                        <div><label>工作</label><input type="number" id="work-${index}" value="${m.work}" oninput="updatePreview()"></div>
-                        <div><label>財運</label><input type="number" id="wealth-${index}" value="${m.wealth}" oninput="updatePreview()"></div>
-                        <div><label>感情</label><input type="number" id="love-${index}" value="${m.love}" oninput="updatePreview()"></div>
-                        <div><label>健康</label><input type="number" id="health-${index}" value="${m.health}" oninput="updatePreview()"></div>
+                        <div class="scores-item"><label>工作</label><input type="number" id="work-${index}" value="${m.work}" oninput="updatePreview()"></div>
+                        <div class="scores-item"><label>財運</label><input type="number" id="wealth-${index}" value="${m.wealth}" oninput="updatePreview()"></div>
+                        <div class="scores-item"><label>感情</label><input type="number" id="love-${index}" value="${m.love}" oninput="updatePreview()"></div>
+                        <div class="scores-item"><label>健康</label><input type="number" id="health-${index}" value="${m.health}" oninput="updatePreview()"></div>
                     </div>
                     <textarea id="text-${index}" placeholder="輸入${m.name}運勢解析..." oninput="updatePreview()">${m.text}</textarea>
                 </div>
@@ -280,36 +297,15 @@
         updatePreview();
     }
 
-    // 更新右側預覽
     function updatePreview() {
         document.getElementById('prev-id').innerText = document.getElementById('input-id').value;
         document.getElementById('prev-summary').innerText = document.getElementById('input-summary').value;
-
-        const monthsPrevContainer = document.getElementById('prev-months-container');
-        monthsPrevContainer.innerHTML = '';
-
-        monthsData.forEach((m, index) => {
-            const work = document.getElementById(`work-${index}`).value;
-            const wealth = document.getElementById(`wealth-${index}`).value;
-            const love = document.getElementById(`love-${index}`).value;
-            const health = document.getElementById(`health-${index}`).value;
-            const text = document.getElementById(`text-${index}`).value;
-
-            monthsPrevContainer.innerHTML += `
-                <div class="month-preview-item">
-                    <h5>${m.name}</h5>
-                    <div class="score-tags">工作: ${work}分 | 財運: ${wealth}分 | 感情: ${love}分 | 健康: ${health}分</div>
-                    <div class="preview-content">${text}</div>
-                </div>
-            `;
-        });
     }
 
-    // 匯出 PDF 功能
     function exportPDF() {
         const element = document.getElementById('pdf-target');
         const opt = {
-            margin:       5,
+            margin:       0,
             filename:     document.getElementById('input-id').value + '_2027流年解析.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true },
