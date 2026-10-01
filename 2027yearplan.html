@@ -23,7 +23,7 @@
             margin: 0 auto;
         }
 
-        /* 1. 【調整 1】左側控制面板字體放大、優化舒適度 */
+        /* 左側控制面板 */
         .control-panel {
             flex: 1;
             background: white;
@@ -32,7 +32,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             max-height: 90vh;
             overflow-y: auto;
-            font-size: 1rem; /* 放大整體字體 */
+            font-size: 1rem;
         }
         .control-panel h2 {
             margin-top: 0;
@@ -56,18 +56,18 @@
             font-size: 0.95rem;
             color: #2d3436;
         }
-        .form-group input, .form-group textarea {
+        .form-group input, .control-panel textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #dfe6e9;
             border-radius: 6px;
             box-sizing: border-box;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 1rem; /* 放大輸入框文字 */
         }
         .form-group textarea {
             resize: vertical;
-            height: 80px;
+            height: 100px; /* 增加高度更好寫文案 */
         }
 
         .month-box {
@@ -79,28 +79,44 @@
         .month-box h4 {
             margin: 0 0 10px 0;
             color: #2f3640;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
         }
 
-        /* 2. 【調整 2】評分格子改為更精煉、適中寬度的排版 */
+        /* 修正 1：評分欄位改回四欄緊湊網格，寬度適中不爆版 */
         .scores-grid {
-            display: flex;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             margin-bottom: 10px;
-        }
-        .scores-item {
-            flex: 1;
         }
         .scores-item label {
             font-size: 0.85rem;
             color: #636e72;
             margin-bottom: 3px;
             display: block;
+            text-align: center;
         }
         .scores-item input {
+            width: 100%;
             padding: 6px;
             text-align: center;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* 修正 2：每月文案輸入框（textarea）放大字體與高度 */
+        .month-box textarea {
+            width: 100%;
+            height: 90px;
+            padding: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
         }
         
         /* 輸出按鈕 */
@@ -134,10 +150,9 @@
             overflow-y: auto;
         }
 
-        /* 3. 【調整 3】精準鎖定 A4 尺寸並解決封面溢出變兩頁問題 */
         .page-sheet {
             width: 210mm;
-            height: 296mm; /* 微調高度避免小數點溢位 */
+            height: 296mm;
             background-color: white;
             box-sizing: border-box;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -148,10 +163,10 @@
             flex-shrink: 0;
         }
 
-        /* 第一頁：純封面樣式（取消任何會增加高度的邊距與陰影） */
+        /* 第一頁：純封面樣式 */
         .page-cover {
             background-image: url('https://muchmore828.github.io/EightWords/cover.jpg');
-            background-size: 100% 100%; /* 強制填滿整張 A4 畫布，不留白 */
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -162,7 +177,7 @@
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
-            padding: 20mm; /* 內文邊距 */
+            padding: 20mm;
         }
 
         .sheet-header {
@@ -194,22 +209,6 @@
             line-height: 1.5;
             color: #2d3436;
             white-space: pre-wrap;
-        }
-        .month-preview-item {
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #dfe6e9;
-        }
-        .month-preview-item h5 {
-            margin: 0 0 3px 0;
-            color: #0984e3;
-            font-size: 0.95rem;
-        }
-        .score-tags {
-            font-size: 0.8rem;
-            color: #e17055;
-            font-weight: bold;
-            margin-bottom: 3px;
         }
     </style>
 </head>
