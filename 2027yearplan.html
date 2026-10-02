@@ -220,16 +220,53 @@
             overflow: hidden;
             page-break-after: always;
             flex-shrink: 0;
+        }
+
+        /* 背景圖片寫死設定 */
+        .page-cover {
+            background-image: url('https://muchmore828.github.io/EightWords/cover.jpg');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
+        }
+
+        .page-content-sheet {
+            background-image: url('https://muchmore828.github.io/EightWords/page1.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 12mm 20mm;
+        }
+
+        .page-month-sheet-2 {
+            background-image: url('https://muchmore828.github.io/EightWords/page2.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 12mm 20mm;
+        }
+
+        .page-month-sheet-3 {
+            background-image: url('https://muchmore828.github.io/EightWords/page3.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 12mm 20mm;
+        }
+
+        .page-month-sheet-4 {
+            background-image: url('https://muchmore828.github.io/EightWords/page4.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 12mm 20mm;
         }
 
         .sheet-header {
             text-align: center;
             border-bottom: 2px solid #b2bec3;
             padding-bottom: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         .sheet-header h1 {
             margin: 0;
@@ -249,19 +286,19 @@
             padding: 6px 10px;
             border-radius: 6px;
             margin-bottom: 8px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             border: 1px solid #dfe6e9;
-            line-height: 1.6;
+            line-height: 2;
         }
         .astro-block div, .bazi-block div {
             line-height: 1.4;
         }
 
-        /* 4x4 紫微斗數盤面佈局 */
+        /* 右側正確的 4x4 紫微斗數盤面佈局 */
         .ziwei-grid-container {
             position: relative;
             width: 100%;
-            height: 290px;
+            height: 310px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
@@ -269,7 +306,6 @@
             background: #2d3436;
             border: 2px solid #2d3436;
             box-sizing: border-box;
-            margin-bottom: 15px;
         }
         .palace-cell {
             background: #ffffff;
@@ -285,7 +321,7 @@
             text-align: center;
             color: #2d3436;
             white-space: pre-line;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: bold;
             margin-top: auto;
             margin-bottom: auto;
@@ -296,6 +332,7 @@
             font-size: 0.78rem;
             align-self: flex-end;
         }
+
         .palace-center {
             grid-column: 2 / span 2;
             grid-row: 2 / span 2;
@@ -307,6 +344,7 @@
             padding: 6px;
             z-index: 2;
         }
+
         .ziwei-svg-overlay {
             position: absolute;
             top: 0;
@@ -318,52 +356,48 @@
         }
 
         .section-title {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #2d3436;
             border-left: 4px solid #6c5ce7;
             padding-left: 6px;
-            margin: 6px 0 4px 0;
+            margin: 8px 0 4px 0;
         }
         .preview-content {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             line-height: 1.35;
             color: #2d3436;
             white-space: pre-wrap;
         }
 
-        /* 📅 三、四、五頁的流月區塊排版 (每頁4個月) */
-        .month-page-body {
-            padding: 15px 20px;
+        /* 🌟 每頁四個月解析的透明背景與固定排版設定 */
+        .month-preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 15px;
         }
-        .month-card-preview {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dfe6e9;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
+        .month-preview-item {
+            background: transparent !important;
+            border: none !important;
+            padding: 8px;
+            box-sizing: border-box;
         }
-        .month-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #dfe6e9;
-            padding-bottom: 4px;
-            margin-bottom: 6px;
-        }
-        .month-card-title {
-            font-weight: bold;
+        .month-preview-item h4 {
+            margin: 0 0 4px 0;
             color: #2d3436;
             font-size: 1.05rem;
-        }
-        .month-card-scores {
-            font-size: 0.85rem;
-            color: #e17055;
             font-weight: bold;
         }
-        .month-card-text {
-            font-size: 0.95rem;
+        .month-scores {
+            font-size: 0.85rem;
+            color: #636e72;
+            margin-bottom: 4px;
+        }
+        .month-preview-item p {
+            margin: 0;
             color: #2d3436;
+            font-size: 0.95rem;
             line-height: 1.4;
             white-space: pre-wrap;
         }
@@ -377,33 +411,8 @@
         <h2>✨ 2027 流年報告輸入介面</h2>
         
         <div class="form-group">
-            <label>流年編號 / 客戶名稱 / 命盤編號</label>
+            <label>流年編號 / 客戶名稱 / 命盤編號 / </label>
             <input type="text" id="input-id" value="27A11 / 多多老闆 / 25001" oninput="updatePreview()">
-        </div>
-
-        <!-- 🔗 背景圖片網址設定區塊 -->
-        <h3>🖼 頁面背景圖片設定</h3>
-        <div class="sub-box">
-            <div class="form-group">
-                <label>封面 (第 1 頁) 圖片網址</label>
-                <input type="text" id="bg-url-1" value="https://muchmore828.github.io/EightWords/cover.jpg" oninput="updatePreview()">
-            </div>
-            <div class="form-group">
-                <label>個人資訊與盤面 (第 2 頁) 圖片網址</label>
-                <input type="text" id="bg-url-2" value="https://muchmore828.github.io/EightWords/page1.jpg" oninput="updatePreview()">
-            </div>
-            <div class="form-group">
-                <label>流月解析一 (第 3 頁：1-4月) 圖片網址</label>
-                <input type="text" id="bg-url-3" value="https://muchmore828.github.io/EightWords/page2.jpg" oninput="updatePreview()">
-            </div>
-            <div class="form-group">
-                <label>流月解析二 (第 4 頁：5-8月) 圖片網址</label>
-                <input type="text" id="bg-url-4" value="https://muchmore828.github.io/EightWords/page3.jpg" oninput="updatePreview()">
-            </div>
-            <div class="form-group">
-                <label>流月解析三 (第 5 頁：9-12月) 圖片網址</label>
-                <input type="text" id="bg-url-5" value="https://muchmore828.github.io/EightWords/page4.jpg" oninput="updatePreview()">
-            </div>
         </div>
 
         <h3>🔮 紫微斗數設定</h3>
@@ -453,7 +462,6 @@
             </div>
         </div>
 
-        <!-- 左側十二宮 3x4 輸入區 -->
         <h3>🏛 十二地支宮位主星設定</h3>
         <div class="sub-box palaces-grid-inputs" id="palaces-inputs-container"></div>
 
@@ -468,15 +476,15 @@
         <button class="btn-export" onclick="exportPDF()">📥 一鍵導出完整 PDF 報告</button>
     </div>
 
-    <!-- 右側即時預覽畫布 (包含 5 個頁面) -->
+    <!-- 右側即時預覽畫布 (共 5 頁) -->
     <div class="preview-panel">
         <div id="pdf-target">
             
             <!-- 📄 第一頁：純封面 -->
-            <div class="page-sheet" id="sheet-1"></div>
+            <div class="page-sheet page-cover"></div>
 
             <!-- 📄 第二頁：基本資料、摘要與十二宮盤面 -->
-            <div class="page-sheet" id="sheet-2" style="padding: 12mm 20mm;">
+            <div class="page-sheet page-content-sheet">
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年個人年度運勢解析</h1>
@@ -496,7 +504,7 @@
                     </div>
                 </div>
 
-                <!-- 標準 4x4 紫微斗數盤面佈局 -->
+                <!-- 右側標準 4x4 紫微斗數盤面佈局 -->
                 <div class="ziwei-grid-container" id="ziwei-grid">
                     <svg class="ziwei-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
                         <polygon points="62.5,25 75,75 25,62.5" fill="rgba(108, 92, 231, 0.12)" stroke="#e17055" stroke-width="0.7" />
@@ -512,7 +520,7 @@
                     <!-- 第二列: 辰 (左) 與 酉 (右)，中央 2x2 留空 -->
                     <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">貪狼</span><span class="palace-name">辰</span></div>
                     <div class="palace-center">
-                        <div style="font-weight:bold; color:#e17055; font-size:2.2rem;">2027 丁未年</div>
+                        <div style="font-weight:bold; color:#e17055; font-size:2.5rem;">2027 丁未年</div>
                     </div>
                     <div class="palace-cell" style="grid-column:4; grid-row:2;" data-branch="酉"><span class="palace-stars" id="star-酉">天同</span><span class="palace-name">酉</span></div>
 
@@ -531,34 +539,31 @@
                 <div id="prev-summary" class="preview-content">載入中...</div>
             </div>
 
-            <!-- 📄 第三頁：流月解析一 (1 - 4 月) -->
-            <div class="page-sheet month-page-body" id="sheet-3">
+            <!-- 📄 第三頁：月份 1~4 -->
+            <div class="page-sheet page-month-sheet-2">
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年 - 四季流月解析 (一)</h1>
-                    <p>第一季：一月至四月</p>
                 </div>
-                <div id="prev-months-group-0"></div>
+                <div class="month-preview-grid" id="months-page-1"></div>
             </div>
 
-            <!-- 📄 第四頁：流月解析二 (5 - 8 月) -->
-            <div class="page-sheet month-page-body" id="sheet-4">
+            <!-- 📄 第四頁：月份 5~8 -->
+            <div class="page-sheet page-month-sheet-3">
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年 - 四季流月解析 (二)</h1>
-                    <p>第二季：五月至八月</p>
                 </div>
-                <div id="prev-months-group-1"></div>
+                <div class="month-preview-grid" id="months-page-2"></div>
             </div>
 
-            <!-- 📄 第五頁：流月解析三 (9 - 12 月) -->
-            <div class="page-sheet month-page-body" id="sheet-5">
+            <!-- 📄 第五頁：月份 9~12 -->
+            <div class="page-sheet page-month-sheet-4">
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年 - 四季流月解析 (三)</h1>
-                    <p>第三季：九月至十二月</p>
                 </div>
-                <div id="prev-months-group-2"></div>
+                <div class="month-preview-grid" id="months-page-3"></div>
             </div>
 
         </div>
@@ -574,18 +579,18 @@
     };
 
     const monthsData = [
-        { name: "一月 (2/6 - 3/7)", work: 5, wealth: 5, love: 5, health: 5, text: "壬天干..." },
-        { name: "二月 (3/8 - 4/6)", work: 5, wealth: 5, love: 5, health: 5, text: "癸天干..." },
-        { name: "三月 (4/7 - 5/5)", work: 5, wealth: 5, love: 5, health: 5, text: "甲天干..." },
-        { name: "四月 (5/6 - 6/4)", work: 5, wealth: 5, love: 5, health: 5, text: "乙天干..." },
-        { name: "五月 (6/5 - 7/3)", work: 5, wealth: 5, love: 5, health: 5, text: "丙天干..." },
-        { name: "六月 (7/4 - 8/1)", work: 5, wealth: 5, love: 5, health: 5, text: "丁天干..." },
-        { name: "七月 (8/2 - 8/31)", work: 5, wealth: 5, love: 5, health: 5, text: "戊天干..." },
-        { name: "八月 (9/1 - 9/29)", work: 5, wealth: 5, love: 5, health: 5, text: "己天干..." },
-        { name: "九月 (9/30 - 10/28)", work: 5, wealth: 5, love: 5, health: 5, text: "庚天干...." },
-        { name: "十月 (10/29 - 11/27)", work: 5, wealth: 5, love: 5, health: 5, text: "辛天干..." },
-        { name: "十一月 (11/28 - 12/27)", work: 5, wealth: 5, love: 5, health: 5, text: "壬天干...." },
-        { name: "十二月 (12/28 - 1/25)", work: 5, wealth: 5, love: 5, health: 5, text: "癸天干..." }
+        { name: "一月 (2/6 - 3/7)", work: 5, wealth: 5, love: 5, health: 5, text: "一月運勢解析內容..." },
+        { name: "二月 (3/8 - 4/6)", work: 4, wealth: 4, love: 5, health: 4, text: "二月運勢解析內容..." },
+        { name: "三月 (4/7 - 5/5)", work: 4, wealth: 5, love: 4, health: 5, text: "三月運勢解析內容..." },
+        { name: "四月 (5/6 - 6/4)", work: 5, wealth: 4, love: 4, health: 4, text: "四月運勢解析內容..." },
+        { name: "五月 (6/5 - 7/3)", work: 5, wealth: 5, love: 5, health: 5, text: "五月運勢解析內容..." },
+        { name: "六月 (7/4 - 8/1)", work: 4, wealth: 4, love: 4, health: 4, text: "六月運勢解析內容..." },
+        { name: "七月 (8/2 - 8/31)", work: 5, wealth: 5, love: 5, health: 5, text: "七月運勢解析內容..." },
+        { name: "八月 (9/1 - 9/29)", work: 4, wealth: 5, love: 4, health: 4, text: "八月運勢解析內容..." },
+        { name: "九月 (9/30 - 10/28)", work: 5, wealth: 4, love: 5, health: 5, text: "九月運勢解析內容..." },
+        { name: "十月 (10/29 - 11/27)", work: 4, wealth: 4, love: 4, health: 4, text: "十月運勢解析內容..." },
+        { name: "十一月 (11/28 - 12/27)", work: 5, wealth: 5, love: 5, health: 5, text: "十一月運勢解析內容..." },
+        { name: "十二月 (12/28 - 1/25)", work: 4, wealth: 4, love: 5, health: 4, text: "十二月運勢解析內容..." }
     ];
 
     function initApp() {
@@ -623,15 +628,6 @@
         document.getElementById('prev-id').innerText = document.getElementById('input-id').value;
         document.getElementById('prev-summary').innerText = document.getElementById('input-summary').value;
 
-        // 更新背景圖片
-        for (let i = 1; i <= 5; i++) {
-            const urlInput = document.getElementById(`bg-url-${i}`).value;
-            const sheet = document.getElementById(`sheet-${i}`);
-            if (sheet) {
-                sheet.style.backgroundImage = `url('${urlInput}')`;
-            }
-        }
-
         const yStar = document.getElementById('ziwei-year-star').value;
         const sBranch = document.getElementById('ziwei-small-branch').value;
         const sStar = document.getElementById('ziwei-small-star').value;
@@ -658,32 +654,30 @@
             if(target) target.innerText = val;
         });
 
-        // 動態組合 3、4、5 頁的 4 個月份預覽卡片
-        for (let group = 0; group < 3; group++) {
-            let groupHtml = '';
-            for (let i = 0; i < 4; i++) {
-                const idx = group * 4 + i;
-                const mName = monthsData[idx].name;
-                const w = document.getElementById(`work-${idx}`)?.value || 5;
-                const wl = document.getElementById(`wealth-${idx}`)?.value || 5;
-                const l = document.getElementById(`love-${idx}`)?.value || 5;
-                const h = document.getElementById(`health-${idx}`)?.value || 5;
-                const txt = document.getElementById(`text-${idx}`)?.value || '';
+        // 渲染每頁 4 個月份的透明背景即時預覽
+        renderMonthsPage(0, 4, 'months-page-1');
+        renderMonthsPage(4, 4, 'months-page-2');
+        renderMonthsPage(8, 4, 'months-page-3');
+    }
 
-                groupHtml += `
-                    <div class="month-card-preview">
-                        <div class="month-card-header">
-                            <span class="month-card-title">${mName}</span>
-                            <span class="month-card-scores">工作:${w} | 財運:${wl} | 感情:${l} | 健康:${h}</span>
-                        </div>
-                        <div class="month-card-text">${txt}</div>
-                    </div>
-                `;
-            }
-            const targetContainer = document.getElementById(`prev-months-group-${group}`);
-            if (targetContainer) {
-                targetContainer.innerHTML = groupHtml;
-            }
+    function renderMonthsPage(startIndex, count, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        for (let i = startIndex; i < startIndex + count; i++) {
+            const m = monthsData[i];
+            const work = document.getElementById(`work-${i}`) ? document.getElementById(`work-${i}`).value : m.work;
+            const wealth = document.getElementById(`wealth-${i}`) ? document.getElementById(`wealth-${i}`).value : m.wealth;
+            const love = document.getElementById(`love-${i}`) ? document.getElementById(`love-${i}`).value : m.love;
+            const health = document.getElementById(`health-${i}`) ? document.getElementById(`health-${i}`).value : m.health;
+            const text = document.getElementById(`text-${i}`) ? document.getElementById(`text-${i}`).value : m.text;
+
+            container.innerHTML += `
+                <div class="month-preview-item">
+                    <h4>${m.name}</h4>
+                    <div class="month-scores">工作:${work} ｜ 財運:${wealth} ｜ 感情:${love} ｜ 健康:${health}</div>
+                    <p>${text}</p>
+                </div>
+            `;
         }
     }
 
@@ -691,7 +685,7 @@
         const element = document.getElementById('pdf-target');
         const opt = {
             margin:       0,
-            filename:     document.getElementById('input-id').value.split('/')[0].trim() + '_2027流年解析.pdf',
+            filename:     document.getElementById('input-id').value + '_2027流年解析.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2, useCORS: true, logging: false },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
