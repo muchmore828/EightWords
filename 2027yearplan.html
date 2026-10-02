@@ -378,23 +378,23 @@
             margin-top: 15px;
         }
         .month-preview-item {
-            background: transparent !important;
-            border: none !important;
-            padding: 8px;
+            background: transparent !important;          /* 背景透明無顏色 */
+            border: none !important;                     /* 取消邊框，如果需要框線可改為 1px solid #ddd */
+            padding: 8px;                                /* 內部留白 */
             box-sizing: border-box;
         }
-        .month-preview-item h4 {
+        .month-preview-item h4 {    /* 月份標題顏色 (例如：一月 (2/6 - 3/7)) */
             margin: 0 0 4px 0;
             color: #2d3436;
             font-size: 1.05rem;
             font-weight: bold;
         }
-        .month-scores {
+        .month-scores {            /* 評分文字大小、顏色、間距 */
             font-size: 0.85rem;
             color: #636e72;
             margin-bottom: 4px;
         }
-        .month-preview-item p {
+        .month-preview-item p {    /* 運勢內文字體顏色 */
             margin: 0;
             color: #2d3436;
             font-size: 0.95rem;
@@ -542,8 +542,6 @@
             <!-- 📄 第三頁：月份 1~4 -->
             <div class="page-sheet page-month-sheet-2">
                 <div class="sheet-header">
-                    <p>多肉咖啡 MUCHMORE CAFE</p>
-                    <h1>2027 丁未年 - 四季流月解析 (一)</h1>
                 </div>
                 <div class="month-preview-grid" id="months-page-1"></div>
             </div>
@@ -551,8 +549,6 @@
             <!-- 📄 第四頁：月份 5~8 -->
             <div class="page-sheet page-month-sheet-3">
                 <div class="sheet-header">
-                    <p>多肉咖啡 MUCHMORE CAFE</p>
-                    <h1>2027 丁未年 - 四季流月解析 (二)</h1>
                 </div>
                 <div class="month-preview-grid" id="months-page-2"></div>
             </div>
@@ -560,8 +556,6 @@
             <!-- 📄 第五頁：月份 9~12 -->
             <div class="page-sheet page-month-sheet-4">
                 <div class="sheet-header">
-                    <p>多肉咖啡 MUCHMORE CAFE</p>
-                    <h1>2027 丁未年 - 四季流月解析 (三)</h1>
                 </div>
                 <div class="month-preview-grid" id="months-page-3"></div>
             </div>
