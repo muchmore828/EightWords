@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>多肉咖啡 - 2027 丁未年個人年度運勢解析產生器</title>
+    <title>多肉咖啡（多多萬事屋） - 2027 丁未年個人年度運勢解析產生器</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -353,8 +353,8 @@
         <h2>✨ 2027 流年報告輸入介面</h2>
         
         <div class="form-group">
-            <label>客戶姓名 / 專屬編號</label>
-            <input type="text" id="input-id" value="丁未年專屬編號: 27A11 (VIP客戶)" oninput="updatePreview()">
+            <label>流年編號 / 客戶名稱 / 命盤編號 / </label>
+            <input type="text" id="input-id" value="27A11 / 多多老闆 / 25001" oninput="updatePreview()">
         </div>
 
         <h3>🔮 紫微斗數設定</h3>
@@ -383,7 +383,7 @@
             <div class="bazi-input-grid form-group" style="margin-bottom:6px;">
                 <input type="text" id="bazi-0" value="壬" oninput="updatePreview()">
                 <input type="text" id="bazi-1" value="己" oninput="updatePreview()">
-                <input type="text" id="bazi-2" value="癸" oninput="updatePreview()" style="color:#6c5ce7; font-weight:bold;" title="日干(命主)">
+                <input type="text" id="bazi-2" value="癸" oninput="updatePreview()" style="color:#e627d6; font-weight:bold;" title="日干(命主)">
                 <input type="text" id="bazi-3" value="丙" oninput="updatePreview()">
                 <div class="bazi-line-divider"></div>
                 <input type="text" id="bazi-4" value="甲" oninput="updatePreview()">
@@ -431,7 +431,7 @@
                 <div class="sheet-header">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
                     <h1>2027 丁未年個人年度運勢解析</h1>
-                    <p id="prev-id">丁未年專屬編號: 27A11 (VIP客戶)</p>
+                    <p id="prev-id">27A11 / 多多老闆 / 25001</p>
                 </div>
 
                 <!-- 頂部摘要 -->
@@ -443,7 +443,7 @@
                     </div>
                     <div class="bazi-block" style="text-align: right;">
                         <strong>四柱八字 / 大運 / 流年</strong><br>
-                        <span id="prev-bazi-text">壬 己 <span style="color:#6c5ce7; font-weight:bold;">癸</span> 丙 ｜ 甲 ｜ 丁<br>戌 酉 亥 辰 ｜ 寅 ｜ 未</span>
+                        <span id="prev-bazi-text">壬 己 <span style="color:#e627d6; font-weight:bold;">癸</span> 丙 ｜ 甲 ｜ 丁<br>戌 酉 亥 辰 ｜ 寅 ｜ 未</span>
                     </div>
                 </div>
 
@@ -455,13 +455,13 @@
                     </svg>
 
                     <!-- 第一列: 巳、午、未、申 -->
-                    <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">廉貞/天相</span><span class="palace-name">巳</span></div>
-                    <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">天梁</span><span class="palace-name">午</span></div>
-                    <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-stars" id="star-未">七殺</span><span class="palace-name">未 (流年命)</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:1;" data-branch="申"><span class="palace-stars" id="star-申">-</span><span class="palace-name">申</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">巨門</span><span class="palace-name">巳</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">廉貞天相</span><span class="palace-name">午</span></div>
+                    <div class="palace-cell" style="grid-column:3; grid-row:1;" data-branch="未"><span class="palace-stars" id="star-未">天梁</span><span class="palace-name">(流年命宮)未</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:1;" data-branch="申"><span class="palace-stars" id="star-申">七殺</span><span class="palace-name">申</span></div>
 
                     <!-- 第二列: 辰 (左) 與 酉 (右)，中央 2x2 留空 -->
-                    <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">巨門</span><span class="palace-name">辰</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:2;" data-branch="辰"><span class="palace-stars" id="star-辰">貪狼</span><span class="palace-name">辰</span></div>
                     <div class="palace-center">
                         <div style="font-weight:bold; color:#6c5ce7; font-size:0.85rem;">2027 丁未年</div>
                         <div style="font-size:0.7rem; color:#636e72;">三方四正命盤</div>
@@ -469,14 +469,14 @@
                     <div class="palace-cell" style="grid-column:4; grid-row:2;" data-branch="酉"><span class="palace-stars" id="star-酉">天同</span><span class="palace-name">酉</span></div>
 
                     <!-- 第三列: 卯 (左) 與 戌 (右) -->
-                    <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-stars" id="star-卯">貪狼</span><span class="palace-name">卯 (財帛)</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:3;" data-branch="卯"><span class="palace-stars" id="star-卯">太陰</span><span class="palace-name">(流年財帛)卯</span></div>
                     <div class="palace-cell" style="grid-column:4; grid-row:3;" data-branch="戌"><span class="palace-stars" id="star-戌">武曲</span><span class="palace-name">戌</span></div>
 
                     <!-- 第四列: 寅、丑、子、亥 -->
-                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-stars" id="star-寅">太陰</span><span class="palace-name">寅</span></div>
-                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">丑 (遷移)</span></div>
+                    <div class="palace-cell" style="grid-column:1; grid-row:4;" data-branch="寅"><span class="palace-stars" id="star-寅">紫微天府</span><span class="palace-name">寅</span></div>
+                    <div class="palace-cell" style="grid-column:2; grid-row:4;" data-branch="丑"><span class="palace-stars" id="star-丑">天機</span><span class="palace-name">(流年遷移)丑</span></div>
                     <div class="palace-cell" style="grid-column:3; grid-row:4;" data-branch="子"><span class="palace-stars" id="star-子">破軍</span><span class="palace-name">子</span></div>
-                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-stars" id="star-亥">太陽</span><span class="palace-name">亥</span></div>
+                    <div class="palace-cell" style="grid-column:4; grid-row:4;" data-branch="亥"><span class="palace-stars" id="star-亥">太陽</span><span class="palace-name">(流年官祿)亥</span></div>
                 </div>
 
                 <div class="section-title">🌟 年度命盤總評</div>
@@ -490,9 +490,9 @@
 <script>
     const branches = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
     const defaultStars = {
-        "子": "破軍", "丑": "天機", "寅": "太陰", "卯": "貪狼", 
-        "辰": "巨門", "巳": "廉貞/天相", "午": "天梁", "未": "七殺", 
-        "申": "-", "酉": "天同", "戌": "武曲", "亥": "太陽"
+        "子": "破軍", "丑": "天機", "寅": "紫微天府", "卯": "太陰", 
+        "辰": "貪狼", "巳": "巨門", "午": "廉貞天相", "未": "天梁", 
+        "申": "七殺", "酉": "天同", "戌": "武曲", "亥": "太陽"
     };
 
     const monthsData = [
