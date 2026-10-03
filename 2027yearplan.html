@@ -244,6 +244,7 @@
             background-position: center;
             background-repeat: no-repeat;
             padding: 12mm 20mm;
+            position: relative;
         }
 
         .page-month-sheet-3 {
@@ -252,6 +253,7 @@
             background-position: center;
             background-repeat: no-repeat;
             padding: 12mm 20mm;
+            position: relative;
         }
 
         .page-month-sheet-4 {
@@ -260,6 +262,7 @@
             background-position: center;
             background-repeat: no-repeat;
             padding: 12mm 20mm;
+            position: relative;
         }
 
         .sheet-header {
@@ -372,6 +375,10 @@
 
         /* 🌟 每頁四個月解析的透明背景與固定排版設定 */
         .month-preview-grid {
+            position: absolute;  /* ⬅️ 啟用絕對定位 */
+            top: 25mm;           /* ⬅️ 調整這個高度數字（例如改成 20mm 或 15mm），文字框就會整塊往上移到您想要的位置！ */
+            left: 20mm;          /* 距離左邊界距離 */
+            right: 20mm;         /* 距離右邊界距離 */
             display: grid;
             grid-template-columns: 1fr;
             gap: 32px;
