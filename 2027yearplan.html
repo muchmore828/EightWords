@@ -285,11 +285,11 @@
         .top-astronomy-summary {
             display: flex;
             justify-content: space-between;
-            background: rgba(255, 255, 255, 0.5); /* ⬅️ 這裡就是半透明白色！0.85 代表 85% 不透明度，數值越小越透明 */
-            border: 1px solid rgba(255, 255, 255, 0.4); /* ⬅️ 可選：加上淡淡的邊框質感 */
-            border-radius: 8px;                         /* ⬅️ 加上圓角讓它更有卡片感 */
-            padding: 8px 12px;                          /* 內部留白 */
-            margin-bottom: 36px;                        /* 距離下方紫微斗數盤的間距 */
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 36px;
             font-size: 1.5rem;
             box-sizing: border-box;
         }
@@ -363,7 +363,6 @@
             font-size: 2.2rem;
             font-weight: bold;
             color: #2d3436;
-            /* border-left: 4px solid #6c5ce7; */
             padding-left: 0px;
             margin: 20px 0 4px 0;
         }
@@ -374,40 +373,42 @@
             white-space: pre-wrap;
         }
 
-        /* 🌟 每頁四個月解析的透明背景與固定排版設定 */
+        /* 🌟 每頁四個月解析的透明背景與固定排版設定 (強化定位與尺寸) */
         .month-preview-grid {
-            position: absolute;  /* ⬅️ 啟用絕對定位 */
-            top: 18mm;           /* ⬅️ 調整這個高度數字（例如改成 20mm 或 15mm），文字框就會整塊往上移到您想要的位置！ */
-            left: 20mm;          /* 距離左邊界距離 */
-            right: 20mm;         /* 距離右邊界距離 */
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 32px;
-            margin-top: -20px;
-        }
-        .month-preview-item {
-            background: rgba(255, 255, 255, 0.75) !important; /* 白色底色，後面數值 0.85 代表 85% 不透明度（數字越小越透明，1 是純白） */
-            border: 1px solid #eeba2b !important;            /* 金黃色框線 */
-            border-radius: 8px;                              /* 圓角（讓外框有漂亮的圓滑感） */
-            padding: 12px;                                   /* 內部留白（請注意 padding 不能用負數，建議設定 10px 左右讓文字跟邊框保持舒適距離） */
+            position: absolute;
+            top: 15mm;
+            left: 20mm;
+            right: 20mm;
+            bottom: 15mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             box-sizing: border-box;
         }
-        .month-preview-item h4 {    /* 月份標題顏色 (例如：一月 (2/6 - 3/7)) */
-            margin: 0 0 4px 0;
+        .month-preview-item {
+            background: rgba(255, 255, 255, 0.82) !important;
+            border: 1px solid #eeba2b !important;
+            border-radius: 8px;
+            padding: 10px 14px;
+            box-sizing: border-box;
+        }
+        .month-preview-item h4 {
+            margin: 0 0 2px 0;
             color: #2d3436;
-            font-size: 2rem;
+            font-size: 1.4rem;
             font-weight: bold;
         }
-        .month-scores {            /* 評分文字大小、顏色、間距 */
-            font-size: 1.2rem;
-            color: #2d3436;
-            margin-bottom: 4px;
+        .month-scores {
+            font-size: 1.05rem;
+            color: #6c5ce7;
+            font-weight: bold;
+            margin-bottom: 2px;
         }
-        .month-preview-item p {    /* 運勢內文字體顏色 */
+        .month-preview-item p {
             margin: 0;
             color: #2d3436;
-            font-size: 1.2rem;
-            line-height: 1.4;
+            font-size: 1.1rem;
+            line-height: 1.35;
             white-space: pre-wrap;
         }
     </style>
@@ -420,7 +421,7 @@
         <h2>✨ 2027 流年報告輸入介面</h2>
         
         <div class="form-group">
-            <label>流年編號 / 客戶名稱 / 命盤編號 / </label>
+            <label>流年編號 / 客戶名稱 / 命盤編號</label>
             <input type="text" id="input-id" value="27A11 / 多多老闆 / 25001" oninput="updatePreview()">
         </div>
 
@@ -485,7 +486,7 @@
         <button class="btn-export" onclick="exportPDF()">📥 一鍵導出完整 PDF 報告</button>
     </div>
 
-    <!-- 右側即時預覽畫布 (共 5 頁) -->
+    <!-- 右側即時預覽畫布 -->
     <div class="preview-panel">
         <div id="pdf-target">
             
@@ -550,22 +551,16 @@
 
             <!-- 📄 第三頁：月份 1~4 -->
             <div class="page-sheet page-month-sheet-2">
-                <div class="sheet-header">
-                </div>
                 <div class="month-preview-grid" id="months-page-1"></div>
             </div>
 
             <!-- 📄 第四頁：月份 5~8 -->
             <div class="page-sheet page-month-sheet-3">
-                <div class="sheet-header">
-                </div>
                 <div class="month-preview-grid" id="months-page-2"></div>
             </div>
 
             <!-- 📄 第五頁：月份 9~12 -->
             <div class="page-sheet page-month-sheet-4">
-                <div class="sheet-header">
-                </div>
                 <div class="month-preview-grid" id="months-page-3"></div>
             </div>
 
@@ -677,7 +672,7 @@
             container.innerHTML += `
                 <div class="month-preview-item">
                     <h4>${m.name}</h4>
-                    <div class="month-scores">工作:${work} ｜ 財運:${wealth} ｜ 感情:${love} ｜ 健康:${health}</div>
+                    <div class="month-scores">工作: ${work} ｜ 財運: ${wealth} ｜ 感情: ${love} ｜ 健康: ${health}</div>
                     <p>${text}</p>
                 </div>
             `;
