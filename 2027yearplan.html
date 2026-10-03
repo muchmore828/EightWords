@@ -376,7 +376,7 @@
         /* 🌟 每頁四個月解析的透明背景與固定排版設定 */
         .month-preview-grid {
             position: absolute;  /* ⬅️ 啟用絕對定位 */
-            top: 15mm;           /* ⬅️ 調整這個高度數字（例如改成 20mm 或 15mm），文字框就會整塊往上移到您想要的位置！ */
+            top: 20mm;           /* ⬅️ 調整這個高度數字（例如改成 20mm 或 15mm），文字框就會整塊往上移到您想要的位置！ */
             left: 20mm;          /* 距離左邊界距離 */
             right: 20mm;         /* 距離右邊界距離 */
             display: grid;
@@ -385,9 +385,10 @@
             margin-top: -20px;
         }
         .month-preview-item {
-            background: transparent !important;          /* 背景透明無顏色 */
-            border: none !important;                     /* 取消邊框，如果需要框線可改為 1px solid #ddd */
-            padding: -2px;                                /* 內部留白 */
+            background: rgba(255, 255, 255, 0.85) !important; /* 白色底色，後面數值 0.85 代表 85% 不透明度（數字越小越透明，1 是純白） */
+            border: 1px solid #eeba2b !important;            /* 金黃色框線 */
+            border-radius: 8px;                              /* 圓角（讓外框有漂亮的圓滑感） */
+            padding: 12px;                                   /* 內部留白（請注意 padding 不能用負數，建議設定 10px 左右讓文字跟邊框保持舒適距離） */
             box-sizing: border-box;
         }
         .month-preview-item h4 {    /* 月份標題顏色 (例如：一月 (2/6 - 3/7)) */
