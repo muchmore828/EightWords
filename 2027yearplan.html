@@ -197,9 +197,10 @@
         .btn-export:hover { background: #74b9ff; }
 
         /* 右側預覽區塊 */
+        /* 右側預覽區塊 */
         .preview-panel {
             flex: 1.2;
-            background: #ddd;
+            background: #bbb;
             padding: 20px;
             border-radius: 12px;
             display: flex;
@@ -207,17 +208,19 @@
             align-items: center;
             max-height: 90vh;
             overflow-y: auto;
+            box-sizing: border-box;
         }
 
-        /* 🌟 修正：確保對齊並完全消除右下方偏移 */
-        #pdf-target {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0px;
-            margin: 0 auto;
-            padding: 0;
+        /* 🌟 強制固定 A4 實體尺寸，並確保無任何 Margin 造成偏移 */
+        .page-sheet {
+            width: 210mm;
+            height: 296mm;
+            background-color: white;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto 15px auto; /* 預覽時上下有間距，轉 PDF 時靠 html2canvas 完美抓取尺寸 */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
         /* 🌟 強制固定 A4 實體尺寸與內部定位 */
@@ -706,12 +709,22 @@
     function exportPDF() {
         const element = document.getElementById('pdf-target');
         const opt = {
-            margin: 0,
-            filename: '2027_丁未年個人年度運勢解析報告.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin:       0,
+            filename:     (document.getElementById('input-id').value.split('/')[0].trim() || '運勢解析') + '_2027流年解析.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { 
+                scale: 2,               /* 保持超高畫質 */
+                useCORS: true, 
+                logging: false, 
+                letterRendering: true,
+                scrollX: 0,             /* 🌟 強制橫向滾動歸零，消滅左側白邊 */
+                scrollY: 0,             /* 🌟 強制縱向滾動歸零，消滅上方白邊 */
+                x: 0,                   /* 🌟 從原點 X=0 開始截圖 */
+                y: 0                    /* 🌟 從原點 Y=0 開始截圖 */
+            },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
+        
         html2pdf().from(element).set(opt).save();
     }
 
