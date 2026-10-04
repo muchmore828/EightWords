@@ -13,7 +13,7 @@
             font-family: "LiHei Pro", "微軟正黑體 圓體", "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "STHeiti", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 48px;
+            padding: 30px;
             color: #333;
         }
         .app-container {
@@ -209,7 +209,18 @@
             overflow-y: auto;
         }
 
-        /* 🌟 強制固定 A4 實體尺寸，防跑版核心設定 */
+        /* 🌟 修正：確保對齊並完全消除右下方偏移 */
+        #pdf-target {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0px;
+            margin: 0 auto;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 🌟 強制固定 A4 實體尺寸與內部定位 */
         .page-sheet {
             width: 210mm;
             height: 296mm;
@@ -217,7 +228,10 @@
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
-            /* 如果預覽時需要陰影或間距，建議用獨立的外層包覆，或者在轉檔時確保它不會被多餘計算 */
+            margin: 0;
+            padding: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            flex-shrink: 0;
         }
 
         /* 背景圖片設定 */
@@ -228,7 +242,6 @@
             background-repeat: no-repeat;
         }
 
-        /* 🌟 第二頁改為絕對定位防護網，確保轉 PDF 位置絕對不跑掉 */
         .page-content-sheet {
             background-image: url('https://muchmore828.github.io/EightWords/page11.jpg');
             background-size: 100% 100%;
@@ -262,7 +275,7 @@
             position: relative;
         }
 
-        /* 🌟 第二頁內部各區塊絕對定位鎖死 (A4 寬 210mm x 高 296mm) */
+        /* 頁面內部各區塊絕對定位鎖死 (A4 寬 210mm x 高 296mm) */
         .sheet-header-absolute {
             position: absolute;
             top: 12mm;
@@ -306,7 +319,7 @@
             top: 60mm;
             left: 18mm;
             right: 18mm;
-            height: 115mm; /* 精準控制盤面高度 */
+            height: 115mm;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
@@ -353,17 +366,7 @@
             z-index: 2;
         }
 
-        .ziwei-svg-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        /* 🌟 年度總評區塊絕對定位，鎖在盤面下方與頁尾之間 */
+        /* 年度總評區塊絕對定位 */
         .section-summary-absolute {
             position: absolute;
             top: 200mm;
@@ -392,7 +395,7 @@
             overflow: hidden;
         }
 
-        /* 🌟 月份頁面格線 */
+        /* 月份頁面格線 */
         .month-preview-grid {
             position: absolute;
             top: 10mm;
@@ -517,7 +520,7 @@
             <!-- 📄 第一頁：純封面 -->
             <div class="page-sheet page-cover"></div>
 
-            <!-- 📄 第二頁：基本資料、摘要與十二宮盤面 -->
+            <!-- 📄 第二頁：基本資料、摘要與十二宮盤面 (已移除 SVG) -->
             <div class="page-sheet page-content-sheet">
                 <div class="sheet-header-absolute">
                     <p>多肉咖啡 MUCHMORE CAFE</p>
@@ -540,11 +543,6 @@
 
                 <!-- 標準 4x4 紫微斗數盤面佈局 -->
                 <div class="ziwei-grid-container-absolute" id="ziwei-grid">
-                    <svg class="ziwei-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
-                        <polygon points="62.5,25 75,75 25,62.5" fill="rgba(108, 92, 231, 0.12)" stroke="#e17055" stroke-width="0.7" />
-                        <line x1="62.5" y1="25" x2="37.5" y2="75" stroke="#e17055" stroke-width="0.7" />
-                    </svg>
-
                     <!-- 第一列: 巳、午、未、申 -->
                     <div class="palace-cell" style="grid-column:1; grid-row:1;" data-branch="巳"><span class="palace-stars" id="star-巳">巨門</span><span class="palace-name">巳</span></div>
                     <div class="palace-cell" style="grid-column:2; grid-row:1;" data-branch="午"><span class="palace-stars" id="star-午">廉貞天相</span><span class="palace-name">午</span></div>
@@ -687,19 +685,19 @@
     function renderMonthsPage(startIndex, count, containerId) {
         const container = document.getElementById(containerId);
         container.innerHTML = '';
-        for (let i = startIndex; i < startIndex + count; i++) {
+        for(let i = startIndex; i < startIndex + count; i++) {
             const m = monthsData[i];
-            const work = document.getElementById(`work-${i}`) ? document.getElementById(`work-${i}`).value : m.work;
-            const wealth = document.getElementById(`wealth-${i}`) ? document.getElementById(`wealth-${i}`).value : m.wealth;
-            const love = document.getElementById(`work-${i}`) ? document.getElementById(`love-${i}`).value : m.love;
-            const health = document.getElementById(`health-${i}`) ? document.getElementById(`health-${i}`).value : m.health;
-            const text = document.getElementById(`text-${i}`) ? document.getElementById(`text-${i}`).value : m.text;
+            const w = document.getElementById(`work-${i}`) ? document.getElementById(`work-${i}`).value : m.work;
+            const we = document.getElementById(`wealth-${i}`) ? document.getElementById(`wealth-${i}`).value : m.wealth;
+            const l = document.getElementById(`love-${i}`) ? document.getElementById(`love-${i}`).value : m.love;
+            const h = document.getElementById(`health-${i}`) ? document.getElementById(`health-${i}`).value : m.health;
+            const t = document.getElementById(`text-${i}`) ? document.getElementById(`text-${i}`).value : m.text;
 
             container.innerHTML += `
                 <div class="month-preview-item">
                     <h4>${m.name}</h4>
-                    <div class="month-scores">工作: ${work} ｜ 財運: ${wealth} ｜ 感情: ${love} ｜ 健康: ${health}</div>
-                    <p>${text}</p>
+                    <div class="month-scores">工作: ${w} | 財運: ${we} | 感情: ${l} | 健康: ${h}</div>
+                    <p>${t}</p>
                 </div>
             `;
         }
@@ -708,19 +706,12 @@
     function exportPDF() {
         const element = document.getElementById('pdf-target');
         const opt = {
-            margin:       0,
-            filename:     (document.getElementById('input-id').value.split('/')[0].trim() || '運勢解析') + '_2027流年解析.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { 
-                scale: 1.9,           /* 保持高畫質放大兩倍 */
-                useCORS: true, 
-                logging: false, 
-                letterRendering: true
-                /* 注意：千萬不要在這裡寫 windowWidth 或 width，讓 html2canvas 自己抓取 target 元素的真實寬度！ */
-            },
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: 0,
+            filename: '2027_丁未年個人年度運勢解析報告.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        
         html2pdf().from(element).set(opt).save();
     }
 
