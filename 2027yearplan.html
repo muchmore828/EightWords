@@ -212,19 +212,12 @@
         /* 🌟 強制固定 A4 實體尺寸，防跑版核心設定 */
         .page-sheet {
             width: 210mm;
-            min-width: 210mm;
-            max-width: 210mm;
             height: 296mm;
-            min-height: 296mm;
-            max-height: 296mm;
             background-color: white;
             box-sizing: border-box;
-            margin: 0 auto 20mm auto; /* 讓預覽時上下有間距，但左右置中 */
             position: relative;
-            overflow: hidden;         /* 超出直接切掉，防止撐出新頁面 */
-            page-break-after: always;
-            break-after: page;
-            flex-shrink: 0;
+            overflow: hidden;
+            /* 如果預覽時需要陰影或間距，建議用獨立的外層包覆，或者在轉檔時確保它不會被多餘計算 */
         }
 
         /* 背景圖片設定 */
@@ -715,15 +708,15 @@
     function exportPDF() {
         const element = document.getElementById('pdf-target');
         const opt = {
-            margin:       0,       /* 確保外框無多餘邊距 */
-            filename:     document.getElementById('input-id').value.split('/')[0].trim() + '_2027流年解析.pdf',
+            margin:       0,
+            filename:     (document.getElementById('input-id').value.split('/')[0].trim() || '運勢解析') + '_2027流年解析.pdf',
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
-                scale: 2,           /* 保持高畫質 */
+                scale: 2,           /* 保持高畫質放大兩倍 */
                 useCORS: true, 
                 logging: false, 
-                letterRendering: true,
-                windowWidth: 794    /* 強制設定標準 A4 寬度像素 (210mm 相當於 794px)，杜絕右側被撐開 */
+                letterRendering: true
+                /* 注意：千萬不要在這裡寫 windowWidth 或 width，讓 html2canvas 自己抓取 target 元素的真實寬度！ */
             },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
