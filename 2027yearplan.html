@@ -378,21 +378,21 @@
         /* 🌟 嚴格固定高度與垂直均分的月份排版（不限制字數切斷，完美適應 5~6 行排版） */
         .month-preview-grid {
             position: absolute;
-            top: 14mm;
-            left: 18mm;
-            right: 18mm;
-            bottom: 14mm;
-            height: calc(296mm - 28mm);
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+            height: calc(296mm - 20mm);
             display: grid;
             grid-template-rows: repeat(4, 1fr);
-            gap: 8px;
+            gap: 12px;
             box-sizing: border-box;
         }
         .month-preview-item {
-            background: rgba(255, 255, 255, 0.9) !important;
+            background: rgba(255, 255, 255, 0.7) !important;
             border: 1px solid #eeba2b !important;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 8px 16px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -402,11 +402,11 @@
         .month-preview-item h4 {
             margin: 0 0 2px 0;
             color: #2d3436;
-            font-size: 1.05rem;
+            font-size: 1.5rem;
             font-weight: bold;
         }
         .month-scores {
-            font-size: 0.85rem;
+            font-size: 1.2rem;
             color: #6c5ce7;
             font-weight: bold;
             margin-bottom: 3px;
@@ -414,7 +414,7 @@
         .month-preview-item p {
             margin: 0;
             color: #2d3436;
-            font-size: 0.88rem;
+            font-size: 1.2rem;
             line-height: 1.35;
             white-space: pre-wrap;
             /* 移除了 line-clamp 限制，讓您掌控 5-6 行完整呈現 */
