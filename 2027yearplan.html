@@ -708,8 +708,8 @@
         const opt = {
             margin: 0,
             filename: '2027_丁未年個人年度運勢解析報告.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 1.8, useCORS: true, logging: false },
+            image: { type: 'jpeg', quality: 0.99 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().from(element).set(opt).save();
