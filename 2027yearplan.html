@@ -223,7 +223,7 @@
         /* 🌟 強制固定 A4 實體尺寸與內部定位 */
         .page-sheet {
             width: 210mm;
-            height: 297mm;
+            height: 296.8mm;
             background-color: white;
             box-sizing: border-box;
             position: relative;
@@ -275,7 +275,7 @@
             position: relative;
         }
 
-        /* 頁面內部各區塊絕對定位鎖死 (A4 寬 210mm x 高 297mm) */
+        /* 頁面內部各區塊絕對定位鎖死 (A4 寬 210mm x 高 296.8mm) */
         .sheet-header-absolute {
             position: absolute;
             top: 12mm;
@@ -402,7 +402,7 @@
             left: 10mm;
             right: 10mm;
             bottom: 10mm;
-            height: calc(297mm - 20mm);
+            height: calc(296.8mm - 20mm);
             display: grid;
             grid-template-rows: repeat(4, 1fr);
             gap: 8px;
@@ -707,7 +707,7 @@
         const element = document.getElementById('pdf-target');
         const opt = {
             margin: 0,
-            filename: document.getElementById('input-id').value + '_2027流年解析.pdf',
+            filename: document.getElementById('input-id').value + '_2027丁未流年解析.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
