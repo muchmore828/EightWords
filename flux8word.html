@@ -350,10 +350,10 @@
                 <div class="panel">
                     <div class="panel-title">📊 7x2 時空同步對照 (具備五行色彩)</div>
                     <div class="bazi-7col-grid">
-                        <div class="matrix-col natal-col"><div class="col-header">年柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispYearGan">壬</div><div class="zhi-text" id="dispYearZhi">戌</div></div>
-                        <div class="matrix-col natal-col"><div class="col-header">月柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispMonthGan">己</div><div class="zhi-text" id="dispMonthZhi">辰</div></div>
-                        <div class="matrix-col natal-col highlight-col"><div class="col-header" style="color:var(--accent-color);">日柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispDayGan">丙</div><div class="zhi-text" id="dispDayZhi">酉</div></div>
-                        <div class="matrix-col natal-col"><div class="col-header">時柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispHourGan">壬</div><div class="zhi-text" id="dispHourZhi">亥</div></div>
+                        <div class="matrix-col natal-col"><div class="col-header">年柱</div><div class="sub-hint">本命</div><div class="gan-text" id="dispYearGan">壬</div><div class="zhi-text" id="dispYearZhi">戌</div></div>
+                        <div class="matrix-col natal-col"><div class="col-header">月柱</div><div class="sub-hint">本命</div><div class="gan-text" id="dispMonthGan">己</div><div class="zhi-text" id="dispMonthZhi">辰</div></div>
+                        <div class="matrix-col natal-col highlight-col"><div class="col-header" style="color:var(--accent-color);">日柱</div><div class="sub-hint">本命</div><div class="gan-text" id="dispDayGan">丙</div><div class="zhi-text" id="dispDayZhi">酉</div></div>
+                        <div class="matrix-col natal-col"><div class="col-header">時柱</div><div class="sub-hint">本命</div><div class="gan-text" id="dispHourGan">壬</div><div class="zhi-text" id="dispHourZhi">亥</div></div>
                         <div class="matrix-col dynamic-col"><div class="col-header">大運</div><div class="sub-hint" style="opacity:0;">-</div><div class="gan-text" id="dispDayunGan">甲</div><div class="zhi-text" id="dispDayunZhi">寅</div></div>
                         <div class="matrix-col dynamic-col"><div class="col-header">流年</div><div class="sub-hint" id="liunianYearLabel">2026</div><div class="gan-text" id="dispLiunianGan">丙</div><div class="zhi-text" id="dispLiunianZhi">午</div></div>
                         <div class="matrix-col dynamic-col"><div class="col-header">流月</div><div class="sub-hint" id="lunarMonthHint">十月</div><div class="gan-text" id="dispLiuyueGan">戊</div><div class="zhi-text" id="dispLiuyueZhi">戌</div></div>
@@ -362,52 +362,52 @@
 
                 <!-- 2. 本命獨立數學陣列 -->
                 <div class="math-array-box">
-                    <div style="font-size:0.9rem; font-weight:bold; color:var(--primary-color);">📦 本命獨立數學陣列 (4柱 - 嚴格相鄰合)</div>
+                    <div style="font-size:0.9rem; font-weight:bold; color:var(--primary-color);">📦 本命</div>
                     <div class="array-row">
-                        <div class="array-label">本命三干陣列：</div>
+                        <div class="array-label">天干：</div>
                         <div class="array-value" id="natalGansText">-</div>
                     </div>
                     <div class="array-row">
-                        <div class="array-label">本命四支陣列：</div>
+                        <div class="array-label">地支：</div>
                         <div class="array-value" id="natalZhisText">-</div>
                     </div>
                 </div>
 
                 <!-- 3. 大運疊加陣列 -->
                 <div class="math-array-box" style="border-color: var(--accent-color); background-color: #f0fdf4;">
-                    <div style="font-size:0.9rem; font-weight:bold; color:var(--accent-color);">🌟 大運疊加陣列 (本命 + 大運 ➔ 4干5支結構)</div>
+                    <div style="font-size:0.9rem; font-weight:bold; color:var(--accent-color);">🌟 大運</div>
                     <div class="array-row">
-                        <div class="array-label">運局四干陣列：</div>
+                        <div class="array-label">天干：</div>
                         <div class="array-value" id="dayunGansText">-</div>
                     </div>
                     <div class="array-row">
-                        <div class="array-label">運局五支陣列：</div>
+                        <div class="array-label">地支：</div>
                         <div class="array-value" id="dayunZhisText">-</div>
                     </div>
                 </div>
 
                 <!-- 4. 流年疊加陣列 -->
                 <div class="math-array-box" style="border-color: #d69e2e; background-color: #fefcbf;">
-                    <div style="font-size:0.9rem; font-weight:bold; color: #b7791f;">⚡ 流年時空疊加陣列 (本命 + 大運 + 流年 ➔ 5干6支結構)</div>
+                    <div style="font-size:0.9rem; font-weight:bold; color: #b7791f;">⚡ 流年</div>
                     <div class="array-row">
-                        <div class="array-label">流年五干陣列：</div>
+                        <div class="array-label">天干：</div>
                         <div class="array-value" id="liunianGansText">-</div>
                     </div>
                     <div class="array-row">
-                        <div class="array-label">流年六支陣列：</div>
+                        <div class="array-label">地支：</div>
                         <div class="array-value" id="liunianZhisText">-</div>
                     </div>
                 </div>
 
                 <!-- 5. 流月疊加陣列 -->
                 <div class="math-array-box" style="border-color: #805ad5; background-color: #faf5ff;">
-                    <div style="font-size:0.9rem; font-weight:bold; color: #6b46c1;">🌙 流月時空疊加陣列 (本命 + 大運 + 流年 + 流月 ➔ 6干7支結構)</div>
+                    <div style="font-size:0.9rem; font-weight:bold; color: #6b46c1;">🌙 流月</div>
                     <div class="array-row">
-                        <div class="array-label">流月六干陣列：</div>
+                        <div class="array-label">天干：</div>
                         <div class="array-value" id="liuyueGansText">-</div>
                     </div>
                     <div class="array-row">
-                        <div class="array-label">流月七支陣列：</div>
+                        <div class="array-label">地支</div>
                         <div class="array-value" id="liuyueZhisText">-</div>
                     </div>
                 </div>
