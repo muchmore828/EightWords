@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多多老師專用 - 八字數學陣列 (流年流月全時空合化修復版)</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --primary-color: #2c3e50;
+            --accent-color: #319795;
+            --border-color: #cbd5e0;
+            --color-wood: #2b8a3e;  /* 木：綠 */
+            --color-fire: #c92a2a;  /* 火：紅 */
+            --color-earth: #b45309; /* 土：棕/黃 */
+            --color-metal: #495057; /* 金：灰 */
+            --color-water: #1d4ed8; /* 水：藍 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #2d3748;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 6px;
+        }
+
+        .form-section {
+            margin-bottom: 12px;
+        }
+
+        .form-section label {
+            font-size: 0.78rem;
+            font-weight: bold;
+            color: #4a5568;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .input-row-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .stepper-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        input.gan-zhi-input {
+            width: 100%;
+            padding: 6px 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            background: #fff;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        input.gan-zhi-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(49, 151, 149, 0.15);
+        }
+
+        .step-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .step-btn {
+            background: #edf2f7;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            cursor: pointer;
+            line-height: 1;
+            color: #4a5568;
+        }
+
+        .step-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .display-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .bazi-7col-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .matrix-col {
+            background: #fdfdfd;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .matrix-col.natal-col {
+            border-color: #cbd5e0;
+            background: #f8fafc;
+        }
+
+        .matrix-col.highlight-col {
+            border-color: var(--accent-color);
+            background: #f0fdf4;
+        }
+
+        .matrix-col.dynamic-col {
+            background-color: #fffaf0;
+            border-color: #fbd38d;
+        }
+
+        .col-header {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #718096;
+            border-bottom: 1px solid #edf2f7;
+            width: 100%;
+            padding-bottom: 4px;
+        }
+
+        .sub-hint {
+            font-size: 0.65rem;
+            color: #319795;
+            margin-top: -2px;
+            font-weight: bold;
+        }
+
+        .gan-text, .zhi-text {
+            font-size: 1.6rem;
+            font-weight: bold;
+            line-height: 1.1;
+        }
+
+        .zhi-text {
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 4px;
+            width: 100%;
+        }
+
+        .wuxing-wood { color: var(--color-wood); }
+        .wuxing-fire { color: var(--color-fire); }
+        .wuxing-earth { color: var(--color-earth); }
+        .wuxing-metal { color: var(--color-metal); }
+        .wuxing-water { color: var(--color-water); }
+
+        .math-array-box {
+            background: #ffffff;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .array-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .array-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .array-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-family: "Courier New", Courier, monospace, sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .preset-section {
+            margin-top: 10px;
+            border-top: 1px solid #edf2f7;
+            padding-top: 8px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .preset-btn {
+            padding: 4px 8px;
+            background: #edf2f7;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .preset-btn:hover {
+            background: var(--accent-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>☯️ 多多老師專用 - 八字數學陣列 (全時空合化修復版)</h1>
+        </header>
+
+        <div class="workspace">
+            <!-- 左側：輸入控制面板 -->
+            <div class="panel">
+                <div class="panel-title">🛠️ 時空干支推進面板</div>
+
+                <div class="form-section">
+                    <label>本命四柱 (年 / 月 / 日 / 時)</label>
+                    <div class="input-row-4">
+                        <input type="text" id="inYearGan" class="gan-zhi-input" value="壬" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inMonthGan" class="gan-zhi-input" value="己" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inDayGan" class="gan-zhi-input" value="丙" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inHourGan" class="gan-zhi-input" value="壬" maxlength="1" oninput="updateWarRoomMatrix()">
+                    </div>
+                    <div class="input-row-4" style="margin-top: 4px;">
+                        <input type="text" id="inYearZhi" class="gan-zhi-input" value="戌" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inMonthZhi" class="gan-zhi-input" value="辰" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inDayZhi" class="gan-zhi-input" value="酉" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inHourZhi" class="gan-zhi-input" value="亥" maxlength="1" oninput="updateWarRoomMatrix()">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label>當前大運 (▲前 / ▼後)</label>
+                    <div class="stepper-row">
+                        <input type="text" id="inDayunGan" class="gan-zhi-input" value="甲" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inDayunZhi" class="gan-zhi-input" value="寅" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <div class="step-btn-group">
+                            <button class="step-btn" onclick="stepTime('dayun', -1)">▲</button>
+                            <button class="step-btn" onclick="stepTime('dayun', 1)">▼</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label>當前流年 (▲前 / ▼後)</label>
+                    <div class="stepper-row">
+                        <input type="text" id="inLiunianGan" class="gan-zhi-input" value="丙" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inLiunianZhi" class="gan-zhi-input" value="午" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <div class="step-btn-group">
+                            <button class="step-btn" onclick="stepTime('liunian', -1)">▲</button>
+                            <button class="step-btn" onclick="stepTime('liunian', 1)">▼</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <label>當前流月 (▲前 / ▼後)</label>
+                    <div class="stepper-row">
+                        <input type="text" id="inLiuyueGan" class="gan-zhi-input" value="戊" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <input type="text" id="inLiuyueZhi" class="gan-zhi-input" value="戌" maxlength="1" oninput="updateWarRoomMatrix()">
+                        <div class="step-btn-group">
+                            <button class="step-btn" onclick="stepTime('liuyue', -1)">▲</button>
+                            <button class="step-btn" onclick="stepTime('liuyue', 1)">▼</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preset-section">
+                    <label>⚡ 範例帶入：</label>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="loadPreset('壬', '戌', '己', '辰', '丙', '酉', '壬', '亥', '甲', '寅', '丙', '午', '戊', '戌')">載入測試標準範例</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側：結果顯示面板 -->
+            <div class="display-container">
+                <!-- 1. 7x2 時空同步對照 -->
+                <div class="panel">
+                    <div class="panel-title">📊 7x2 時空同步對照 (具備五行色彩)</div>
+                    <div class="bazi-7col-grid">
+                        <div class="matrix-col natal-col"><div class="col-header">年柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispYearGan">壬</div><div class="zhi-text" id="dispYearZhi">戌</div></div>
+                        <div class="matrix-col natal-col"><div class="col-header">月柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispMonthGan">己</div><div class="zhi-text" id="dispMonthZhi">辰</div></div>
+                        <div class="matrix-col natal-col highlight-col"><div class="col-header" style="color:var(--accent-color);">日柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispDayGan">丙</div><div class="zhi-text" id="dispDayZhi">酉</div></div>
+                        <div class="matrix-col natal-col"><div class="col-header">時柱</div><div class="sub-hint">本命區</div><div class="gan-text" id="dispHourGan">壬</div><div class="zhi-text" id="dispHourZhi">亥</div></div>
+                        <div class="matrix-col dynamic-col"><div class="col-header">大運</div><div class="sub-hint" style="opacity:0;">-</div><div class="gan-text" id="dispDayunGan">甲</div><div class="zhi-text" id="dispDayunZhi">寅</div></div>
+                        <div class="matrix-col dynamic-col"><div class="col-header">流年</div><div class="sub-hint" id="liunianYearLabel">2026</div><div class="gan-text" id="dispLiunianGan">丙</div><div class="zhi-text" id="dispLiunianZhi">午</div></div>
+                        <div class="matrix-col dynamic-col"><div class="col-header">流月</div><div class="sub-hint" id="lunarMonthHint">十月</div><div class="gan-text" id="dispLiuyueGan">戊</div><div class="zhi-text" id="dispLiuyueZhi">戌</div></div>
+                    </div>
+                </div>
+
+                <!-- 2. 本命獨立數學陣列 -->
+                <div class="math-array-box">
+                    <div style="font-size:0.9rem; font-weight:bold; color:var(--primary-color);">📦 本命獨立數學陣列 (4柱 - 嚴格相鄰合)</div>
+                    <div class="array-row">
+                        <div class="array-label">本命三干陣列：</div>
+                        <div class="array-value" id="natalGansText">-</div>
+                    </div>
+                    <div class="array-row">
+                        <div class="array-label">本命四支陣列：</div>
+                        <div class="array-value" id="natalZhisText">-</div>
+                    </div>
+                </div>
+
+                <!-- 3. 大運疊加陣列 -->
+                <div class="math-array-box" style="border-color: var(--accent-color); background-color: #f0fdf4;">
+                    <div style="font-size:0.9rem; font-weight:bold; color:var(--accent-color);">🌟 大運疊加陣列 (本命 + 大運 ➔ 4干5支結構)</div>
+                    <div class="array-row">
+                        <div class="array-label">運局四干陣列：</div>
+                        <div class="array-value" id="dayunGansText">-</div>
+                    </div>
+                    <div class="array-row">
+                        <div class="array-label">運局五支陣列：</div>
+                        <div class="array-value" id="dayunZhisText">-</div>
+                    </div>
+                </div>
+
+                <!-- 4. 流年疊加陣列 -->
+                <div class="math-array-box" style="border-color: #d69e2e; background-color: #fefcbf;">
+                    <div style="font-size:0.9rem; font-weight:bold; color: #b7791f;">⚡ 流年時空疊加陣列 (本命 + 大運 + 流年 ➔ 5干6支結構)</div>
+                    <div class="array-row">
+                        <div class="array-label">流年五干陣列：</div>
+                        <div class="array-value" id="liunianGansText">-</div>
+                    </div>
+                    <div class="array-row">
+                        <div class="array-label">流年六支陣列：</div>
+                        <div class="array-value" id="liunianZhisText">-</div>
+                    </div>
+                </div>
+
+                <!-- 5. 流月疊加陣列 -->
+                <div class="math-array-box" style="border-color: #805ad5; background-color: #faf5ff;">
+                    <div style="font-size:0.9rem; font-weight:bold; color: #6b46c1;">🌙 流月時空疊加陣列 (本命 + 大運 + 流年 + 流月 ➔ 6干7支結構)</div>
+                    <div class="array-row">
+                        <div class="array-label">流月六干陣列：</div>
+                        <div class="array-value" id="liuyueGansText">-</div>
+                    </div>
+                    <div class="array-row">
+                        <div class="array-label">流月七支陣列：</div>
+                        <div class="array-value" id="liuyueZhisText">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+        const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+
+        const LUNAR_MONTH_MAP = {
+            "寅": "正月(一月)", "卯": "二月", "辰": "三月", "巳": "四月",
+            "午": "五月", "未": "六月", "申": "七月", "酉": "八月",
+            "戌": "九月", "亥": "十月", "子": "十一月", "丑": "十二月(臘月)"
+        };
+
+        const SIXTY_GANZHI = [];
+        for (let i = 0; i < 60; i++) {
+            SIXTY_GANZHI.push({ gan: STEMS[i % 10], zhi: BRANCHES[i % 12] });
+        }
+
+        const STEM_ELEMENT = {
+            "甲": "wood", "乙": "wood", "丙": "fire", "丁": "fire",
+            "戊": "earth", "己": "earth", "庚": "metal", "辛": "metal",
+            "壬": "water", "癸": "water"
+        };
+
+        const BRANCH_ELEMENT = {
+            "寅": "wood", "卯": "wood", "巳": "fire", "午": "fire",
+            "辰": "earth", "戌": "earth", "丑": "earth", "未": "earth",
+            "申": "metal", "酉": "metal", "亥": "water", "子": "water"
+        };
+
+        const GENERATES = { "metal": "water", "water": "wood", "wood": "fire", "fire": "earth", "earth": "metal" };
+        const OVERCOMES = { "wood": "earth", "earth": "water", "water": "fire", "fire": "metal", "metal": "wood" };
+
+        function wrapColoredChar(char, isStem = true) {
+            const el = isStem ? STEM_ELEMENT[char] : BRANCH_ELEMENT[char];
+            return el ? `<span class="wuxing-${el}">${char}</span>` : char;
+        }
+
+        function getGanzhiIndex(gan, zhi) {
+            return SIXTY_GANZHI.findIndex(item => item.gan === gan && item.zhi === zhi);
+        }
+
+        function checkStemCombine(g1, g2) {
+            const pairs = [
+                ['甲', '己'], ['己', '甲'], ['乙', '庚'], ['庚', '乙'],
+                ['丙', '辛'], ['辛', '丙'], ['丁', '壬'], ['壬', '丁'],
+                ['戊', '癸'], ['癸', '戊']
+            ];
+            return pairs.some(p => p[0] === g1 && p[1] === g2);
+        }
+
+        function checkBranchCombine(z1, z2) {
+            const pairs = [
+                ['子', '丑'], ['丑', '子'], ['寅', '亥'], ['亥', '寅'],
+                ['卯', '戌'], ['戌', '卯'], ['辰', '酉'], ['酉', '辰'],
+                ['巳', '申'], ['申', '巳'], ['午', '未'], ['未', '午']
+            ];
+            return pairs.some(p => p[0] === z1 && p[1] === z2);
+        }
+
+        // 1. 本命獨立陣列：僅本命內部「相鄰才合」
+        function processNatalArray(items, isStem = true) {
+            if (!items || items.length === 0) return '-';
+            let currentItems = [...items];
+            let combinedParts = [];
+
+            let merged = true;
+            while (merged) {
+                merged = false;
+                for (let i = 0; i < currentItems.length - 1; i++) {
+                    if (isStem ? checkStemCombine(currentItems[i], currentItems[i+1]) : checkBranchCombine(currentItems[i], currentItems[i+1])) {
+                        combinedParts.push(`(${wrapColoredChar(currentItems[i], isStem)}${wrapColoredChar(currentItems[i+1], isStem)}合)`);
+                        currentItems.splice(i, 2);
+                        merged = true;
+                        break;
+                    }
+                }
+            }
+            return formatRemaining(currentItems, combinedParts, isStem);
+        }
+
+        // 2. 時空疊加通用算術引擎 (修復版)：
+        // natalItems: 本命元素， extItems: 外來運元素（大運、流年、流月）
+        function processTimeIterateArray(natalItems, extItems, isStem = true) {
+            let currentNatal = [...natalItems];
+            let currentExt = [...extItems];
+            let combinedParts = [];
+
+            let matched = true;
+            while (matched) {
+                matched = false;
+
+                // 步驟 A：檢查【外來運】是否與【盤中任意元素】發生合化（優先直合）
+                for (let eIdx = 0; eIdx < currentExt.length; eIdx++) {
+                    let extChar = currentExt[eIdx];
+                    
+                    // A1. 外來運與本命盤中元素直合
+                    let hitNatal = -1;
+                    for (let nIdx = 0; nIdx < currentNatal.length; nIdx++) {
+                        let isComb = isStem ? checkStemCombine(extChar, currentNatal[nIdx]) : checkBranchCombine(extChar, currentNatal[nIdx]);
+                        if (isComb) {
+                            hitNatal = nIdx;
+                            break;
+                        }
+                    }
+
+                    if (hitNatal !== -1) {
+                        combinedParts.push(`(${wrapColoredChar(currentNatal[hitNatal], isStem)}${wrapColoredChar(extChar, isStem)}合)`);
+                        currentNatal.splice(hitNatal, 1);
+                        currentExt.splice(eIdx, 1);
+                        matched = true;
+                        break;
+                    }
+
+                    // A2. 外來運彼此之間互相直合 (例如大運與流年合)
+                    let hitExt = -1;
+                    for (let oIdx = eIdx + 1; oIdx < currentExt.length; oIdx++) {
+                        let isComb = isStem ? checkStemCombine(extChar, currentExt[oIdx]) : checkBranchCombine(extChar, currentExt[oIdx]);
+                        if (isComb) {
+                            hitExt = oIdx;
+                            break;
+                        }
+                    }
+
+                    if (hitExt !== -1) {
+                        combinedParts.push(`(${wrapColoredChar(currentExt[eIdx], isStem)}${wrapColoredChar(currentExt[hitExt], isStem)}合)`);
+                        currentExt.splice(hitExt, 1);
+                        currentExt.splice(eIdx, 1);
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (matched) continue;
+
+                // 步驟 B：本命內部因為外來運抽取後，產生的相鄰連鎖二次合
+                for (let i = 0; i < currentNatal.length - 1; i++) {
+                    let isComb = isStem ? checkStemCombine(currentNatal[i], currentNatal[i+1]) : checkBranchCombine(currentNatal[i], currentNatal[i+1]);
+                    if (isComb) {
+                        combinedParts.push(`(${wrapColoredChar(currentNatal[i], isStem)}${wrapColoredChar(currentNatal[i+1], isStem)}合)`);
+                        currentNatal.splice(i, 2);
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+
+            // 將最後留下來的所有元素合併（本命剩餘 + 外來運剩餘）
+            let allRemaining = [...currentNatal, ...currentExt];
+            return formatRemaining(allRemaining, combinedParts, isStem);
+        }
+
+        // 共通的格式化引擎：先合 ➔ 後生 ➔ 再剋
+        function formatRemaining(remainingItems, combinedParts, isStem) {
+            if (remainingItems.length === 0) {
+                return combinedParts.length > 0 ? combinedParts.join('    ') : '-';
+            }
+
+            let groups = {};
+            remainingItems.forEach(char => {
+                let el = isStem ? STEM_ELEMENT[char] : BRANCH_ELEMENT[char];
+                if (!groups[el]) groups[el] = [];
+                groups[el].push(char);
+            });
+
+            let availableElements = Object.keys(groups);
+            if (availableElements.length === 1) {
+                let res = groups[availableElements[0]].map(c => wrapColoredChar(c, isStem)).join('');
+                return combinedParts.length > 0 ? combinedParts.join('    ') + '    ' + res : res;
+            }
+
+            let chain = [];
+            let used = new Set();
+
+            let startEl = null;
+            for (let el of availableElements) {
+                let targetGen = GENERATES[el];
+                if (availableElements.includes(targetGen)) {
+                    let hasParent = availableElements.some(parent => GENERATES[parent] === el);
+                    if (!hasParent) { startEl = el; break; }
+                }
+            }
+            if (!startEl) {
+                for (let el of availableElements) {
+                    if (availableElements.includes(GENERATES[el])) { startEl = el; break; }
+                }
+            }
+
+            if (startEl && availableElements.includes(GENERATES[startEl])) {
+                chain.push({ el: startEl, rel: null });
+                used.add(startEl);
+                let current = startEl;
+                while (true) {
+                    let nextGen = GENERATES[current];
+                    if (availableElements.includes(nextGen) && !used.has(nextGen)) {
+                        chain[chain.length - 1].rel = '--->';
+                        chain.push({ el: nextGen, rel: null });
+                        used.add(nextGen);
+                        current = nextGen;
+                    } else { break; }
+                }
+            }
+
+            let lastEl = chain.length > 0 ? chain[chain.length - 1].el : null;
+            let overcomeTarget = lastEl ? OVERCOMES[lastEl] : null;
+
+            if (lastEl && availableElements.includes(overcomeTarget) && !used.has(overcomeTarget)) {
+                chain[chain.length - 1].rel = '-x->';
+                chain.push({ el: overcomeTarget, rel: null });
+                used.add(overcomeTarget);
+            } else {
+                for (let a of availableElements) {
+                    for (let b of availableElements) {
+                        if (a !== b && OVERCOMES[a] === b && (!used.has(a) || !used.has(b))) {
+                            if (chain.length === 0) {
+                                chain.push({ el: a, rel: '-x->' });
+                                chain.push({ el: b, rel: null });
+                            } else {
+                                chain[chain.length - 1].rel = '   ';
+                                chain.push({ el: a, rel: '-x->' });
+                                chain.push({ el: b, rel: null });
+                            }
+                            used.add(a); used.add(b);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (let el of availableElements) {
+                if (!used.has(el)) {
+                    if (chain.length > 0) {
+                        chain[chain.length - 1].rel = '   ';
+                        chain.push({ el: el, rel: null });
+                    } else {
+                        chain.push({ el: el, rel: null });
+                    }
+                    used.add(el);
+                }
+            }
+
+            let flowStr = "";
+            for (let i = 0; i < chain.length; i++) {
+                let elChars = groups[chain[i].el].map(c => wrapColoredChar(c, isStem)).join('');
+                flowStr += elChars;
+                if (chain[i].rel) { flowStr += ` ${chain[i].rel} `; }
+            }
+
+            if (combinedParts.length > 0) {
+                return combinedParts.join('    ') + '    ' + flowStr;
+            } else {
+                return flowStr;
+            }
+        }
+
+        function updateWarRoomMatrix() {
+            const yG = document.getElementById('inYearGan').value.trim() || '';
+            const yZ = document.getElementById('inYearZhi').value.trim() || '';
+            const mG = document.getElementById('inMonthGan').value.trim() || '';
+            const mZ = document.getElementById('inMonthZhi').value.trim() || '';
+            const dG = document.getElementById('inDayGan').value.trim() || '';
+            const dZ = document.getElementById('inDayZhi').value.trim() || '';
+            const hG = document.getElementById('inHourGan').value.trim() || '';
+            const hZ = document.getElementById('inHourZhi').value.trim() || '';
+
+            const dyG = document.getElementById('inDayunGan').value.trim() || '';
+            const dyZ = document.getElementById('inDayunZhi').value.trim() || '';
+            const lnG = document.getElementById('inLiunianGan').value.trim() || '';
+            const lnZ = document.getElementById('inLiunianZhi').value.trim() || '';
+            const lyG = document.getElementById('inLiuyueGan').value.trim() || '';
+            const lyZ = document.getElementById('inLiuyueZhi').value.trim() || '';
+
+            // 7x2 畫面對照
+            document.getElementById('dispYearGan').innerHTML = wrapColoredChar(yG, true);
+            document.getElementById('dispYearZhi').innerHTML = wrapColoredChar(yZ, false);
+            document.getElementById('dispMonthGan').innerHTML = wrapColoredChar(mG, true);
+            document.getElementById('dispMonthZhi').innerHTML = wrapColoredChar(mZ, false);
+            document.getElementById('dispDayGan').innerHTML = wrapColoredChar(dG, true);
+            document.getElementById('dispDayZhi').innerHTML = wrapColoredChar(dZ, false);
+            document.getElementById('dispHourGan').innerHTML = wrapColoredChar(hG, true);
+            document.getElementById('dispHourZhi').innerHTML = wrapColoredChar(hZ, false);
+
+            document.getElementById('dispDayunGan').innerHTML = wrapColoredChar(dyG, true);
+            document.getElementById('dispDayunZhi').innerHTML = wrapColoredChar(dyZ, false);
+            document.getElementById('dispLiunianGan').innerHTML = wrapColoredChar(lnG, true);
+            document.getElementById('dispLiunianZhi').innerHTML = wrapColoredChar(lnZ, false);
+            document.getElementById('dispLiuyueGan').innerHTML = wrapColoredChar(lyG, true);
+            document.getElementById('dispLiuyueZhi').innerHTML = wrapColoredChar(lyZ, false);
+
+            if (lnG && lnZ) {
+                const baseYear = 2026;
+                const baseIdx = getGanzhiIndex("丙", "午");
+                const currentIdx = getGanzhiIndex(lnG, lnZ);
+                if (baseIdx !== -1 && currentIdx !== -1) {
+                    let diff = currentIdx - baseIdx;
+                    if (diff > 30) diff -= 60;
+                    if (diff < -30) diff += 60;
+                    document.getElementById('liunianYearLabel').innerText = baseYear + diff;
+                }
+            }
+
+            if (lyZ && LUNAR_MONTH_MAP[lyZ]) {
+                document.getElementById('lunarMonthHint').innerText = LUNAR_MONTH_MAP[lyZ];
+            } else {
+                document.getElementById('lunarMonthHint').innerText = '-';
+            }
+
+            // 1. 本命獨立 (3干4支)
+            const natalGans = [yG, mG, hG].filter(x => x !== '');
+            const natalZhis = [yZ, mZ, dZ, hZ].filter(x => x !== '');
+            document.getElementById('natalGansText').innerHTML = processNatalArray(natalGans, true);
+            document.getElementById('natalZhisText').innerHTML = processNatalArray(natalZhis, false);
+
+            // 2. 大運疊加 (本命 + 大運 1 干支)
+            const extDayunGans = [dyG].filter(x => x !== '');
+            const extDayunZhis = [dyZ].filter(x => x !== '');
+            document.getElementById('dayunGansText').innerHTML = processTimeIterateArray(natalGans, extDayunGans, true);
+            document.getElementById('dayunZhisText').innerHTML = processTimeIterateArray(natalZhis, extDayunZhis, false);
+
+            // 3. 流年疊加 (本命 + 大運 + 流年 2 干支)
+            const extLiunianGans = [dyG, lnG].filter(x => x !== '');
+            const extLiunianZhis = [dyZ, lnZ].filter(x => x !== '');
+            document.getElementById('liunianGansText').innerHTML = processTimeIterateArray(natalGans, extLiunianGans, true);
+            document.getElementById('liunianZhisText').innerHTML = processTimeIterateArray(natalZhis, extLiunianZhis, false);
+
+            // 4. 流月疊加 (本命 + 大運 + 流年 + 流月 3 干支)
+            const extLiuyueGans = [dyG, lnG, lyG].filter(x => x !== '');
+            const extLiuyueZhis = [dyZ, lnZ, lyZ].filter(x => x !== '');
+            document.getElementById('liuyueGansText').innerHTML = processTimeIterateArray(natalGans, extLiuyueGans, true);
+            document.getElementById('liuyueZhisText').innerHTML = processTimeIterateArray(natalZhis, extLiuyueZhis, false);
+        }
+
+        function stepTime(type, stepDirection) {
+            let ganId = '', zhiId = '';
+            if (type === 'dayun') { ganId = 'inDayunGan'; zhiId = 'inDayunZhi'; }
+            else if (type === 'liunian') { ganId = 'inLiunianGan'; zhiId = 'inLiunianZhi'; }
+            else if (type === 'liuyue') { ganId = 'inLiuyueGan'; zhiId = 'inLiuyueZhi'; }
+
+            const currentGan = document.getElementById(ganId).value.trim();
+            const currentZhi = document.getElementById(zhiId).value.trim();
+
+            let idx = getGanzhiIndex(currentGan, currentZhi);
+            if (idx === -1) idx = 0;
+
+            const nextIdx = (idx + stepDirection + 60) % 60;
+            const nextGanzhi = SIXTY_GANZHI[nextIdx];
+
+            document.getElementById(ganId).value = nextGanzhi.gan;
+            document.getElementById(zhiId).value = nextGanzhi.zhi;
+
+            updateWarRoomMatrix();
+        }
+
+        function loadPreset(yG, yZ, mG, mZ, dG, dZ, hG, hZ, dyG, dyZ, lnG, lnZ, lyG, lyZ) {
+            document.getElementById('inYearGan').value = yG;
+            document.getElementById('inYearZhi').value = yZ;
+            document.getElementById('inMonthGan').value = mG;
+            document.getElementById('inMonthZhi').value = mZ;
+            document.getElementById('inDayGan').value = dG;
+            document.getElementById('inDayZhi').value = dZ;
+            document.getElementById('inHourGan').value = hG;
+            document.getElementById('inHourZhi').value = hZ;
+
+            document.getElementById('inDayunGan').value = dyG;
+            document.getElementById('inDayunZhi').value = dyZ;
+            document.getElementById('inLiunianGan').value = lnG;
+            document.getElementById('inLiunianZhi').value = lnZ;
+            document.getElementById('inLiuyueGan').value = lyG;
+            document.getElementById('inLiuyueZhi').value = lyZ;
+
+            updateWarRoomMatrix();
+        }
+
+        window.onload = function() {
+            updateWarRoomMatrix();
+        };
+    </script>
+</body>
+</html>
