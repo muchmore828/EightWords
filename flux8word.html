@@ -607,7 +607,7 @@
                 while (true) {
                     let nextGen = GENERATES[current];
                     if (availableElements.includes(nextGen) && !used.has(nextGen)) {
-                        chain[chain.length - 1].rel = '--->';
+                        chain[chain.length - 1].rel = '>>';
                         chain.push({ el: nextGen, rel: null });
                         used.add(nextGen);
                         current = nextGen;
@@ -619,7 +619,7 @@
             let overcomeTarget = lastEl ? OVERCOMES[lastEl] : null;
 
             if (lastEl && availableElements.includes(overcomeTarget) && !used.has(overcomeTarget)) {
-                chain[chain.length - 1].rel = '-x->';
+                chain[chain.length - 1].rel = 'X';
                 chain.push({ el: overcomeTarget, rel: null });
                 used.add(overcomeTarget);
             } else {
